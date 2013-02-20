@@ -15,7 +15,7 @@ captureFrame();
 	}
 
 	private static void captureFrame() {
-		IplImage imgHSV = cvCreateImage(cvGetSize(img), 8, 1);
+		IplImage imgHSV = null;
 		IplImage img;
 		
 		// 0-default camera, 1 - next...so on
