@@ -13,23 +13,26 @@ public class Main {
 		
 		// 0-default camera, 1 - next...so on
 		final OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);
+		CanvasFrame canvas2 = new CanvasFrame("threshold");
+		CanvasFrame canvas = new CanvasFrame("Out");
 
 		try {
 			grabber.start();
+			
+		
 			img = grabber.grab();
 		} catch (Exception e) {
 			System.err.print("Failed to initialize camera");
 			e.printStackTrace();
 		}
-		//setup windows for live images, used for debugging
-		CanvasFrame canvas = new CanvasFrame("Out");
-		canvas.showImage(img);
 		
 
-
-		pi.thresholdImage(img);
+		IplImage imgThreshold = pi.thresholdImage(img);
+		pi.findContours(imgThreshold);
+		
+		//setup windows for live images, used for debugging
+		canvas2.showImage(imgThreshold);	
+		canvas.showImage(img);
 
 	}
-
 }
-
