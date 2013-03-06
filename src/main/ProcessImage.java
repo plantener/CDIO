@@ -17,6 +17,7 @@ import static com.googlecode.javacv.cpp.opencv_core.*;
 
 
 public class ProcessImage {
+	CanvasFrame canvas2 = null;
 
 	private IplImage img;
 
@@ -45,12 +46,8 @@ public class ProcessImage {
 	}
 	
 	public void findContours(IplImage imgThreshold){
-//		CvSeq cvSeq=new opencv_core.CvSeq();
-//	    CvMemStorage memory=CvMemStorage.create();
-//	    int konturer = opencv_imgproc.cvFindContours(imgThreshold, memory, cvSeq, Loader.sizeof(CvContour.class),
-//	    		opencv_imgproc.CV_RETR_LIST, opencv_imgproc.CV_CHAIN_APPROX_SIMPLE);
-//	    System.out.println("antal konturer =" + konturer);
-//	    
+		
+    
 		
 		 CvMemStorage storage = CvMemStorage.create();
 		    CvSeq contours = new CvContour(null);
@@ -83,9 +80,14 @@ public class ProcessImage {
 		            count++;
 
 		    }
-
-		    CanvasFrame canvas2 = new CanvasFrame("contures");
-			canvas2.showImage(img);
+		    
+		    if (canvas2 == null){
+		    canvas2 = new CanvasFrame("contures");
+		    canvas2.showImage(img);
+		    
+}
+		    canvas2.showImage(img);
+			
 		  
 		    
 	    
