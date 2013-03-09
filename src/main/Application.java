@@ -3,6 +3,7 @@ package main;
 import utilities.ImageUtils;
 
 import com.googlecode.javacv.CanvasFrame;
+import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
 
@@ -32,7 +33,10 @@ public class Application {
 		IplImage contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
 			
 		canvasContours.showImage(contoursFrame);
-	
+		
+//		opencv_core.cvReleaseImage(grabbedFrame);
+//		opencv_core.cvReleaseImage(resizedFrame);
+//		opencv_core.cvReleaseImage(thresholdedFrame);
 		
 
 	}

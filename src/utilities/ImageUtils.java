@@ -113,6 +113,8 @@ public class ImageUtils {
 		    	//TODO some kind of errorhandling here
 		    }
 		    //TODO Should maybe return x,y instead of image with contours.
+
+		    
 		    return img;
    
 	   
