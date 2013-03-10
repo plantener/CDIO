@@ -108,6 +108,7 @@ public class ImageUtils {
 		            count++;
 
 		    }
+		   
 		    }catch(Exception E){
 		    	System.out.println("No contours found");
 		    	//TODO some kind of errorhandling here

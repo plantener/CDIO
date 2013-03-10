@@ -1,10 +1,7 @@
 package main;
 
-import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
-import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class CaptureImage {
@@ -25,6 +22,7 @@ public class CaptureImage {
 	}
 	
 	public IplImage grabImage(){
+		
 		
 		try {
 	
