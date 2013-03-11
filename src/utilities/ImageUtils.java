@@ -16,15 +16,13 @@ import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
 public class ImageUtils {
-	CanvasFrame canvasResized;
-	IplImage resizedImage = null;
-	IplImage imgHSV = null;
-	IplImage imgThreshold = null;
-	CvSeq ptr = null;
+	private CanvasFrame canvasResized;
+	private IplImage resizedImage = null;
+	private IplImage imgHSV = null;
+	private IplImage imgThreshold = null;
 
 	public ImageUtils(){
 		canvasResized = new CanvasFrame("Resized");
-		ptr = new CvSeq();
 	}
 
 	/**
@@ -58,9 +56,26 @@ public class ImageUtils {
 		opencv_imgproc.cvCvtColor(img, imgHSV,opencv_imgproc.CV_BGR2HSV);
 
 		//Upper and lower bounds, notice that cvScalar is on this form: BGR, and not RGB
-		//TODO rewrite this function, to range the correct colors.
+
 		opencv_core.cvInRangeS(imgHSV, opencv_core.cvScalar(20, 100, 100,0),
 				opencv_core.cvScalar(30, 255, 255,0), imgThreshold);
+
+		opencv_core.cvReleaseImage(imgHSV);
+
+		return imgThreshold;
+	}
+	
+	public IplImage thresholdGreen(IplImage img){
+		imgHSV = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 3);
+		imgThreshold = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 1);
+
+		//Convert RGB image to HSV
+		opencv_imgproc.cvCvtColor(img, imgHSV,opencv_imgproc.CV_BGR2HSV);
+
+		//Upper and lower bounds, notice that cvScalar is on this form: BGR, and not RGB
+
+		opencv_core.cvInRangeS(imgHSV, opencv_core.cvScalar(29, 98, 100,0),
+				opencv_core.cvScalar(60, 255, 255,0), imgThreshold);
 
 		opencv_core.cvReleaseImage(imgHSV);
 
@@ -75,6 +90,8 @@ public class ImageUtils {
 	 */
 	public IplImage findContours(IplImage imgThreshold, IplImage img){
 
+		//TODO Sort away "dummy" objects
+		
 		CvMemStorage  storage = null;
 		CvSeq contours = null;
 
@@ -87,7 +104,6 @@ public class ImageUtils {
 				opencv_imgproc.CV_CHAIN_APPROX_NONE, new opencv_core.CvPoint(0,0));
 
 		CvSeq ptr = new CvSeq();
-
 
 		int count =1;
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0,0), p2 = new opencv_core.CvPoint(0,0);
