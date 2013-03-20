@@ -1,7 +1,9 @@
 package utilities;
 
 public enum Threshold {
-	GREEN_LOWER(29,28,90), GREEN_UPPER(60,255,255);
+	GREEN_LOWER(40,100,100), GREEN_UPPER(75,255,255), 
+	RED_LOWER(170,100,100), RED_UPPER(185,255,255);
+	
 	
 	private int b,g,r;
 	

@@ -33,7 +33,7 @@ public class Application {
 		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 		
 		//below call used for testing purposes
-		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("testingImage.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 		//cloning image due to highgui guidelines.
 //		clonedImage = opencv_core.cvCloneImage(grabbedFrame);
 		resizedFrame = iu.resizeImage(grabbedFrame);
@@ -41,6 +41,7 @@ public class Application {
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
 		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
+		//thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.RED_LOWER, Threshold.RED_UPPER);
 	
 		contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
 			

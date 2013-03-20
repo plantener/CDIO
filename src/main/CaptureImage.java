@@ -3,6 +3,7 @@ package main;
 import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.googlecode.javacv.cpp.opencv_highgui;
 
 public class CaptureImage {
 	private final OpenCVFrameGrabber grabber;
@@ -11,7 +12,7 @@ public class CaptureImage {
 	
 	public CaptureImage(){
 		// 0-default camera, 1 - next...so on
-				grabber = new OpenCVFrameGrabber(0);
+				grabber = new OpenCVFrameGrabber(1);
 				try {
 					grabber.start();
 				} catch (Exception e) {
@@ -26,11 +27,15 @@ public class CaptureImage {
 		
 		try {
 	
-		//A grabbed image from Logitech webcam is in following resolution: 1200x800px
+		//A grabbed image from Logitech webcam is in following resolution: 1600x1200px
 			
 			img = grabber.grab();
 			
-			
+			//below used for testing purposes
+//			opencv_highgui.cvSaveImage("nolightmap.jpg", img);
+//			while(true){
+//				
+//			}
 			
 		} catch (Exception e) {
 			

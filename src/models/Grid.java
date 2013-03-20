@@ -6,7 +6,7 @@ public class Grid {
 	
 	public Grid(){
 		//TODO Add functionality to assign gridsize from elsewhere
-		grid = new byte [266][400];
+		grid = new byte [300][400];
 	}
 	
 	

@@ -9,6 +9,7 @@ import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
+import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvContour;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
@@ -26,14 +27,14 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Resized an image to 400x266, with colordepth 3.
+	 * Resized an image to 400x300, with colordepth 3.
 	 * @param img
 	 * @return resizedImage
 	 */
 	public IplImage resizeImage(IplImage img){
 
 		resizedImage = null;
-		resizedImage = opencv_core.cvCreateImage( opencv_core.cvSize( 400, 266 ), 8, 3 );
+		resizedImage = opencv_core.cvCreateImage( opencv_core.cvSize( 400, 300 ), 8, 3 );
 		opencv_imgproc.cvResize(img, resizedImage);
 
 		//used for debugging purposes
@@ -42,28 +43,6 @@ public class ImageUtils {
 		return resizedImage;
 	}
 
-	/**
-	 * Return a binary image where the specified color is marked "white"
-	 * @param img
-	 * @return thesholdImage
-	 */
-	public IplImage thresholdImage(IplImage img){
-
-		imgHSV = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 3);
-		imgThreshold = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 1);
-
-		//Convert RGB image to HSV
-		opencv_imgproc.cvCvtColor(img, imgHSV,opencv_imgproc.CV_BGR2HSV);
-
-		//Upper and lower bounds, notice that cvScalar is on this form: BGR, and not RGB
-
-		opencv_core.cvInRangeS(imgHSV, opencv_core.cvScalar(20, 100, 100,0),
-				opencv_core.cvScalar(30, 255, 255,0), imgThreshold);
-
-		opencv_core.cvReleaseImage(imgHSV);
-
-		return imgThreshold;
-	}
 	
 	/**
 	 * Return a binary image where the specified color is marked "white"
@@ -78,6 +57,7 @@ public class ImageUtils {
 
 		//Convert RGB image to HSV
 		opencv_imgproc.cvCvtColor(img, imgHSV,opencv_imgproc.CV_BGR2HSV);
+		opencv_highgui.cvSaveImage("hsvConverted.jpg", imgHSV);
 
 		//Upper and lower bounds, notice that cvScalar is on this form: BGR, and not RGB
 		opencv_core.cvInRangeS(imgHSV, opencv_core.cvScalar(threshold_lower.getB(),threshold_lower.getG(), threshold_lower.getR(),0),
