@@ -5,6 +5,7 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_RGB;
 import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
+import models.Grid;
 
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.CanvasFrame;
@@ -126,7 +127,15 @@ public class ImageUtils {
 
 
 	}
+	
+	public Grid fillGrid(Grid grid, CvSeq contours){
+		for (int i = 0; contours != null; contours = contours.h_next()) {
+			
+		}
+		
+		return grid;
+	}
 
-	//TODO Utilmetode til at lave canvasframes
+	
 
 }
