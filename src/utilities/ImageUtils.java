@@ -58,7 +58,6 @@ public class ImageUtils {
 
 		//Convert RGB image to HSV
 		opencv_imgproc.cvCvtColor(img, imgHSV,opencv_imgproc.CV_BGR2HSV);
-		opencv_highgui.cvSaveImage("hsvConverted.jpg", imgHSV);
 
 		//Upper and lower bounds, notice that cvScalar is on this form: BGR, and not RGB
 		opencv_core.cvInRangeS(imgHSV, opencv_core.cvScalar(threshold_lower.getB(),threshold_lower.getG(), threshold_lower.getR(),0),
@@ -130,7 +129,7 @@ public class ImageUtils {
 	
 	public Grid fillGrid(Grid grid, CvSeq contours){
 		for (int i = 0; contours != null; contours = contours.h_next()) {
-			
+			contours.
 		}
 		
 		return grid;
