@@ -1,6 +1,9 @@
 package main;
 
+import models.Grid;
 import utilities.ImageUtils;
+import utilities.Threshold;
+
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
@@ -14,31 +17,35 @@ public class Application {
 	private IplImage resizedFrame;
 	private IplImage thresholdedFrame;
 	private IplImage contoursFrame;
+	private Grid grid;
+	
 	
 	public Application(){
 		ci = new CaptureImage();
 		iu = new ImageUtils();
 		canvasContours = new CanvasFrame("contours");
+		grid = new Grid();
 		
 	}
 
 	public void frameProcessing(){
 		
-		//grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 		
 		//below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("testingImage.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("testingImage.jpg");
 		//cloning image due to highgui guidelines.
 //		clonedImage = opencv_core.cvCloneImage(grabbedFrame);
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
-		thresholdedFrame = iu.thresholdGreen(resizedFrame);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
 	
 		contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
 			
 		canvasContours.showImage(contoursFrame);
+		
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
