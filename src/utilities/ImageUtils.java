@@ -5,6 +5,9 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_RGB;
 import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
+
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import models.Grid;
 
 import com.googlecode.javacpp.Loader;
@@ -22,6 +25,9 @@ public class ImageUtils {
 	private IplImage resizedImage = null;
 	private IplImage imgHSV = null;
 	private IplImage imgThreshold = null;
+	
+	CvSeq contours;
+
 
 	public ImageUtils(){
 		canvasResized = new CanvasFrame("Resized");
@@ -90,6 +96,11 @@ public class ImageUtils {
 				opencv_imgproc.CV_CHAIN_APPROX_NONE, new opencv_core.CvPoint(0,0));
 
 		CvSeq ptr = new CvSeq();
+		
+		//Used in the fillGrid function
+		this.contours = new CvSeq();
+		this.contours = contours;
+	
 
 		int count =1;
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0,0), p2 = new opencv_core.CvPoint(0,0);
@@ -99,7 +110,6 @@ public class ImageUtils {
 
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(ptr, 0);
-
 				System.out.println("Contour No ="+count);
 				System.out.println("X ="+ sq.x()+" Y="+ sq.y());
 				System.out.println("Height ="+sq.height()+" Width ="+sq.width());
@@ -127,11 +137,29 @@ public class ImageUtils {
 
 	}
 	
-	public Grid fillGrid(Grid grid, CvSeq contours){
-		for (int i = 0; contours != null; contours = contours.h_next()) {
-			contours.
-		}
+	public Grid fillGrid(Grid grid){
+		int x = 0;
 		
+		try{
+		//Iterate over all contours
+		for (; contours != null; contours = contours.h_next()) {
+			opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(contours, 0);
+			//Fill in grid
+			for (int rows = 0; rows < sq.height();) {
+				//TODO Check if there should be <= instead of <
+				grid.setGridPosition(sq.x()+x, sq.y()+rows, 1);		
+				x++;
+				if(x == sq.width()){
+					rows++;
+					x = 0;
+				}
+				
+			}
+			
+		}
+		}catch(Exception e){
+			System.out.println("No contour");
+		}
 		return grid;
 	}
 

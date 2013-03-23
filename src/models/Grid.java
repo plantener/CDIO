@@ -2,11 +2,11 @@ package models;
 
 public class Grid {
 
-	private byte[][] grid;
+	private int[][] grid;
 	
 	public Grid(){
 		//TODO Add functionality to assign gridsize from elsewhere
-		grid = new byte [300][400];
+		grid = new int [300][400];
 	}
 	
 	
@@ -20,11 +20,11 @@ public class Grid {
 		
 	}
 	
-	public byte[][] getGrid(){
+	public int[][] getGrid(){
 		return grid;
 	}
 	
-	public void setGridPosition(byte x, byte y, byte color){
+	public void setGridPosition(int x, int y, int color){
 		grid[y][x] = color;
 		
 	}

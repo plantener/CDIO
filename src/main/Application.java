@@ -40,10 +40,12 @@ public class Application {
 		
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
-		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
-		//thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.RED_LOWER, Threshold.RED_UPPER);
+		//thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.RED_LOWER, Threshold.RED_UPPER);
 	
 		contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
+		grid = iu.fillGrid(grid);
+		
 			
 		canvasContours.showImage(contoursFrame);
 		
