@@ -18,42 +18,50 @@ public class Application {
 	private IplImage thresholdedFrame;
 	private IplImage contoursFrame;
 	private Grid grid;
-	
-	
+
+
 	public Application(){
 		ci = new CaptureImage();
 		iu = new ImageUtils();
 		canvasContours = new CanvasFrame("contours");
 		grid = new Grid();
-		
+
 	}
 
 	public void frameProcessing(){
-		
-		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
-		
+
+		//grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+
 		//below call used for testing purposes
-		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 		//cloning image due to highgui guidelines.
-//		clonedImage = opencv_core.cvCloneImage(grabbedFrame);
+		
 		resizedFrame = iu.resizeImage(grabbedFrame);
-		
 		opencv_core.cvReleaseImage(grabbedFrame);
-		
-		//thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
-		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.RED_LOWER, Threshold.RED_UPPER);
-	
-		contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
-		grid = iu.fillGrid(grid);
-		
-			
+		thresholdGreen();
+		thresholdRed();
+
+		//TODO Set grid to zero before refilling it
+
 		canvasContours.showImage(contoursFrame);
-		
+
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
 		opencv_core.cvReleaseImage(contoursFrame);
 
 
+	}
+	
+	public void thresholdRed(){
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.RED_LOWER, Threshold.RED_UPPER);
+		contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
+		grid = iu.fillGrid(grid, 1);
+	}
+	
+	public void thresholdGreen(){
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
+		contoursFrame = iu.findContours(thresholdedFrame, resizedFrame);
+		grid = iu.fillGrid(grid, 2);
 	}
 }

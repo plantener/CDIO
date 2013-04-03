@@ -81,8 +81,6 @@ public class ImageUtils {
 	 * @return img
 	 */
 	public IplImage findContours(IplImage imgThreshold, IplImage img){
-
-		//TODO Sort away "dummy" objects
 		
 		CvMemStorage  storage = null;
 		CvSeq contours = null;
@@ -100,7 +98,8 @@ public class ImageUtils {
 		//Used in the fillGrid function
 		this.contours = new CvSeq();
 		this.contours = contours;
-	
+		
+	//TODO ptr.first(); Maybe return this, to use in fillGrid
 
 		int count =1;
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0,0), p2 = new opencv_core.CvPoint(0,0);
@@ -127,7 +126,6 @@ public class ImageUtils {
 			opencv_core.cvClearMemStorage(contours.storage());
 		}catch(Exception E){
 			System.out.println("No contours found");
-			//TODO some kind of errorhandling here
 		}
 		//TODO Should maybe return x,y instead of image with contours.
 
@@ -137,9 +135,9 @@ public class ImageUtils {
 
 	}
 	
-	public Grid fillGrid(Grid grid){
+	public Grid fillGrid(Grid grid, int color){
 		int x = 0;
-		
+	
 		try{
 		//Iterate over all contours
 		for (; contours != null; contours = contours.h_next()) {
@@ -147,7 +145,7 @@ public class ImageUtils {
 			//Fill in grid
 			for (int rows = 0; rows < sq.height();) {
 				//TODO Check if there should be <= instead of <
-				grid.setGridPosition(sq.x()+x, sq.y()+rows, 1);		
+				grid.setGridPosition(sq.x()+x, sq.y()+rows, color);		
 				x++;
 				if(x == sq.width()){
 					rows++;

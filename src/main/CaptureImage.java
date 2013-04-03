@@ -31,11 +31,6 @@ public class CaptureImage {
 			
 			img = grabber.grab();
 			
-			//below used for testing purposes
-//			opencv_highgui.cvSaveImage("nolightmap.jpg", img);
-//			while(true){
-//				
-//			}
 			
 		} catch (Exception e) {
 			
