@@ -30,16 +30,17 @@ public class Application {
 
 	public void frameProcessing(){
 
-		//grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		//below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 		//cloning image due to highgui guidelines.
 		
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 		thresholdGreen();
 		thresholdRed();
+		grid.setGridToZero();
 
 		//TODO Set grid to zero before refilling it
 
