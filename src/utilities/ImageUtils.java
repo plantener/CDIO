@@ -96,43 +96,44 @@ public class ImageUtils {
 				opencv_imgproc.CV_CHAIN_APPROX_NONE, new opencv_core.CvPoint(0,0));
 
 		CvSeq ptr = new CvSeq();
+		ptr = contours;
 		
 		//Used in the fillGrid function
-		this.contours = new CvSeq();
-		this.contours = contours;
+//		this.contours = new CvSeq();
+//		this.contours = contours;
 		
 	//TODO ptr.first(); Maybe return this, to use in fillGrid
 
-		int count =1;
-		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0,0), p2 = new opencv_core.CvPoint(0,0);
+//		int count =1;
+//		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0,0), p2 = new opencv_core.CvPoint(0,0);
+//		
+
+//
+//		try{
+//			for (ptr = contours; ptr != null; ptr = ptr.h_next()) {
+//
+//			opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
+//			opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(ptr, 0);
+//			
+//
+//				p1.x(sq.x());
+//				p2.x(sq.x()+sq.width());
+//				p1.y(sq.y());
+//				p2.y(sq.y()+sq.height());
+//				cvRectangle(img, p1,p2, CV_RGB(255, 0, 0), 2, 8, 0);
+//				cvDrawContours(img, ptr, color, CV_RGB(0,0,0), -1, CV_FILLED, 8, cvPoint(0,0));
+//				
+//
+//			}
+//			opencv_core.cvClearMemStorage(contours.storage());
+//		}catch(Exception E){
+//			System.out.println("No contours found");
+//		}
+//
+//		
+//		canvasContours.showImage(img);
 		
-		ptr = contours;
-
-		try{
-			for (ptr = contours; ptr != null; ptr = ptr.h_next()) {
-
-				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
-				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(ptr, 0);
-				
-
-				p1.x(sq.x());
-				p2.x(sq.x()+sq.width());
-				p1.y(sq.y());
-				p2.y(sq.y()+sq.height());
-				cvRectangle(img, p1,p2, CV_RGB(255, 0, 0), 2, 8, 0);
-				cvDrawContours(img, ptr, color, CV_RGB(0,0,0), -1, CV_FILLED, 8, cvPoint(0,0));
-				
-
-			}
-			opencv_core.cvClearMemStorage(contours.storage());
-		}catch(Exception E){
-			System.out.println("No contours found");
-		}
-
-		
-		canvasContours.showImage(img);
-		
-		return this.contours;
+		return ptr;
 
 
 	}
