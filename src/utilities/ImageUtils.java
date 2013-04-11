@@ -98,6 +98,9 @@ public class ImageUtils {
 		CvSeq ptr = new CvSeq();
 		ptr = contours;
 		
+		opencv_core.cvReleaseImage(imgThreshold);
+		
+		
 		//Used in the fillGrid function
 //		this.contours = new CvSeq();
 //		this.contours = contours;
