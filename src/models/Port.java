@@ -51,5 +51,13 @@ public class Port extends ObjectOnMap{
 		}
 		
 	}
+
+	@Override
+	public String toString() {
+		return "Port [pairId=" + pairId + ", midX=" + midX + ", midY=" + midY
+				+ ", red=" + red + ", green=" + green + "]";
+	}
+	
+	
 }
 

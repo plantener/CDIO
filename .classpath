@@ -5,5 +5,7 @@
 	<classpathentry kind="lib" path="lib/javacpp.jar"/>
 	<classpathentry kind="lib" path="lib/javacv-macosx-x86_64.jar"/>
 	<classpathentry kind="lib" path="lib/javacv.jar"/>
+	<classpathentry kind="lib" path="C:/opencv/javacv-bin/javacv-windows-x86.jar"/>
+	<classpathentry kind="lib" path="C:/opencv/javacv-bin/javacv-windows-x86_64.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

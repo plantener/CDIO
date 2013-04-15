@@ -91,4 +91,15 @@ public class Robot extends ObjectOnMap {
 	public void setBackHeight(int backHeight) {
 		this.backHeight = backHeight;
 	}
+	
+	@Override
+	public String toString() {
+		return "Robot [frontX=" + frontX + ", frontY=" + frontY + ", backX="
+				+ backX + ", backY=" + backY + ", frontHeight=" + frontHeight
+				+ ", frontWidth=" + frontWidth + ", backHeight=" + backHeight
+				+ ", backWidth=" + backWidth + ", frontMidX=" + frontMidX
+				+ ", frontmidY=" + frontmidY + ", backMidX=" + backMidX
+				+ ", backMidY=" + backMidY + ", frontColor=" + frontColor + "]";
+	}
+	
 }
