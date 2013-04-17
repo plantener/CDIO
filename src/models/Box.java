@@ -1,6 +1,7 @@
 package models;
 
 public class Box extends ObjectOnMap{
+	
 	private int pairId;
 	private int x;
 	private int y;
@@ -59,4 +60,10 @@ public class Box extends ObjectOnMap{
 		this.color = color;
 	}
 	
+	@Override
+	public String toString() {
+		return "Box [pairId=" + pairId + ", x=" + x + ", y=" + y + ", height="
+				+ height + ", width=" + width + ", midX=" + midX + ", midY="
+				+ midY + ", color=" + color + "]";
+	}
 }

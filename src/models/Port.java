@@ -5,15 +5,15 @@ public class Port extends ObjectOnMap{
 	private int midX;
 	private int midY;
 	private Box red, green;
-	
+
 	public Port(Box red, Box green){
-	this.red = red;
-	this.green = green;
-	setMidX(this.red,this.green);
-	setMidY(this.red,this.green);
+		this.red = red;
+		this.green = green;
+		setMidX(this.red,this.green);
+		setMidY(this.red,this.green);
 	}
-	
-	
+
+
 	public int getPairId() {
 		return pairId;
 	}
@@ -33,7 +33,7 @@ public class Port extends ObjectOnMap{
 		}else{
 			midX = redMidX;
 		}
-			
+
 	}
 	public int getMidY() {
 		return midY;
@@ -49,7 +49,15 @@ public class Port extends ObjectOnMap{
 		}else{
 			midY = redMidY;
 		}
-		
+
 	}
+
+	@Override
+	public String toString() {
+		return "Port [pairId=" + pairId + ", midX=" + midX + ", midY=" + midY
+				+ ", red=" + red + ", green=" + green + "]";
+	}
+
+
 }
 
