@@ -25,7 +25,7 @@ public class ImageUtils {
 	private IplImage resizedImage = null;
 	private IplImage imgHSV = null;
 	private IplImage imgThreshold = null;
-	
+
 	CvSeq contours;
 	private CanvasFrame canvasContours;
 
@@ -52,7 +52,7 @@ public class ImageUtils {
 		return resizedImage;
 	}
 
-	
+
 	/**
 	 * Return a binary image where the specified color is marked "white"
 	 * @param img
@@ -83,13 +83,12 @@ public class ImageUtils {
 	 * @return img
 	 */
 	public CvSeq findContours(IplImage imgThreshold, IplImage img){
-		
+
 		CvMemStorage  storage = null;
 		CvSeq contours = null;
 
 		storage = CvMemStorage.create();
 		contours = new CvContour(null);
-
 
 		int noOfContors = opencv_imgproc.cvFindContours(imgThreshold, storage, contours,
 				Loader.sizeof(CvContour.class), opencv_imgproc.CV_RETR_CCOMP,
@@ -97,80 +96,11 @@ public class ImageUtils {
 
 		CvSeq ptr = new CvSeq();
 		ptr = contours;
-		
+
 		opencv_core.cvReleaseImage(imgThreshold);
-		
-		
-		//Used in the fillGrid function
-//		this.contours = new CvSeq();
-//		this.contours = contours;
-		
-	//TODO ptr.first(); Maybe return this, to use in fillGrid
 
-//		int count =1;
-//		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0,0), p2 = new opencv_core.CvPoint(0,0);
-//		
-
-//
-//		try{
-//			for (ptr = contours; ptr != null; ptr = ptr.h_next()) {
-//
-//			opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
-//			opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(ptr, 0);
-//			
-//
-//				p1.x(sq.x());
-//				p2.x(sq.x()+sq.width());
-//				p1.y(sq.y());
-//				p2.y(sq.y()+sq.height());
-//				cvRectangle(img, p1,p2, CV_RGB(255, 0, 0), 2, 8, 0);
-//				cvDrawContours(img, ptr, color, CV_RGB(0,0,0), -1, CV_FILLED, 8, cvPoint(0,0));
-//				
-//
-//			}
-//			opencv_core.cvClearMemStorage(contours.storage());
-//		}catch(Exception E){
-//			System.out.println("No contours found");
-//		}
-//
-//		
-//		canvasContours.showImage(img);
-		
 		return ptr;
 
-
 	}
-	
-	
-	
-//	public Grid fillGrid(Grid grid, int color){
-//		int x = 0;
-//	
-//		try{
-//		//Iterate over all contours
-//		for (; contours != null; contours = contours.h_next()) {
-//			opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(contours, 0);
-//			//Fill in grid
-//			for (int rows = 0; rows < sq.height();) {
-//				//TODO Check if there should be <= instead of <
-//				grid.setGridPosition(sq.x()+x, sq.y()+rows, color);		
-//				x++;
-//				if(x == sq.width()){
-//					rows++;
-//					x = 0;
-//				}
-//				
-//			}
-//			
-//		}
-//		}catch(Exception e){
-//			System.out.println("No contour");
-//		}
-//		return grid;
-//	}
-	
-	
-
-	
 
 }
