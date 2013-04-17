@@ -64,9 +64,6 @@ public class Application {
 		//opencv_core.cvReleaseImage(contoursFrame);
 
 
-		//TODO SMALL MEMORYLEAK! Caused after canvasframes being made from here. (threshold methods)
-
-
 	}
 
 	public void thresholdRed(){
