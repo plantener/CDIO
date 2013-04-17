@@ -34,6 +34,9 @@ public class Application {
 	private CvSeq greenObjects;
 	private ObjectOnMap[] objectList;
 	Box box = new Box();
+	private CvSeq yellowObjects;
+	private CvSeq blueObjects;
+	private CvSeq purpleObjects;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -63,25 +66,22 @@ public class Application {
 
 	public void frameProcessing() {
 
-		// grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
-		thresholdGreen();
-		thresholdRed();
+		//		thresholdGreen();
+		//		thresholdRed();
+		//thresholdYellow();
+		thresholdBlue();
+		//thresholdPurple();
 
 		canvasContours.showImage(resizedFrame);
 
-		// Prints the objectList
-		for (int i = 0; i < objectList.length; i++) {
-			if (i<=11) {
-				System.out.println(objectList[i].toString());
-			}
-		}
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
@@ -187,5 +187,129 @@ public class Application {
 			System.err.println("No green contours found");
 		}
 
+	}
+
+	public void thresholdYellow(){
+		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
+				0, 0);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.YELLOW_LOWER,
+				Threshold.YELLOW_UPPER);
+		yellowObjects = iu.findContours(thresholdedFrame, resizedFrame);
+
+		try {
+			for (int i = 0; yellowObjects != null && i < 6; yellowObjects = yellowObjects
+					.h_next()) {
+				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
+						yellowObjects, 0);
+				if (sq.width() < 6 || sq.height() < 6) {
+					continue;
+				}
+				
+
+				// Used for debugging
+				System.out.println("Y er: " + sq.y());
+				System.out.println("X er: " + sq.x());
+				System.out.println("Højde er: " + sq.height());
+				System.out.println("Bredde er: " + sq.width());
+				System.out.println("\n");
+
+				// Below used for debugging
+				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
+				p1.x(sq.x());
+				p2.x(sq.x() + sq.width());
+				p1.y(sq.y());
+				p2.y(sq.y() + sq.height());
+				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
+				cvDrawContours(resizedFrame, yellowObjects, color,
+						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
+
+			}
+
+		} catch (Exception e) {
+			System.err.println("No yellow contours found");
+		}
+	}
+	
+	public void thresholdBlue(){
+		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
+				0, 0);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.BLUE_LOWER,
+				Threshold.BLUE_UPPER);
+		blueObjects = iu.findContours(thresholdedFrame, resizedFrame);
+
+		try {
+			for (int i = 0; blueObjects != null && i < 6; blueObjects = blueObjects
+					.h_next()) {
+				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
+						blueObjects, 0);
+				if (sq.width() < 6 || sq.height() < 6) {
+					continue;
+				}
+				
+
+				// Used for debugging
+				System.out.println("Y er: " + sq.y());
+				System.out.println("X er: " + sq.x());
+				System.out.println("Højde er: " + sq.height());
+				System.out.println("Bredde er: " + sq.width());
+				System.out.println("\n");
+
+				// Below used for debugging
+				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
+				p1.x(sq.x());
+				p2.x(sq.x() + sq.width());
+				p1.y(sq.y());
+				p2.y(sq.y() + sq.height());
+				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
+				cvDrawContours(resizedFrame, blueObjects, color,
+						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
+
+			}
+
+		} catch (Exception e) {
+			System.err.println("No blue contours found");
+		}
+	}
+	
+	public void thresholdPurple(){
+		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
+				0, 0);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.PURPLE_LOWER,
+				Threshold.PURPLE_UPPER);
+		purpleObjects = iu.findContours(thresholdedFrame, resizedFrame);
+
+		try {
+			for (int i = 0; purpleObjects != null && i < 6; purpleObjects = purpleObjects
+					.h_next()) {
+				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
+						purpleObjects, 0);
+				if (sq.width() < 6 || sq.height() < 6) {
+					continue;
+				}
+				
+
+				// Used for debugging
+				System.out.println("Y er: " + sq.y());
+				System.out.println("X er: " + sq.x());
+				System.out.println("Højde er: " + sq.height());
+				System.out.println("Bredde er: " + sq.width());
+				System.out.println("\n");
+
+				// Below used for debugging
+				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
+				p1.x(sq.x());
+				p2.x(sq.x() + sq.width());
+				p1.y(sq.y());
+				p2.y(sq.y() + sq.height());
+				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
+				cvDrawContours(resizedFrame, purpleObjects, color,
+						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
+
+			}
+
+		} catch (Exception e) {
+			System.err.println("No purple contours found");
+		}
+		
 	}
 }

@@ -7,7 +7,7 @@ public class Main {
 		int i = 0;
 		while(i < 1){
 			app.frameProcessing();
-			i++;
+			//i++;
 		}
 	}
 }

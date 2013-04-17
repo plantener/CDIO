@@ -4,6 +4,7 @@ import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
+import com.googlecode.javacv.cpp.opencv_imgproc;
 
 public class CaptureImage {
 	private final OpenCVFrameGrabber grabber;
@@ -30,6 +31,7 @@ public class CaptureImage {
 		//A grabbed image from Logitech webcam is in following resolution: 1600x1200px
 			
 			img = grabber.grab();
+			//opencv_highgui.cvSaveImage("distancecolors.jpg", img);
 			
 			
 		} catch (Exception e) {
