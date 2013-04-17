@@ -13,7 +13,7 @@ public class CaptureImage {
 	
 	public CaptureImage(){
 		// 0-default camera, 1 - next...so on
-				grabber = new OpenCVFrameGrabber(1);
+				grabber = new OpenCVFrameGrabber(0);
 				try {
 					grabber.start();
 				} catch (Exception e) {
