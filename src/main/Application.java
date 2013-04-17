@@ -40,7 +40,6 @@ public class Application {
 		iu = new ImageUtils();
 		canvasContours = new CanvasFrame("contours");
 		initializeObjectList();
-
 	}
 
 	private void initializeObjectList() {
@@ -63,31 +62,36 @@ public class Application {
 
 	public void frameProcessing() {
 
-		// grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
 		thresholdGreen();
 		thresholdRed();
+		findPort();
 
 		canvasContours.showImage(resizedFrame);
 
 		// Prints the objectList
 		for (int i = 0; i < objectList.length; i++) {
-			if (i<=11) {
+			if (i <= 11) {
 				System.out.println(objectList[i].toString());
 			}
+		}
+		
+		//prints all ports
+		for (int i = 14; i < objectList.length; i++) {
+			System.out.println(objectList[i].toString());
 		}
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
 
-		//opencv_core.cvReleaseImage(contoursFrame);
-
+		// opencv_core.cvReleaseImage(contoursFrame);
 
 	}
 
@@ -148,7 +152,7 @@ public class Application {
 				Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
 		greenObjects = iu.findContours(thresholdedFrame, resizedFrame);
 		try {
-			for (int i = 6; greenObjects != null && i <= 11; greenObjects = greenObjects
+			for (int i = 6; greenObjects != null && i < 12; greenObjects = greenObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						greenObjects, 0);
@@ -187,5 +191,38 @@ public class Application {
 			System.err.println("No green contours found");
 		}
 
+	}
+
+	public void findPort() {
+		
+		for (int i = 0; i < 6; i++) {
+			int redMidX = 0;
+			int redMidY = 0;
+			int tempJ = 0;
+			double distance = 200;
+			if (objectList[i].getClass().isInstance(box)) {
+				redMidX = ((Box) objectList[i]).getMidX();
+				redMidY = ((Box) objectList[i]).getMidY();
+				for (int j = 6; j < 12; j++) {
+					int greenMidX = 0;
+					int greenMidY = 0;
+					if (objectList[j].getClass().isInstance(box)) {
+						greenMidX = ((Box) objectList[j]).getMidX();
+						greenMidY = ((Box) objectList[j]).getMidY();
+						int xDifference = Math.abs(redMidX - greenMidX);
+						int yDifference = Math.abs(redMidY - greenMidY);
+						//pythagoras
+						double portDistance = Math.sqrt(Math.pow(xDifference, 2)+Math.pow(yDifference, 2));
+						System.out.println("Port distance: " + portDistance);
+						if(portDistance < distance && portDistance > 35){
+							distance = portDistance;
+							tempJ = j;
+						}
+					}
+				}
+				objectList[i+14] = new Port(((Box) objectList[i]), ((Box) objectList[tempJ]));
+				((Port) objectList[i+14]).setPairId(i+1);
+			}
+		}
 	}
 }
