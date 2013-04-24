@@ -32,7 +32,7 @@ public class Application {
 	private IplImage contoursFrame;
 	private CvSeq redObjects;
 	private CvSeq greenObjects;
-	private ObjectOnMap[] objectList;
+	public ObjectOnMap[] objectList;
 	Box box = new Box();
 	private CvSeq yellowObjects;
 	private CvSeq blueObjects;
@@ -66,19 +66,19 @@ public class Application {
 	public void frameProcessing() {
 
 
-		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		// grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 
 		// below call used for testing purposes
-		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
-		//		thresholdGreen();
-		//		thresholdRed();
+				thresholdGreen();
+				thresholdRed();
 		//thresholdYellow();
-		thresholdBlue();
+		//thresholdBlue();
 		//thresholdPurple();
 
 		findPort();
