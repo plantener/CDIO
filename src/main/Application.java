@@ -75,13 +75,14 @@ public class Application {
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
-				thresholdGreen();
-				thresholdRed();
+		thresholdGreen();
+		thresholdRed();
 		//thresholdYellow();
 		//thresholdBlue();
 		//thresholdPurple();
 
 		findPort();
+		iu.drawLine(resizedFrame);
 
 		canvasContours.showImage(resizedFrame);
 
@@ -91,7 +92,7 @@ public class Application {
 				System.out.println(objectList[i].toString());
 			}
 		}
-		
+
 		//prints all ports
 		for (int i = 14; i < objectList.length; i++) {
 			System.out.println(objectList[i].toString());
@@ -217,7 +218,7 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				
+
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -242,7 +243,7 @@ public class Application {
 			System.err.println("No yellow contours found");
 		}
 	}
-	
+
 	public void thresholdBlue(){
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
@@ -258,7 +259,7 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				
+
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -283,7 +284,7 @@ public class Application {
 			System.err.println("No blue contours found");
 		}
 	}
-	
+
 	public void thresholdPurple(){
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
@@ -299,7 +300,7 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				
+
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -324,9 +325,9 @@ public class Application {
 			System.err.println("No purple contours found");
 		}
 	}
-		
+
 	public void findPort() {
-		
+
 		for (int i = 0; i < 6; i++) {
 			int redMidX = 0;
 			int redMidY = 0;

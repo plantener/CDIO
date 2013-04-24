@@ -16,6 +16,7 @@ import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvContour;
+import com.googlecode.javacv.cpp.opencv_core.CvLineIterator;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
@@ -27,12 +28,13 @@ public class ImageUtils {
 	private IplImage imgThreshold = null;
 
 	CvSeq contours;
-	private CanvasFrame canvasContours;
+
+	private CanvasFrame canvasAlgorithm;
 
 
 	public ImageUtils(){
-		canvasResized = new CanvasFrame("Resized");
-		canvasContours = new CanvasFrame("contours");
+		canvasAlgorithm = new CanvasFrame("algorithm");
+		canvasResized = new CanvasFrame("resized");
 	}
 
 	/**
@@ -101,6 +103,19 @@ public class ImageUtils {
 
 		return ptr;
 
+	}
+	
+	public void drawLine(IplImage resized){
+		opencv_core.CvPoint p1 = new opencv_core.CvPoint(20, 20);
+		opencv_core.CvPoint p2 = new opencv_core.CvPoint(100, 100);
+		opencv_core.CvScalar color = opencv_core.CvScalar.YELLOW;
+			
+		opencv_core.cvLine(resized, p1, p2, color, 2, opencv_core.CV_AA, 0);
+		
+		
+		
+		canvasAlgorithm.showImage(resized);
+//		opencv_core.cvReleaseImage(resized);
 	}
 
 }
