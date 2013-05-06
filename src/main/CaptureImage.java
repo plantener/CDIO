@@ -3,8 +3,7 @@ package main;
 import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
-import com.googlecode.javacv.cpp.opencv_highgui;
-import com.googlecode.javacv.cpp.opencv_imgproc;
+
 
 public class CaptureImage {
 	private final OpenCVFrameGrabber grabber;
@@ -13,7 +12,7 @@ public class CaptureImage {
 	
 	public CaptureImage(){
 		// 0-default camera, 1 - next...so on
-				grabber = new OpenCVFrameGrabber(1);
+				grabber = new OpenCVFrameGrabber(0);
 				try {
 					grabber.start();
 				} catch (Exception e) {

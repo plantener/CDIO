@@ -6,11 +6,6 @@ import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observer;
-
 import models.*;
 import utilities.ImageUtils;
 import utilities.Threshold;
@@ -19,7 +14,6 @@ import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
-import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 
 public class Application {
@@ -65,21 +59,20 @@ public class Application {
 
 	public void frameProcessing() {
 
-
-		// grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
-
+		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		// grabbedFrame = (IplImage)
+		// opencv_highgui.cvLoadImage("nolightmap.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
 		thresholdGreen();
 		thresholdRed();
-		//thresholdYellow();
-		//thresholdBlue();
-		//thresholdPurple();
+		// thresholdYellow();
+		// thresholdBlue();
+		// thresholdPurple();
 
 		findPort();
 		iu.drawLine(resizedFrame);
@@ -93,7 +86,7 @@ public class Application {
 			}
 		}
 
-		//prints all ports
+		// prints all ports
 		for (int i = 14; i < objectList.length; i++) {
 			System.out.println(objectList[i].toString());
 		}
@@ -203,11 +196,11 @@ public class Application {
 
 	}
 
-	public void thresholdYellow(){
+	public void thresholdYellow() {
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
-		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.YELLOW_LOWER,
-				Threshold.YELLOW_UPPER);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame,
+				Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER);
 		yellowObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
@@ -218,7 +211,6 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -244,11 +236,11 @@ public class Application {
 		}
 	}
 
-	public void thresholdBlue(){
+	public void thresholdBlue() {
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
-		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.BLUE_LOWER,
-				Threshold.BLUE_UPPER);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame,
+				Threshold.BLUE_LOWER, Threshold.BLUE_UPPER);
 		blueObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
@@ -259,7 +251,6 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -285,11 +276,11 @@ public class Application {
 		}
 	}
 
-	public void thresholdPurple(){
+	public void thresholdPurple() {
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
-		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.PURPLE_LOWER,
-				Threshold.PURPLE_UPPER);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame,
+				Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER);
 		purpleObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
@@ -300,7 +291,6 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -344,17 +334,20 @@ public class Application {
 						greenMidY = ((Box) objectList[j]).getMidY();
 						int xDifference = Math.abs(redMidX - greenMidX);
 						int yDifference = Math.abs(redMidY - greenMidY);
-						//pythagoras
-						double portDistance = Math.sqrt(Math.pow(xDifference, 2)+Math.pow(yDifference, 2));
+						// pythagoras
+						double portDistance = Math
+								.sqrt(Math.pow(xDifference, 2)
+										+ Math.pow(yDifference, 2));
 						System.out.println("Port distance: " + portDistance);
-						if(portDistance < distance && portDistance > 35){
+						if (portDistance < distance && portDistance > 35) {
 							distance = portDistance;
 							tempJ = j;
 						}
 					}
 				}
-				objectList[i+14] = new Port(((Box) objectList[i]), ((Box) objectList[tempJ]));
-				((Port) objectList[i+14]).setPairId(i+1);
+				objectList[i + 14] = new Port(((Box) objectList[i]),
+						((Box) objectList[tempJ]));
+				((Port) objectList[i + 14]).setPairId(i + 1);
 			}
 		}
 	}

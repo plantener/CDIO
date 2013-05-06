@@ -1,22 +1,11 @@
 package utilities;
 
-import static com.googlecode.javacv.cpp.opencv_core.CV_FILLED;
-import static com.googlecode.javacv.cpp.opencv_core.CV_RGB;
-import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
-import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
-import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
-
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
-import models.*;
 
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvContour;
-import com.googlecode.javacv.cpp.opencv_core.CvLineIterator;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;

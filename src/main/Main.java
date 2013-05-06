@@ -5,6 +5,8 @@ import models.ObjectOnMap;
 import routeCalculation.Track;
 
 public class Main {
+	
+	//TODO OPRYDNING AF KODE! MANGE UNUSED IMPORTS!
 
 	private static ObjectOnMap[] objectList;
 	private static Cord[] liste = new Cord[6];
