@@ -2,6 +2,8 @@ package objectHandling;
 
 import java.util.ArrayList;
 
+import models.BreakPoint;
+
 import Objects.Block;
 import Objects.Cord;
 
@@ -17,7 +19,7 @@ public class DeadSpaceCalculation {
 		return blocks.remove(b);
 	}
 	
-	public static Block collisionDetection(Cord p){
+	public static Block collisionDetection(BreakPoint p){
 
 		for(Block b : blocks){
 			for(int x = b.getX(); x <= b.getX()+b.getL(); x++){

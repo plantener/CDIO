@@ -3,57 +3,58 @@ package routeCalculation;
 import java.util.ArrayList;
 
 import Objects.Block;
-import Objects.Cord;
+import models.BreakPoint;
+import models.Port;
 
 public class CalculateRoute {
 	
-	private ArrayList<Cord> route = new ArrayList<Cord>();
+	private ArrayList<BreakPoint> route = new ArrayList<BreakPoint>();
 	
-	private ArrayList<Cord> breakPoints = new ArrayList<Cord>(); 
+	private ArrayList<BreakPoint> breakPoints = new ArrayList<BreakPoint>(); 
 	
 	private float slope;
 	
 	private int offset = 5;
 	
-	private Cord end;
-	private Cord nextStart;
-	private Cord nextEnd;
+	private BreakPoint end;
+	private BreakPoint nextStart;
+	private BreakPoint nextEnd;
 	
-	public CalculateRoute(Cord start, Cord end){
-		this.end = end;
-		this.nextStart = start;
-		this.nextEnd = end;
-		breakPoints.add(start);
-		breakPoints.add(end);
-		setSlope(start,end);
+	public CalculateRoute(Port start, Port end){
+		this.end = new BreakPoint(end.getMidX(), end.getMidY());
+		this.nextStart = new BreakPoint(start.getMidX(), start.getMidY());
+		this.nextEnd = this.end;
+		breakPoints.add(this.nextStart);
+		breakPoints.add(this.end);
+		setSlope(this.nextStart,this.end);
 	}
 	
-	public void addMid(Block b, Cord c){
+	public void addMid(Block b, BreakPoint c){
 		if(b.getX() == c.getX()){
-			breakPoints.add(breakPoints.indexOf(end), new Cord(b.getX()-offset, b.getY()+offset));
+			breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset, b.getY()+offset));
 		}else if(b.getY() == c.getY()){
-			breakPoints.add(breakPoints.indexOf(end), new Cord(b.getX()+b.getL()+offset, b.getY()+offset));
+			breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getL()+offset, b.getY()+offset));
 		}else if(b.getY()-b.getH() == c.getY()){
-			breakPoints.add(breakPoints.indexOf(end), new Cord(b.getX()+offset, b.getY()-b.getH()-offset));
+			breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+offset, b.getY()-b.getH()-offset));
 		}else if(b.getX()+b.getL() == c.getX()){
-			breakPoints.add(breakPoints.indexOf(end), new Cord(b.getX()+b.getL()+offset, b.getY()-b.getH()-offset));
+			breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getL()+offset, b.getY()-b.getH()-offset));
 		}
 	}
 	
-	public void setSlope(Cord start, Cord end){
+	public void setSlope(BreakPoint start, BreakPoint end){
 		this.slope = (float) (end.getY()-start.getY())/(end.getX()-start.getX());
 	}
 	
-	public Cord calcPosition(int count, int check){
+	public BreakPoint calcPosition(int count, int check){
 		if(check == 1){
-			return new Cord(Math.round((count-nextEnd.getY())/slope+nextEnd.getX()), count);
+			return new BreakPoint(Math.round((count-nextEnd.getY())/slope+nextEnd.getX()), count);
 		}else if (check == 0){
-			return new Cord(count, Math.round(slope*(count-nextEnd.getX())+nextEnd.getY()));
+			return new BreakPoint(count, Math.round(slope*(count-nextEnd.getX())+nextEnd.getY()));
 		}
 		return null;
 	}
 	
-	public ArrayList<Cord> routePositions(){
+	public ArrayList<BreakPoint> routePositions(){
 		nextStart = breakPoints.get(0);
 		nextEnd = breakPoints.get(1);
 		route.clear();
@@ -97,7 +98,7 @@ public class CalculateRoute {
 		return route;
 	}
 	
-	public ArrayList<Cord> getBreakPoints(){
+	public ArrayList<BreakPoint> getBreakPoints(){
 		return breakPoints;
 	}
 }

@@ -5,105 +5,66 @@ import java.util.ArrayList;
 import objectHandling.DeadSpaceCalculation;
 
 import Objects.Block;
-import Objects.Cord;
+import models.BreakPoint;
+import models.Port;
 
-public class Route implements Runnable {
+public class Route {
 
 	private CalculateRoute c;
 
-	private Cord start;
-	private Cord end;
+	private Port start;
+	private Port end;
 
-	private ArrayList<Cord> breaksPoints = new ArrayList<Cord>();
+	private ArrayList<BreakPoint> breaksPoints = new ArrayList<BreakPoint>();
+	private ArrayList<BreakPoint> oldBreaksPoints = new ArrayList<BreakPoint>();
 
-	private boolean update = true;
-
-	public Route(Cord start, Cord end) {
+	public Route(Port start, Port end) {
 		this.start = start;
 		this.end = end;
 
 		c = new CalculateRoute(start, end);
 	}
 
-	public Cord getStart() {
+	public Port getStart() {
 		return start;
 	}
 
-	public Cord getEnd() {
+	public Port getEnd() {
 		return end;
 	}
 
-	public void update(Cord start, Cord end) {
+	public void update(Port start, Port end) {
+		oldBreaksPoints = breaksPoints;
 		this.end = end;
 		c = new CalculateRoute(start, end);
-		this.update = true;
 	}
 
-	public ArrayList<Cord> getBreakPoints() {
+	public ArrayList<BreakPoint> getBreakPoints() {
 		return breaksPoints;
 	}
 
-	@Override
-	public void run() {
-		ArrayList<Cord> p = c.routePositions();
-		boolean collitions = true;
-
-		while (true) {
-			if (update) {
-				update = false;
-				while (collitions) {
-					for (Cord cord : p) {
-						Block b;
-						if ((b = DeadSpaceCalculation.collisionDetection(cord)) != null) {
-							c.addMid(b, cord);
-							p = c.routePositions();
-							collitions = true;
-							break;
-						}
-						collitions = false;
-					}
-				}
-				if (!collitions){
-					breaksPoints = c.getBreakPoints();
-					System.out.println("Done!");
-				}
-			}
-		}
+	public ArrayList<BreakPoint> getOldBreakPoints() {
+		return oldBreaksPoints;
 	}
 
-	// public ArrayList<Cord> route() {
-	// ArrayList<Cord> p = c.routePositions();
-	// boolean collitions = true;
-	//
-	// while(collitions){
-	// for (Cord cord : p) {
-	// Block b;
-	// if ((b = DeadSpaceCalculation.collisionDetection(cord)) != null) {
-	// c.addMid(b, cord);
-	// p = c.routePositions();
-	// collitions = true;
-	// break;
-	// }
-	// collitions = false;
-	// }
-	// }
-	// for(int i = 0; i < 100; i++){
-	// for(int j = 0; j < 100; j++){
-	// int c = 0;
-	// for (Cord cord : p) {
-	// if(cord.getX() == j && cord.getY() == 99-i){
-	// c = 1;
-	// break;
-	// }
-	// }
-	// if(c == 0)
-	// System.out.print("0");
-	// if(c == 1)
-	// System.out.print("1");
-	// }
-	// System.out.println();
-	// }
-	//
-	// return p;
-	// }
+	public void find() {
+		ArrayList<BreakPoint> bP = c.routePositions();
+		boolean collitions = true;
+
+		while (collitions) {
+			for (BreakPoint breakPoint : bP) {
+				Block b;
+				if ((b = DeadSpaceCalculation.collisionDetection(breakPoint)) != null) {
+					c.addMid(b, breakPoint);
+					bP = c.routePositions();
+					collitions = true;
+					break;
+				}
+				collitions = false;
+			}
+		}
+		breaksPoints = c.getBreakPoints();
+		Track.addList(breaksPoints, oldBreaksPoints);
+		System.out.println("Done!");
+	}
 }

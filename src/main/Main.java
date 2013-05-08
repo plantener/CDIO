@@ -15,18 +15,20 @@ public class Main {
 		Application app = new Application();
 		int i = 0;
 		long startTime = System.nanoTime();
-		while(i < 1){			
+		app.frameProcessing();
+		objectList = app.objectList;
+		Track t = new Track(objectList);
+		int frames = 100;
+		new Thread(t).start();
+		while(i < frames){			
 			app.frameProcessing();
-			objectList = app.objectList;
-			for (int j = 14; j < objectList.length; j++) {
-				liste[j-14] = new Cord(objectList[j].getMidX(),objectList[j].getMidY());
-			}
-			Track t = new Track(liste);
-			new Thread(t).start();
+			objectList = app.objectList;	
 			i++;
+			System.out.println("BILLEDE NUMMER: " + i);
 		}
 		Long endTime = System.nanoTime();
-		double fps = (endTime-startTime)/100000000;
+		double fps = (double)frames/((endTime-startTime)/1000000000);
+		System.out.println("FPS: " + fps);
 		System.out.println("FPS: " + fps);
 	}
 	

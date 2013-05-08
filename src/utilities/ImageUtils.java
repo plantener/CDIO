@@ -1,6 +1,11 @@
 package utilities;
 
 
+import java.util.ArrayList;
+
+import models.BreakPoint;
+import routeCalculation.Track;
+
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
@@ -93,18 +98,26 @@ public class ImageUtils {
 		return ptr;
 
 	}
-	
+
 	public void drawLine(IplImage resized){
-		opencv_core.CvPoint p1 = new opencv_core.CvPoint(20, 20);
-		opencv_core.CvPoint p2 = new opencv_core.CvPoint(100, 100);
+		ArrayList<BreakPoint> breakpoints = Track.getCompleteList();
+		BreakPoint firstCoord = null;
+		BreakPoint secondCoord = null;
 		opencv_core.CvScalar color = opencv_core.CvScalar.YELLOW;
-			
-		opencv_core.cvLine(resized, p1, p2, color, 2, opencv_core.CV_AA, 0);
-		
-		
-		
+
+		for (int i = 0; i < breakpoints.size(); i++) {			
+			firstCoord = breakpoints.get(i);
+			if(i < breakpoints.size()-1){
+				secondCoord = breakpoints.get(i+1);
+			}else secondCoord = breakpoints.get(0);
+			opencv_core.CvPoint p1 = new opencv_core.CvPoint(firstCoord.getX(), firstCoord.getY());
+			opencv_core.CvPoint p2 = new opencv_core.CvPoint(secondCoord.getX(), firstCoord.getY());
+			opencv_core.cvLine(resized, p1, p2, color, 2, opencv_core.CV_AA, 0);
+
+		}
+
 		canvasAlgorithm.showImage(resized);
-//		opencv_core.cvReleaseImage(resized);
+		//		opencv_core.cvReleaseImage(resized);
 	}
 
 }
