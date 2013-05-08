@@ -6,6 +6,8 @@ import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
+import java.util.Arrays;
+
 import models.*;
 import utilities.ImageUtils;
 import utilities.Threshold;
@@ -31,6 +33,7 @@ public class Application {
 	private CvSeq yellowObjects;
 	private CvSeq blueObjects;
 	private CvSeq purpleObjects;
+	private ObjectOnMap[] sortedPorts;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -40,6 +43,7 @@ public class Application {
 	}
 
 	private void initializeObjectList() {
+		sortedPorts = new ObjectOnMap[6];
 		objectList = new ObjectOnMap[20];
 		objectList[0] = new Box(); // redbox
 		objectList[1] = new Box(); // redbox
@@ -62,7 +66,7 @@ public class Application {
 		//grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		 grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -349,5 +353,14 @@ public class Application {
 				((Port) objectList[i + 14]).setPairId(i + 1);
 			}
 		}
+
+		sortPorts();
+	}
+
+	public void sortPorts(){
+		for (int i = 14; i < objectList.length; i++) {
+			sortedPorts[i-13] = objectList[i];			
+		}
+		Arrays.sort(sortedPorts);
 	}
 }

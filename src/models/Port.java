@@ -1,6 +1,6 @@
 package models;
 
-public class Port extends ObjectOnMap{
+public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int pairId;
 	private int midX;
 	private int midY;
@@ -56,6 +56,13 @@ public class Port extends ObjectOnMap{
 	public String toString() {
 		return "Port [pairId=" + pairId + ", midX=" + midX + ", midY=" + midY
 				+ ", red=" + red + ", green=" + green + "]";
+	}
+
+
+	@Override
+	public int compareTo(Port comparePort) {
+		int compareMidX = ((Port) comparePort).getMidX();
+		return this.midX - compareMidX;
 	}
 
 
