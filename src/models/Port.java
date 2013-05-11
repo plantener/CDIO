@@ -62,7 +62,12 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	@Override
 	public int compareTo(Port comparePort) {
 		int compareMidX = ((Port) comparePort).getMidX();
+		
+		if(comparePort.getMidY() < 150){
 		return this.midX - compareMidX;
+		}else{
+			return compareMidX - this.midX;
+		}
 	}
 
 

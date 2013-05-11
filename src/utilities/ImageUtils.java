@@ -107,11 +107,12 @@ public class ImageUtils {
 
 		for (int i = 0; i < breakpoints.size(); i++) {			
 			firstCoord = breakpoints.get(i);
+			
 			if(i < breakpoints.size()-1){
 				secondCoord = breakpoints.get(i+1);
 			}else secondCoord = breakpoints.get(0);
 			opencv_core.CvPoint p1 = new opencv_core.CvPoint(firstCoord.getX(), firstCoord.getY());
-			opencv_core.CvPoint p2 = new opencv_core.CvPoint(secondCoord.getX(), firstCoord.getY());
+			opencv_core.CvPoint p2 = new opencv_core.CvPoint(secondCoord.getX(), secondCoord.getY());
 			opencv_core.cvLine(resized, p1, p2, color, 2, opencv_core.CV_AA, 0);
 
 		}

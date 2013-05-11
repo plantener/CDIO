@@ -6,7 +6,9 @@ import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import models.*;
 import utilities.ImageUtils;
@@ -34,6 +36,8 @@ public class Application {
 	private CvSeq blueObjects;
 	private CvSeq purpleObjects;
 	private ObjectOnMap[] sortedPorts;
+	private ArrayList<Port> sortedUpperPorts;
+	private ArrayList<Port> sortedLowerPorts;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -44,6 +48,8 @@ public class Application {
 
 	private void initializeObjectList() {
 		sortedPorts = new ObjectOnMap[6];
+		sortedUpperPorts = new ArrayList<Port>();
+		sortedLowerPorts = new ArrayList<Port>();
 		objectList = new ObjectOnMap[20];
 		objectList[0] = new Box(); // redbox
 		objectList[1] = new Box(); // redbox
@@ -356,11 +362,34 @@ public class Application {
 
 		sortPorts();
 	}
-
+	//Sorts the last 6 elements in objectList, in the order we want to visit the ports
 	public void sortPorts(){
+		int count = 0;
+		sortedUpperPorts.clear();
+		sortedLowerPorts.clear();
+
 		for (int i = 14; i < objectList.length; i++) {
-			sortedPorts[i-13] = objectList[i];			
+			
+			if (objectList[i].getMidY() < 150){
+				sortedUpperPorts.add((Port) objectList[i]);		
+			}else {
+				sortedLowerPorts.add((Port) objectList[i]);
+			}
 		}
-		Arrays.sort(sortedPorts);
+		Collections.sort(sortedUpperPorts);
+		Collections.sort(sortedLowerPorts);
+
+		for (int i = 0; i < sortedUpperPorts.size(); i++) {
+			objectList[i+14] = sortedUpperPorts.get(i);	
+			if(sortedUpperPorts.get(i).getPairId() == 1){
+			}
+		}
+
+		for (int i = 14 + sortedUpperPorts.size() ; count < sortedLowerPorts.size(); i++) {
+			objectList[i] = sortedLowerPorts.get(count);
+				count++;
+			}
+
+		}
 	}
-}
+
