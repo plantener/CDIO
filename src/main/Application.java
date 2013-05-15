@@ -381,8 +381,6 @@ public class Application {
 
 		for (int i = 0; i < sortedUpperPorts.size(); i++) {
 			objectList[i+14] = sortedUpperPorts.get(i);	
-			if(sortedUpperPorts.get(i).getPairId() == 1){
-			}
 		}
 
 		for (int i = 14 + sortedUpperPorts.size() ; count < sortedLowerPorts.size(); i++) {
