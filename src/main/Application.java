@@ -77,9 +77,9 @@ public class Application {
 
 		thresholdGreen();
 		thresholdRed();
-		// thresholdYellow();
-		// thresholdBlue();
-		// thresholdPurple();
+		//thresholdYellow();
+		thresholdBlue();
+		//thresholdPurple();
 
 		findPort();
 		iu.drawLine(resizedFrame);
