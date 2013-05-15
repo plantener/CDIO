@@ -322,19 +322,20 @@ public class Application {
 	}
 
 	public void findPort() {
-
+		sortedUpperPorts.clear();
+		sortedLowerPorts.clear();
 		for (int i = 0; i < 6; i++) {
 			int redMidX = 0;
 			int redMidY = 0;
 			int tempJ = 0;
 			double distance = 200;
-			if (objectList[i].getClass().isInstance(box)) {
+//			if (objectList[i].getClass().isInstance(box)) {
 				redMidX = ((Box) objectList[i]).getMidX();
 				redMidY = ((Box) objectList[i]).getMidY();
 				for (int j = 6; j < 12; j++) {
 					int greenMidX = 0;
 					int greenMidY = 0;
-					if (objectList[j].getClass().isInstance(box)) {
+//					if (objectList[j].getClass().isInstance(box)) {
 						greenMidX = ((Box) objectList[j]).getMidX();
 						greenMidY = ((Box) objectList[j]).getMidY();
 						int xDifference = Math.abs(redMidX - greenMidX);
@@ -343,17 +344,21 @@ public class Application {
 						double portDistance = Math
 								.sqrt(Math.pow(xDifference, 2)
 										+ Math.pow(yDifference, 2));
-						System.out.println("Port distance: " + portDistance);
 						if (portDistance < distance && portDistance > 35) {
 							distance = portDistance;
 							tempJ = j;
 						}
-					}
+//					}
 				}
-				objectList[i + 14] = new Port(((Box) objectList[i]),
+				Port tempPort= new Port(((Box) objectList[i]),
 						((Box) objectList[tempJ]));
-				((Port) objectList[i + 14]).setPairId(i + 1);
-			}
+				tempPort.setPairId(i +1);
+				if(tempPort.getMidY() < 150){
+					sortedUpperPorts.add(tempPort);		
+				}else {
+					sortedLowerPorts.add(tempPort);
+				}
+//			}
 		}
 
 		sortPorts();
@@ -361,17 +366,7 @@ public class Application {
 	//Sorts the last 6 elements in objectList, in the order we want to visit the ports
 	public void sortPorts(){
 		int count = 0;
-		sortedUpperPorts.clear();
-		sortedLowerPorts.clear();
 
-		for (int i = 14; i < objectList.length; i++) {
-			
-			if (objectList[i].getMidY() < 150){
-				sortedUpperPorts.add((Port) objectList[i]);		
-			}else {
-				sortedLowerPorts.add((Port) objectList[i]);
-			}
-		}
 		Collections.sort(sortedUpperPorts);
 		Collections.sort(sortedLowerPorts);
 
