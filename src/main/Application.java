@@ -23,7 +23,6 @@ import com.googlecode.javacv.cpp.opencv_imgproc;
 public class Application {
 	private CaptureImage ci;
 	private ImageUtils iu;
-	private CanvasFrame canvasContours;
 	private IplImage grabbedFrame;
 	private IplImage resizedFrame;
 	private IplImage thresholdedFrame;
@@ -42,7 +41,6 @@ public class Application {
 	public Application() {
 		ci = new CaptureImage();
 		iu = new ImageUtils();
-		canvasContours = new CanvasFrame("contours");
 		initializeObjectList();
 	}
 
@@ -69,10 +67,10 @@ public class Application {
 
 	public void frameProcessing() {
 
-		//grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -85,8 +83,6 @@ public class Application {
 
 		findPort();
 		iu.drawLine(resizedFrame);
-
-		canvasContours.showImage(resizedFrame);
 
 		// Prints the objectList
 		for (int i = 0; i < objectList.length; i++) {

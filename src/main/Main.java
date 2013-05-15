@@ -16,7 +16,7 @@ public class Main {
 		app.frameProcessing();
 		objectList = app.objectList;
 		Track t = new Track(objectList);
-		int frames = 100;
+		int frames = 1;
 		while(i < frames){			
 			app.frameProcessing();
 			objectList = app.objectList;	

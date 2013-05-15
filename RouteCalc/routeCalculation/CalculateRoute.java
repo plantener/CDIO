@@ -14,7 +14,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 5;
+	private int offset = 4;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
@@ -31,17 +31,21 @@ public class CalculateRoute {
 
 	public void addMid(Box b, BreakPoint c) {
 		
-		if (b.getColor() == 2) { // red
+		if (b.getColor() == 2) { // green
 			if (b.getX() == c.getX()) { // Left
+				System.out.println(0);
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 						b.getY()-offset));
 			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
+				System.out.println(1);
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
 						b.getY()+b.getHeight()+offset));
 			} else if (b.getY() == c.getY()) { // Top
+				System.out.println(2);
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
 						b.getY()-offset));
 			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
+				System.out.println(3);
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 						b.getY()+b.getHeight()));
 			}
@@ -115,7 +119,7 @@ public class CalculateRoute {
 				nextEnd = breakPoints.get(breakPoints.indexOf(nextStart) + 1);
 			}
 		}
-
+		System.out.println("Come out");
 		return route;
 	}
 

@@ -17,7 +17,7 @@ public class Track {
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int OFFSET = 8;
+	private final int OFFSET = 7;
 	
 	public Track(ObjectOnMap[] objects) {
 		this.objects = objects;
