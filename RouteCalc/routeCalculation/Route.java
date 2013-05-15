@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import objectHandling.DeadSpaceCalculation;
 
-import Objects.Block;
+import models.Box;
 import models.BreakPoint;
 import models.Port;
 
@@ -53,7 +53,7 @@ public class Route {
 
 		while (collitions) {
 			for (BreakPoint breakPoint : bP) {
-				Block b;
+				Box b;
 				if ((b = DeadSpaceCalculation.collisionDetection(breakPoint)) != null) {
 					c.addMid(b, breakPoint);
 					bP = c.routePositions();

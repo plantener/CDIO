@@ -1,6 +1,5 @@
 package main;
 
-import Objects.Cord;
 import models.ObjectOnMap;
 import routeCalculation.Track;
 
@@ -9,7 +8,6 @@ public class Main {
 	//TODO OPRYDNING AF KODE! MANGE UNUSED IMPORTS!
 
 	private static ObjectOnMap[] objectList;
-	private static Cord[] liste = new Cord[6];
 
 	public static void main(String[] args) {
 		Application app = new Application();
@@ -18,13 +16,13 @@ public class Main {
 		app.frameProcessing();
 		objectList = app.objectList;
 		Track t = new Track(objectList);
-		int frames = 10000;
-		new Thread(t).start();
+		int frames = 100;
 		while(i < frames){			
 			app.frameProcessing();
 			objectList = app.objectList;	
 			i++;
 			System.out.println("BILLEDE NUMMER: " + i);
+			t.updateObjects(objectList);
 		}
 		Long endTime = System.nanoTime();
 		double fps = (double)frames/((endTime-startTime)/1000000000);
