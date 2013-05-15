@@ -14,12 +14,14 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 4;
+	private int offset = 10;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
 	private BreakPoint nextEnd;
 
+	private BreakPoint pre;
+	
 	public CalculateRoute(Port start, Port end) {
 		this.end = new BreakPoint(end.getMidX(), end.getMidY());
 		this.nextStart = new BreakPoint(start.getMidX(), start.getMidY());
@@ -30,7 +32,11 @@ public class CalculateRoute {
 	}
 
 	public void addMid(Box b, BreakPoint c) {
-		
+		System.out.println("Crash: " + c.toString());
+		if(pre != null)
+			if(c.getX() == pre.getX() && c.getY() == pre.getY()){
+				Route.setCrash();
+			}
 		if (b.getColor() == 2) { // green
 			if (b.getX() == c.getX()) { // Left
 				System.out.println(0);
@@ -60,6 +66,7 @@ public class CalculateRoute {
 
 			}
 		}
+		pre = c;
 	}
 
 	public void setSlope(BreakPoint start, BreakPoint end) {

@@ -18,6 +18,8 @@ public class Route {
 	private ArrayList<BreakPoint> breaksPoints = new ArrayList<BreakPoint>();
 	private ArrayList<BreakPoint> oldBreaksPoints = new ArrayList<BreakPoint>();
 
+	private static boolean crash = false;
+	
 	public Route(Port start, Port end) {
 		this.start = start;
 		this.end = end;
@@ -63,9 +65,17 @@ public class Route {
 				}
 				collitions = false;
 			}
+			if(crash){
+				break;
+			}
 		}
+		crash = false;
 		breaksPoints = c.getBreakPoints();
 		Track.addList(breaksPoints, oldBreaksPoints);
 		System.out.println("Done!");
+	}
+	
+	public static void setCrash(){
+		crash = true;
 	}
 }

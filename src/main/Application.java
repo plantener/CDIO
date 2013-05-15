@@ -78,7 +78,7 @@ public class Application {
 		thresholdGreen();
 		thresholdRed();
 		//thresholdYellow();
-		thresholdBlue();
+		//thresholdBlue();
 		//thresholdPurple();
 
 		findPort();

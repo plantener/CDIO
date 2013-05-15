@@ -17,7 +17,7 @@ public class Track {
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int OFFSET = 7;
+	private final int OFFSET = 8;
 	
 	public Track(ObjectOnMap[] objects) {
 		this.objects = objects;
@@ -99,6 +99,9 @@ public class Track {
 					&& objects[i].getMidY() != newObjects[i].getMidY()) {
 				DeadSpaceCalculation.replaceBox((Box) newObjects[i],
 						(Box) objects[i]);
+				for (Route route : r) {
+					route.find();
+				}
 			}
 		}
 	}
