@@ -327,9 +327,17 @@ public class Application {
 	public void sortPorts() {
 		Collections.sort(sortedUpperPorts);
 		Collections.sort(sortedLowerPorts);
-		sortedPorts = sortedLowerPorts;
+		sortedPorts.clear();
+		int i = 0;
 		for (Port upperPort : sortedUpperPorts) {
+			i++;
+			upperPort.setPairId(i);
 			sortedPorts.add(upperPort);
+		}
+		for (Port lowerPort : sortedLowerPorts) {
+			i++;
+			lowerPort.setPairId(i);
+			sortedPorts.add(lowerPort);
 		}
 	}
 }
