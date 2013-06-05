@@ -56,7 +56,7 @@ public class Box extends ObjectOnMap{
 	@Override
 	public String toString() {
 		return "Box [x=" + x + ", y=" + y + ", height="
-				+ height + ", width=" + width + ", midX=" + midX + ", midY="
-				+ midY + ", color=" + color + "]";
+				+ height + ", width=" + width + ", midX=" + getMidX() + ", midY="
+				+ getMidY() + ", color=" + color + "]";
 	}
 }

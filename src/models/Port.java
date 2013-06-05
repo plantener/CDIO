@@ -56,7 +56,7 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	@Override
 	public String toString() {
 		return "Port [pairId=" + pairId + ", midX=" + midX + ", midY=" + midY
-				+ ", red=" + red + ", green=" + green + "]";
+				+ ", red=" + red + ", green=" + green + "]\n";
 	}
 
 
