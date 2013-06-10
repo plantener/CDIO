@@ -8,6 +8,7 @@ import java.util.Scanner;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 import lejos.util.Delay;
+import main.Application;
 import models.BreakPoint;
 import routeCalculation.Track;
 
@@ -22,6 +23,7 @@ public class Navigator {
 	
 	private PCCommunicator com;
 	private CommandGenerator gen;
+	private Application app;
 	
 	private Scanner scanner;
 	
@@ -43,12 +45,17 @@ public class Navigator {
 		connect();
 		gen.setRotateSpeed(200);
 //		gen.setAcceleration(500);
-//		while(true) {
-//		scanner.nextLine();
-//		com.testLatency();
+		while(true) {
+			scanner.nextLine();
+			com.testLatency();
 //			gen.doTravel(scanner.nextInt());
-//		}
+		}
 //		go();
+	}
+	
+	public Navigator(Application app) {
+		this();
+		this.app = app;
 	}
 	
 	public void calibrateLength() {
@@ -123,10 +130,6 @@ public class Navigator {
 			
 			gen.doTravel((int) (distance * MM_PR_PIXEL));
 		}
-		scanner.nextLine();
-		gen.sendStopAndClear();
-		scanner.nextLine();
-		gen.sendStopAndClear();
 		while(true) {
 			try {
 				Thread.sleep(500);
