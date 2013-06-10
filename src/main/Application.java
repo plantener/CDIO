@@ -71,9 +71,9 @@ public class Application {
 		thresholdRed();
 		System.out.println(greenBoxes.toString());
 		System.out.println(redBoxes.toString());
-		// thresholdBlue();
-		// thresholdPurple();
-		// thresholdYellow();
+		thresholdBlue();
+		thresholdPurple();
+		thresholdYellow();
 
 		findPort();
 		iu.drawLine(resizedFrame);
