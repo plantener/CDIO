@@ -20,6 +20,14 @@ public class CommandGenerator {
 		com.sendData(NavCommand.ROTATE.ordinal(), angle, 0, 0, false);
 	}
 	
+	public void setTravelSpeed(float speed) {
+		com.sendData(NavCommand.SET_TRAVELSPEED.ordinal(), speed, 0, 0, false);
+	}
+	
+	public void setRotateSpeed(float speed) {
+		com.sendData(NavCommand.SET_ROTATESPEED.ordinal(), speed, 0, 0, false);
+	}
+	
 	// 2 * radius * pi
 	public void forwardArcRight(float angle, float radius) {
 		
