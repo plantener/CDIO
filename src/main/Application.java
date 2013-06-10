@@ -34,7 +34,7 @@ public class Application {
 	private CvSeq yellowObjects;
 	private CvSeq blueObjects;
 	private CvSeq purpleObjects;
-	public ArrayList<Port> sortedPorts;
+	public ArrayList<ObjectOnMap> sortedPorts;
 	public ArrayList<Port> sortedUpperPorts;
 	public ArrayList<Port> sortedLowerPorts;
 	public ArrayList<Box> redBoxes;
@@ -47,7 +47,7 @@ public class Application {
 	}
 
 	private void initializeObjectList() {
-		sortedPorts = new ArrayList<Port>();
+		sortedPorts = new ArrayList<ObjectOnMap>();
 		sortedUpperPorts = new ArrayList<Port>();
 		sortedLowerPorts = new ArrayList<Port>();
 		redBoxes = new ArrayList<Box>();
