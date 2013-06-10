@@ -57,6 +57,8 @@ public class Application {
 		redBoxes = new ArrayList<Box>();
 		greenBoxes = new ArrayList<Box>();
 		robotList = new Robot[2];
+		robotList[0] = new Robot();
+		robotList[1] = new Robot();
 	}
 
 	public void frameProcessing() {
@@ -64,7 +66,7 @@ public class Application {
 		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup.jpg");
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup5.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -209,6 +211,13 @@ public class Application {
 				}
 				i++;
 				
+				// Used for debugging
+				System.out.println("Y er: " + sq.y());
+				System.out.println("X er: " + sq.x());
+				System.out.println("Højde er: " + sq.height());
+				System.out.println("Bredde er: " + sq.width());
+				System.out.println("\n");
+				
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
@@ -247,6 +256,13 @@ public class Application {
 				robotList[0].setFrontWidth(sq.width());
 				robotList[0].setFrontHeight(sq.height());
 
+				// Used for debugging
+				System.out.println("Y er: " + sq.y());
+				System.out.println("X er: " + sq.x());
+				System.out.println("Højde er: " + sq.height());
+				System.out.println("Bredde er: " + sq.width());
+				System.out.println("\n");
+
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
@@ -256,14 +272,15 @@ public class Application {
 				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, blueObjects, color,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
-				break;
 
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("No blue contours found");
 		}
 	}
+
 
 	public void thresholdPurple() {
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
@@ -286,6 +303,13 @@ public class Application {
 				robotList[1].setFrontWidth(sq.width());
 				robotList[1].setFrontHeight(sq.height());
 
+				// Used for debugging
+				System.out.println("Y er: " + sq.y());
+				System.out.println("X er: " + sq.x());
+				System.out.println("Højde er: " + sq.height());
+				System.out.println("Bredde er: " + sq.width());
+				System.out.println("\n");
+				
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
@@ -295,7 +319,6 @@ public class Application {
 				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, purpleObjects, color,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
-				break;
 			}
 
 		} catch (Exception e) {
