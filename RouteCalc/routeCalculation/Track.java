@@ -72,6 +72,7 @@ public class Track {
 	}
 	
 	private void initBoxes(){
+		boxes.clear();
 		for (Box box : boxes) {
 			Box temp = box;
 			temp.setX(temp.getX() - OFFSET);
@@ -87,7 +88,10 @@ public class Track {
 			initRoute();
 		else
 			updateNewPort(ports);
-		updateBoxes(red, green);
+		if(boxes.size() != (red.size()+green.size())){
+			initBoxes();
+		}else
+			updateBoxes(red, green);
 	}
 
 	public void updateNewPort(ArrayList<ObjectOnMap> newObjects) {
