@@ -28,7 +28,6 @@ public class DeadSpaceCalculation {
 				if(p.getX() == x){
 					for(int y = b.getY(); y <= b.getY()+b.getHeight(); y++){
 						if(p.getY() == y){
-							System.out.println(321);
 							return b;
 						}
 					}

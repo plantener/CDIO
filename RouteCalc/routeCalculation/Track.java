@@ -11,18 +11,22 @@ import models.Box;
 
 public class Track {
 
-	private ObjectOnMap[] objects;
-
-	private Route[] r = new Route[6];
+	private ArrayList<ObjectOnMap> ports = new ArrayList<ObjectOnMap>();
+	private ArrayList<Box> boxes = new ArrayList<Box>();
+	
+	private ArrayList<Route> r = new ArrayList<Route>();
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int OFFSET = 8;
+	private final int OFFSET = 5;
 	
-	public Track(ObjectOnMap[] objects) {
-		this.objects = objects;
-
-		init();
+	public Track(ArrayList<ObjectOnMap> ports, ArrayList<Box> red, ArrayList<Box> green) {
+		this.ports = ports;
+		this.boxes.addAll(red);
+		this.boxes.addAll(green);
+		
+		initRoute();
+		initBoxes();
 		for (Route start : r) {
 			start.find();
 		}
@@ -31,8 +35,16 @@ public class Track {
 	public static void addList(ArrayList<BreakPoint> newBreak,
 			ArrayList<BreakPoint> oldBreak) {
 		int index;
+
+		newBreak.remove(newBreak.size()-1);
+		
 		if (!oldBreak.isEmpty()) {
+			for (BreakPoint breakPoint : complete) {
+				System.out.print(breakPoint + "" + (breakPoint == oldBreak.get(0)) + " ");
+			}
+			System.out.println();
 			index = complete.indexOf(oldBreak.get(0));
+			System.out.println(oldBreak.get(0) + " " + index);
 			complete.removeAll(oldBreak);
 			complete.addAll(index, newBreak);
 		} else {
@@ -44,16 +56,25 @@ public class Track {
 		return complete;
 	}
 
-	private void init() {
-		r[0] = new Route((Port) objects[14], (Port) objects[15]);
-		r[1] = new Route((Port) objects[15], (Port) objects[16]);
-		r[2] = new Route((Port) objects[16], (Port) objects[17]);
-		r[3] = new Route((Port) objects[17], (Port) objects[18]);
-		r[4] = new Route((Port) objects[18], (Port) objects[19]);
-		r[5] = new Route((Port) objects[19], (Port) objects[14]);
-
-		for (int i = 0; i < 12; i++) {
-			Box temp = (Box) objects[i];
+	private void initRoute() {
+		r.clear();
+		complete.clear();
+		int i = 0;
+		System.out.println(ports.size());
+		for (ObjectOnMap port : ports) {
+			if(port != ports.get(ports.size()-1)){
+				r.add(new Route((Port) port, (Port) ports.get(i+1)));
+			}else{
+				r.add(new Route((Port) port, (Port) ports.get(0)));
+			}
+			i++;
+		}
+	}
+	
+	private void initBoxes(){
+		boxes.clear();
+		for (Box box : boxes) {
+			Box temp = box;
 			temp.setX(temp.getX() - OFFSET);
 			temp.setY(temp.getY() - OFFSET);
 			temp.setHeight(temp.getHeight() + (OFFSET*2));
@@ -62,47 +83,67 @@ public class Track {
 		}
 	}
 
-	public void updateObjects(ObjectOnMap[] objects) {
-		updateNewPort(objects);
-		updateBoxes(objects);
-		this.objects = objects;
+	public void updateObjects(ArrayList<ObjectOnMap> ports, ArrayList<Box> red, ArrayList<Box> green) {
+		if(ports.size() != this.r.size())
+			initRoute();
+		else
+			updateNewPort(ports);
+		if(boxes.size() != (red.size()+green.size())){
+			initBoxes();
+		}else
+			updateBoxes(red, green);
 	}
 
-	public void updateNewPort(ObjectOnMap[] newObjects) {
-		for (int i = 14; i < 20; i++) {
-			if (((Port) objects[i]).getMidX() != r[i - 14].getStart().getMidX()
-					|| ((Port) objects[i]).getMidY() != r[i - 14].getStart()
+	public void updateNewPort(ArrayList<ObjectOnMap> newObjects) {
+		int size = newObjects.size()-1;
+		for (int i = 0; i < newObjects.size(); i++) {
+			//System.out.println("123 "+i);
+			if (((Port) newObjects.get(i)).getMidX() != r.get(i).getStart().getMidX()
+					|| ((Port) newObjects.get(i)).getMidY() != r.get(i).getStart()
 							.getMidY()) {
-				if (i == 14) {
-					r[i - 14].update((Port) objects[i], (Port) objects[i + 1]);
-					r[5].update((Port) objects[19], (Port) objects[i]);
-					r[5].find();
-					r[i - 14].find();
+				System.out.println("updates" + i);
+				if (i == 0) {
+					r.get(i).update((Port) newObjects.get(i), (Port) newObjects.get(i + 1));
+					r.get(size).update((Port) newObjects.get(size), (Port) newObjects.get(i));
+					r.get(size).find();
+					r.get(i).find();
+					System.out.println("updates" + i);
 				} else {
-					r[i - 15].update((Port) objects[i - 1], (Port) objects[i]);
-					if (i == 19) {
-						r[i - 14].update((Port) objects[i], (Port) objects[14]);
+					r.get(i - 1).update((Port) newObjects.get(i - 1), (Port) newObjects.get(i));
+					if (i == size) {
+						r.get(i).update((Port) newObjects.get(i), (Port) newObjects.get(0));
 					} else {
-						r[i - 14].update((Port) objects[i],
-								(Port) objects[i + 1]);
+						r.get(i).update((Port) newObjects.get(i),
+								(Port) newObjects.get(i + 1));
 					}
-					r[i - 15].find();
-					r[i - 14].find();
+					System.out.println("updates" + i);
+					r.get(i - 1).find();
+					r.get(i).find();
 				}
 			}
 		}
+		ports = newObjects;
 	}
 
-	public void updateBoxes(ObjectOnMap[] newObjects) {
-		for (int i = 0; i < 12; i++) {
-			if (objects[i].getMidX() != newObjects[i].getMidX()
-					&& objects[i].getMidY() != newObjects[i].getMidY()) {
-				DeadSpaceCalculation.replaceBox((Box) newObjects[i],
-						(Box) objects[i]);
-				for (Route route : r) {
-					route.find();
-				}
+	public void updateBoxes(ArrayList<Box> red, ArrayList<Box> green) {
+		ArrayList<Box> newBoxes = new ArrayList<Box>();;
+		newBoxes.addAll(red);
+		newBoxes.addAll(green);
+		for (int i = 0; i < boxes.size(); i++) {
+			if (boxes.get(i).getMidX() != newBoxes.get(i).getMidX()
+					&& boxes.get(i).getMidY() != newBoxes.get(i).getMidY()) {
+				Box temp = newBoxes.get(i);
+				temp.setX(temp.getX() - OFFSET);
+				temp.setY(temp.getY() - OFFSET);
+				temp.setHeight(temp.getHeight() + (OFFSET*2));
+				temp.setWidth(temp.getWidth() + (OFFSET*2));
+				
+				DeadSpaceCalculation.replaceBox((Box) temp,
+						(Box) boxes.get(i));
 			}
 		}
-	}
+		boxes.clear();
+		boxes.addAll(red);
+		boxes.addAll(green);
+	} 
 }

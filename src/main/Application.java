@@ -15,6 +15,7 @@ import utilities.ImageUtils;
 import utilities.Threshold;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
@@ -34,9 +35,14 @@ public class Application {
 	private CvSeq yellowObjects;
 	private CvSeq blueObjects;
 	private CvSeq purpleObjects;
-	private ObjectOnMap[] sortedPorts;
-	private ArrayList<Port> sortedUpperPorts;
-	private ArrayList<Port> sortedLowerPorts;
+	public ArrayList<ObjectOnMap> sortedPorts;
+	public ArrayList<Port> sortedUpperPorts;
+	public ArrayList<Port> sortedLowerPorts;
+	public ArrayList<Box> redBoxes;
+	public ArrayList<Box> greenBoxes;
+	private Robot[] robotList;
+	public Robot robotA;
+	public Robot robotB;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -45,56 +51,40 @@ public class Application {
 	}
 
 	private void initializeObjectList() {
-		sortedPorts = new ObjectOnMap[6];
+		sortedPorts = new ArrayList<ObjectOnMap>();
 		sortedUpperPorts = new ArrayList<Port>();
 		sortedLowerPorts = new ArrayList<Port>();
-		objectList = new ObjectOnMap[20];
-		objectList[0] = new Box(); // redbox
-		objectList[1] = new Box(); // redbox
-		objectList[2] = new Box(); // redbox
-		objectList[3] = new Box(); // redbox
-		objectList[4] = new Box(); // redbox
-		objectList[5] = new Box(); // redbox
-		objectList[6] = new Box(); // greenbox
-		objectList[7] = new Box(); // greenbox
-		objectList[8] = new Box(); // greenbox
-		objectList[9] = new Box(); // greenbox
-		objectList[10] = new Box(); // greenbox
-		objectList[11] = new Box(); // greenbox
-		objectList[12] = new Robot(); // Robot1
-		objectList[13] = new Robot(); // Robot1
+		redBoxes = new ArrayList<Box>();
+		greenBoxes = new ArrayList<Box>();
+		robotList = new Robot[2];
+		robotList[0] = new Robot();
+		robotList[1] = new Robot();
 	}
 
 	public void frameProcessing() {
 
-		//grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("nolightmap.jpg");
-
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup5.jpg");
+		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
 		thresholdGreen();
 		thresholdRed();
-		//thresholdYellow();
-		//thresholdBlue();
-		//thresholdPurple();
+		System.out.println(greenBoxes.toString());
+		System.out.println(redBoxes.toString());
+
+		thresholdBlue();
+		thresholdPurple();
+		thresholdYellow();
+		robotA = robotList[0];
+		robotB = robotList[1];
+
 
 		findPort();
 		iu.drawLine(resizedFrame);
-
-		// Prints the objectList
-		for (int i = 0; i < objectList.length; i++) {
-			if (i <= 11) {
-				System.out.println(objectList[i].toString());
-			}
-		}
-
-		// prints all ports
-		for (int i = 14; i < objectList.length; i++) {
-			System.out.println(objectList[i].toString());
-		}
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
@@ -106,33 +96,25 @@ public class Application {
 	public void thresholdRed() {
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
-
+		redBoxes.clear();
 		thresholdedFrame = iu.thresholdFrame(resizedFrame, Threshold.RED_LOWER,
 				Threshold.RED_UPPER);
 		redObjects = iu.findContours(thresholdedFrame, resizedFrame);
 		try {
-			for (int i = 0; redObjects != null && i < 6; redObjects = redObjects
-					.h_next()) {
+			Box tempBox;
+			for (; redObjects != null; redObjects = redObjects.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						redObjects, 0);
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				if (objectList[i].getClass().isInstance(box)) {
-					((Box) objectList[i]).setX(sq.x());
-					((Box) objectList[i]).setY(sq.y());
-					((Box) objectList[i]).setHeight(sq.height());
-					((Box) objectList[i]).setWidth(sq.width());
-					((Box) objectList[i]).setColor(1); // 1 means red
-				}
-				i++;
-
-				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
+				tempBox= new Box();
+				tempBox.setX(sq.x());
+				tempBox.setY(sq.y());
+				tempBox.setHeight(sq.height());
+				tempBox.setWidth(sq.width());
+				tempBox.setColor(1); // 1 means red
+				redBoxes.add(tempBox);
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -153,6 +135,7 @@ public class Application {
 	}
 
 	public void thresholdGreen() {
+		greenBoxes.clear();
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
 
@@ -160,29 +143,20 @@ public class Application {
 				Threshold.GREEN_LOWER, Threshold.GREEN_UPPER);
 		greenObjects = iu.findContours(thresholdedFrame, resizedFrame);
 		try {
-			for (int i = 6; greenObjects != null && i < 12; greenObjects = greenObjects
-					.h_next()) {
+			Box tempBox;
+			for (; greenObjects != null; greenObjects = greenObjects.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						greenObjects, 0);
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				if (objectList[i].getClass().isInstance(box)) {
-					((Box) objectList[i]).setX(sq.x());
-					((Box) objectList[i]).setY(sq.y());
-					((Box) objectList[i]).setHeight(sq.height());
-					((Box) objectList[i]).setWidth(sq.width());
-					((Box) objectList[i]).setColor(2); // 2 means green
-
-				}
-				i++;
-
-				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
+				tempBox = new Box();
+				tempBox.setX(sq.x());
+				tempBox.setY(sq.y());
+				tempBox.setHeight(sq.height());
+				tempBox.setWidth(sq.width());
+				tempBox.setColor(2); // 2 means green
+				greenBoxes.add(tempBox);
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -202,6 +176,8 @@ public class Application {
 	}
 
 	public void thresholdYellow() {
+		int i = 0;
+		
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
 		thresholdedFrame = iu.thresholdFrame(resizedFrame,
@@ -209,7 +185,7 @@ public class Application {
 		yellowObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
-			for (int i = 0; yellowObjects != null && i < 6; yellowObjects = yellowObjects
+			for (i = 0; yellowObjects != null; yellowObjects = yellowObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						yellowObjects, 0);
@@ -217,13 +193,31 @@ public class Application {
 					continue;
 				}
 
+//Find closest robot front color to the current yellow point
+				double minDistance = 100;
+				for (int p = 0; p < robotList.length; p++)
+				{
+					double x = Math.abs(robotList[p].getMidX() - sq.x());
+					double y = Math.abs(robotList[p].getMidY() - sq.y());
+					double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+					if (distance < minDistance)
+					{
+						robotList[i].setBackX(sq.x());
+						robotList[i].setBackY(sq.y());
+						robotList[i].setBackWidth(sq.width());
+						robotList[i].setBackHeight(sq.height());
+						minDistance = distance;
+					}
+				}
+				i++;
+				
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
 				System.out.println("X er: " + sq.x());
 				System.out.println("Højde er: " + sq.height());
 				System.out.println("Bredde er: " + sq.width());
 				System.out.println("\n");
-
+				
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
@@ -249,13 +243,18 @@ public class Application {
 		blueObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
-			for (int i = 0; blueObjects != null && i < 6; blueObjects = blueObjects
+			for (; blueObjects != null; blueObjects = blueObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						blueObjects, 0);
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
+				robotList[0].setRobotId("a");
+				robotList[0].setFrontX(sq.x());
+				robotList[0].setFrontY(sq.y());
+				robotList[0].setFrontWidth(sq.width());
+				robotList[0].setFrontHeight(sq.height());
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -277,9 +276,11 @@ public class Application {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("No blue contours found");
 		}
 	}
+
 
 	public void thresholdPurple() {
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
@@ -289,13 +290,18 @@ public class Application {
 		purpleObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
-			for (int i = 0; purpleObjects != null && i < 6; purpleObjects = purpleObjects
+			for (; purpleObjects != null ; purpleObjects = purpleObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						purpleObjects, 0);
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
+				robotList[1].setRobotId("b");
+				robotList[1].setFrontX(sq.x());
+				robotList[1].setFrontY(sq.y());
+				robotList[1].setFrontWidth(sq.width());
+				robotList[1].setFrontHeight(sq.height());
 
 				// Used for debugging
 				System.out.println("Y er: " + sq.y());
@@ -303,7 +309,7 @@ public class Application {
 				System.out.println("Højde er: " + sq.height());
 				System.out.println("Bredde er: " + sq.width());
 				System.out.println("\n");
-
+				
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
@@ -313,7 +319,6 @@ public class Application {
 				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, purpleObjects, color,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
-
 			}
 
 		} catch (Exception e) {
@@ -324,61 +329,57 @@ public class Application {
 	public void findPort() {
 		sortedUpperPorts.clear();
 		sortedLowerPorts.clear();
-		for (int i = 0; i < 6; i++) {
+		Box tempGreenBox = new Box();
+		int i = 0;
+		for (Box redBox : redBoxes) {
+			i++;
 			int redMidX = 0;
 			int redMidY = 0;
-			int tempJ = 0;
 			double distance = 200;
-//			if (objectList[i].getClass().isInstance(box)) {
-				redMidX = ((Box) objectList[i]).getMidX();
-				redMidY = ((Box) objectList[i]).getMidY();
-				for (int j = 6; j < 12; j++) {
-					int greenMidX = 0;
-					int greenMidY = 0;
-//					if (objectList[j].getClass().isInstance(box)) {
-						greenMidX = ((Box) objectList[j]).getMidX();
-						greenMidY = ((Box) objectList[j]).getMidY();
-						int xDifference = Math.abs(redMidX - greenMidX);
-						int yDifference = Math.abs(redMidY - greenMidY);
-						// pythagoras
-						double portDistance = Math
-								.sqrt(Math.pow(xDifference, 2)
-										+ Math.pow(yDifference, 2));
-						if (portDistance < distance && portDistance > 35) {
-							distance = portDistance;
-							tempJ = j;
-						}
-//					}
+			redMidX = redBox.getMidX();
+			redMidY = redBox.getMidY();
+			for (Box greenBox : greenBoxes) {
+				int greenMidX = greenBox.getMidX();
+				int greenMidY = greenBox.getMidY();
+				int xDifference = Math.abs(redMidX - greenMidX);
+				int yDifference = Math.abs(redMidY - greenMidY);
+				//pythagoras
+				double portDistance = Math.sqrt(Math.pow(xDifference, 2)+ Math.pow(yDifference, 2));
+				if(portDistance < distance && portDistance > 35){
+					distance = portDistance;
+					tempGreenBox = greenBox;
 				}
-				Port tempPort= new Port(((Box) objectList[i]),
-						((Box) objectList[tempJ]));
-				tempPort.setPairId(i +1);
-				if(tempPort.getMidY() < 150){
-					sortedUpperPorts.add(tempPort);		
-				}else {
-					sortedLowerPorts.add(tempPort);
-				}
-//			}
+			}
+			Port tempPort = new Port(redBox,tempGreenBox);
+			tempPort.setPairId(i);
+			if (tempPort.getMidY() < 150) {
+				sortedUpperPorts.add(tempPort);
+			}else {
+				sortedLowerPorts.add(tempPort);
+			}
 		}
-
+		for (Port upperPort : sortedUpperPorts) {
+			upperPort.toString();
+		}
 		sortPorts();
 	}
-	//Sorts the last 6 elements in objectList, in the order we want to visit the ports
-	public void sortPorts(){
-		int count = 0;
 
+	// Sorts the last 6 elements in objectList, in the order we want to visit
+	// the ports
+	public void sortPorts() {
 		Collections.sort(sortedUpperPorts);
 		Collections.sort(sortedLowerPorts);
-
-		for (int i = 0; i < sortedUpperPorts.size(); i++) {
-			objectList[i+14] = sortedUpperPorts.get(i);	
+		sortedPorts.clear();
+		int i = 0;
+		for (Port upperPort : sortedUpperPorts) {
+			i++;
+			upperPort.setPairId(i);
+			sortedPorts.add(upperPort);
 		}
-
-		for (int i = 14 + sortedUpperPorts.size() ; count < sortedLowerPorts.size(); i++) {
-			objectList[i] = sortedLowerPorts.get(count);
-				count++;
-			}
-
+		for (Port lowerPort : sortedLowerPorts) {
+			i++;
+			lowerPort.setPairId(i);
+			sortedPorts.add(lowerPort);
 		}
 	}
-
+}

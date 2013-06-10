@@ -37,6 +37,7 @@ public class Route {
 
 	public void update(Port start, Port end) {
 		oldBreaksPoints = breaksPoints;
+		this.start = start;
 		this.end = end;
 		c = new CalculateRoute(start, end);
 	}
@@ -71,6 +72,7 @@ public class Route {
 		}
 		crash = false;
 		breaksPoints = c.getBreakPoints();
+//		breaksPoints.remove(breaksPoints.size()-1);
 		Track.addList(breaksPoints, oldBreaksPoints);
 		System.out.println("Done!");
 	}

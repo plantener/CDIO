@@ -5,7 +5,7 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int midX;
 	private int midY;
 	private Box red, green;
-	private final int OFFSET = 8;
+	private final int OFFSET = 5;
 
 	public Port(Box red, Box green){
 		this.red = red;
@@ -28,9 +28,9 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 		int redMidX = red.getMidX();
 		int greenMidX = green.getMidX();
 		if (redMidX > greenMidX){
-			midX = (redMidX + OFFSET  - greenMidX) / 2 + greenMidX;
+			midX = (redMidX - OFFSET  - greenMidX) / 2 + greenMidX;
 		}else if (greenMidX > redMidX){
-			midX = (greenMidX - redMidX - OFFSET) / 2 + redMidX;
+			midX = (greenMidX - redMidX + OFFSET) / 2 + redMidX;
 		}else{
 			midX = redMidX;
 		}
@@ -44,9 +44,9 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 		int redMidY = red.getMidY();
 		int greenMidY = green.getMidY();
 		if (redMidY > greenMidY){
-			midY = (redMidY + OFFSET - greenMidY) / 2 + greenMidY;
+			midY = (redMidY - OFFSET - greenMidY) / 2 + greenMidY;
 		}else if (greenMidY > redMidY){
-			midY = (greenMidY - redMidY - OFFSET) / 2 + redMidY;
+			midY = (greenMidY - redMidY + OFFSET) / 2 + redMidY;
 		}else{
 			midY = redMidY;
 		}
@@ -56,7 +56,7 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	@Override
 	public String toString() {
 		return "Port [pairId=" + pairId + ", midX=" + midX + ", midY=" + midY
-				+ ", red=" + red + ", green=" + green + "]";
+				+ ", red=" + red + ", green=" + green + "]\n";
 	}
 
 
