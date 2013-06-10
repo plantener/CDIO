@@ -6,8 +6,7 @@ public enum Threshold {
 	YELLOW_LOWER(2,135,140), YELLOW_UPPER(15,255,255),
 	BLUE_LOWER(95,120,100), BLUE_UPPER(115,255,255),
 	PURPLE_LOWER(150,100,100), PURPLE_UPPER(170,255,255);
-	
-	
+		
 	//Green should maybe be changed to lower: (45,160,70)
 	
 	

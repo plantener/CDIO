@@ -14,7 +14,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 0;
+	private int offset = 10;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
@@ -36,9 +36,10 @@ public class CalculateRoute {
 		System.out.println("Crash: " + c.toString());
 		if(pre != null)
 			if(c.getX() == pre.getX() && c.getY() == pre.getY()){
+				System.out.println("double: " + c.toString());
 				Route.setCrash();
 			}
-		if (b.getColor() == 1) { // red
+		if (b.getColor() == 2) { // red
 			if (b.getX() == c.getX()) { // Left
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 						b.getY()-offset));
