@@ -41,6 +41,8 @@ public class Application {
 	public ArrayList<Box> redBoxes;
 	public ArrayList<Box> greenBoxes;
 	private Robot[] robotList;
+	public Robot robotA;
+	public Robot robotB;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -71,9 +73,13 @@ public class Application {
 		thresholdRed();
 		System.out.println(greenBoxes.toString());
 		System.out.println(redBoxes.toString());
+
 		thresholdBlue();
 		thresholdPurple();
 		thresholdYellow();
+		robotA = robotList[0];
+		robotB = robotList[1];
+
 
 		findPort();
 		iu.drawLine(resizedFrame);
@@ -235,12 +241,11 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				//color 3 = blue
-				robotList[1].setFrontColor(3);
-				robotList[1].setFrontX(sq.x());
-				robotList[1].setY(sq.y());
-				robotList[1].setFrontWidth(sq.width());
-				robotList[1].setFrontHeight(sq.height());
+				robotList[0].setRobotId("a");
+				robotList[0].setFrontX(sq.x());
+				robotList[0].setFrontY(sq.y());
+				robotList[0].setFrontWidth(sq.width());
+				robotList[0].setFrontHeight(sq.height());
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -275,12 +280,11 @@ public class Application {
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-				//color 4 = purple
-				robotList[2].setFrontColor(4);
-				robotList[2].setFrontX(sq.x());
-				robotList[2].setY(sq.y());
-				robotList[2].setFrontWidth(sq.width());
-				robotList[2].setFrontHeight(sq.height());
+				robotList[1].setRobotId("b");
+				robotList[1].setFrontX(sq.x());
+				robotList[1].setFrontY(sq.y());
+				robotList[1].setFrontWidth(sq.width());
+				robotList[1].setFrontHeight(sq.height());
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;

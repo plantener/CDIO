@@ -15,7 +15,7 @@ public class Robot extends ObjectOnMap {
 	private int frontmidY;
 	private int backMidX;
 	private int backMidY;
-	private int frontColor;
+	private String robotId;
 	
 	public int getFrontX() {
 		return frontX;
@@ -23,10 +23,10 @@ public class Robot extends ObjectOnMap {
 	public void setFrontX(int x) {
 		this.frontX = x;
 	}
-	public int getY() {
+	public int getFrontY() {
 		return frontY;
 	}
-	public void setY(int y) {
+	public void setFrontY(int y) {
 		this.frontY = y;
 	}
 	public int getFrontHeight() {
@@ -60,13 +60,13 @@ public class Robot extends ObjectOnMap {
 		backMidY = (backHeight / 2) + backY;
 		return backMidY;
 	}
-
-	public int getFrontColor() {
-		return frontColor;
-	}
-	public void setFrontColor(int frontColor) {
-		this.frontColor = frontColor;
-	}
+public String getRobotId(){
+	return robotId;
+}
+public void setRobotId(String robotId){
+	this.robotId = robotId;
+}
+	
 	public int getBackWidth() {
 		return backWidth;
 	}
@@ -99,7 +99,7 @@ public class Robot extends ObjectOnMap {
 				+ ", frontWidth=" + frontWidth + ", backHeight=" + backHeight
 				+ ", backWidth=" + backWidth + ", frontMidX=" + frontMidX
 				+ ", frontmidY=" + frontmidY + ", backMidX=" + backMidX
-				+ ", backMidY=" + backMidY + ", frontColor=" + frontColor + "]";
+				+ ", backMidY=" + backMidY; 
 	}
 	
 }
