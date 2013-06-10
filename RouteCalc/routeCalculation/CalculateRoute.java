@@ -86,6 +86,7 @@ public class CalculateRoute {
 	}
 
 	public ArrayList<BreakPoint> routePositions() {
+		System.out.println(breakPoints.size());
 		nextStart = breakPoints.get(0);
 		nextEnd = breakPoints.get(1);
 		route.clear();

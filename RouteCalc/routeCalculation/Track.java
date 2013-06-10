@@ -21,14 +21,9 @@ public class Track {
 	private final int OFFSET = 8;
 	
 	public Track(ArrayList<ObjectOnMap> ports, ArrayList<Box> red, ArrayList<Box> green) {
-		
 		this.ports = ports;
 		this.boxes.addAll(red);
 		this.boxes.addAll(green);
-		
-		for (ObjectOnMap port : ports) {
-			System.out.println(port.toString());
-		}
 		
 		init();
 		for (Route start : r) {
@@ -40,6 +35,7 @@ public class Track {
 			ArrayList<BreakPoint> oldBreak) {
 		int index;
 		if (!oldBreak.isEmpty()) {
+			System.out.println(oldBreak.get(0));
 			index = complete.indexOf(oldBreak.get(0));
 			complete.removeAll(oldBreak);
 			complete.addAll(index, newBreak);
@@ -74,9 +70,6 @@ public class Track {
 	}
 
 	public void updateObjects(ArrayList<ObjectOnMap> ports, ArrayList<Box> red, ArrayList<Box> green) {
-		
-		System.out.println(this.ports.size() + " " + ports.size());
-		
 		updateNewPort(ports);
 		updateBoxes(red, green);
 	}
@@ -131,5 +124,5 @@ public class Track {
 		boxes.clear();
 		boxes.addAll(red);
 		boxes.addAll(green);
-	}
+	} 
 }

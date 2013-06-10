@@ -56,10 +56,10 @@ public class Application {
 
 	public void frameProcessing() {
 
-		// grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
