@@ -15,6 +15,7 @@ import utilities.ImageUtils;
 import utilities.Threshold;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
@@ -39,6 +40,7 @@ public class Application {
 	public ArrayList<Port> sortedLowerPorts;
 	public ArrayList<Box> redBoxes;
 	public ArrayList<Box> greenBoxes;
+	private Robot[] robotList;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -52,6 +54,7 @@ public class Application {
 		sortedLowerPorts = new ArrayList<Port>();
 		redBoxes = new ArrayList<Box>();
 		greenBoxes = new ArrayList<Box>();
+		robotList = new Robot[2];
 	}
 
 	public void frameProcessing() {
@@ -68,9 +71,9 @@ public class Application {
 		thresholdRed();
 		System.out.println(greenBoxes.toString());
 		System.out.println(redBoxes.toString());
-		// thresholdYellow();
 		// thresholdBlue();
 		// thresholdPurple();
+		// thresholdYellow();
 
 		findPort();
 		iu.drawLine(resizedFrame);
@@ -165,6 +168,8 @@ public class Application {
 	}
 
 	public void thresholdYellow() {
+		int i = 0;
+		
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
 		thresholdedFrame = iu.thresholdFrame(resizedFrame,
@@ -172,7 +177,7 @@ public class Application {
 		yellowObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
-			for (int i = 0; yellowObjects != null && i < 6; yellowObjects = yellowObjects
+			for (i = 0; yellowObjects != null; yellowObjects = yellowObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						yellowObjects, 0);
@@ -180,13 +185,24 @@ public class Application {
 					continue;
 				}
 
-				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
-
+//Find closest robot front color to the current yellow point
+				double minDistance = 100;
+				for (int p = 0; p < robotList.length; p++)
+				{
+					double x = Math.abs(robotList[p].getMidX() - sq.x());
+					double y = Math.abs(robotList[p].getMidY() - sq.y());
+					double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+					if (distance < minDistance)
+					{
+						robotList[i].setBackX(sq.x());
+						robotList[i].setBackY(sq.y());
+						robotList[i].setBackWidth(sq.width());
+						robotList[i].setBackHeight(sq.height());
+						minDistance = distance;
+					}
+				}
+				i++;
+				
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
@@ -212,20 +228,19 @@ public class Application {
 		blueObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
-			for (int i = 0; blueObjects != null && i < 6; blueObjects = blueObjects
+			for (; blueObjects != null; blueObjects = blueObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						blueObjects, 0);
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-
-				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
+				//color 3 = blue
+				robotList[1].setFrontColor(3);
+				robotList[1].setFrontX(sq.x());
+				robotList[1].setY(sq.y());
+				robotList[1].setFrontWidth(sq.width());
+				robotList[1].setFrontHeight(sq.height());
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -236,6 +251,7 @@ public class Application {
 				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, blueObjects, color,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
+				break;
 
 			}
 
@@ -252,20 +268,19 @@ public class Application {
 		purpleObjects = iu.findContours(thresholdedFrame, resizedFrame);
 
 		try {
-			for (int i = 0; purpleObjects != null && i < 6; purpleObjects = purpleObjects
+			for (; purpleObjects != null ; purpleObjects = purpleObjects
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						purpleObjects, 0);
 				if (sq.width() < 6 || sq.height() < 6) {
 					continue;
 				}
-
-				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
+				//color 4 = purple
+				robotList[2].setFrontColor(4);
+				robotList[2].setFrontX(sq.x());
+				robotList[2].setY(sq.y());
+				robotList[2].setFrontWidth(sq.width());
+				robotList[2].setFrontHeight(sq.height());
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -276,7 +291,7 @@ public class Application {
 				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, purpleObjects, color,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
-
+				break;
 			}
 
 		} catch (Exception e) {
