@@ -64,7 +64,7 @@ public class Application {
 		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup.jpg");
+		//grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup4.jpg");
 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);

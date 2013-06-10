@@ -25,12 +25,8 @@ public class Main {
 		redBoxes = app.redBoxes;
 		greenBoxes = app.greenBoxes;
 //		objectList = app.objectList;
-		for (ObjectOnMap port : ports) {
-			System.out.print("1: ");
-			System.out.println(port.toString());
-		}
 		Track t = new Track(ports, redBoxes, greenBoxes);
-		int frames = 100;
+		int frames = 1000;
 		while(i < frames){			
 			app.frameProcessing();
 			ports = app.sortedPorts;
