@@ -30,7 +30,7 @@ public class Main {
 			System.out.println(port.toString());
 		}
 		Track t = new Track(ports, redBoxes, greenBoxes);
-		int frames = 100;
+		int frames = 1000;
 		while(i < frames){			
 			app.frameProcessing();
 			ports = app.sortedPorts;

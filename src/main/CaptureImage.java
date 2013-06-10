@@ -31,7 +31,7 @@ public class CaptureImage {
 		//A grabbed image from Logitech webcam is in following resolution: 1600x1200px
 			
 			img = grabber.grab();
-			//opencv_highgui.cvSaveImage("correctSetup4.jpg", img);
+//			opencv_highgui.cvSaveImage("correctSetup5.jpg", img);
 			
 			
 		} catch (Exception e) {
