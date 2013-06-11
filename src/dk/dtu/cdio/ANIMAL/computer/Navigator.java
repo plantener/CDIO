@@ -1,37 +1,73 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
+import lejos.util.Delay;
+import main.Application;
 import models.BreakPoint;
 import routeCalculation.Track;
 
 public class Navigator {
 	
-	public static final int MM_PR_PIXEL = 1;
+	public static int MM_PR_PIXEL = 10;
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
 	
+	private NXTInfo info = (false) ? info_5a : info_5b;
+	
 	private PCCommunicator com;
 	private CommandGenerator gen;
+	private Application app;
 	
 	private Scanner scanner;
+	
+	private Queue<Command> queue;
 	
 	private ArrayList<Point> points;
 	
 	private double angle = 90;
 	
 	public Navigator() {
-		com = new PCCommunicator(info_5a);
-		gen = new CommandGenerator(com);
+		queue = new LinkedList<Command>();
+		com = new PCCommunicator(info, queue);
+		gen = new CommandGenerator(com, queue);
 		points = new ArrayList<Point>();
-//		scanner = new Scanner(System.in);
-//		generatePoints();
-//		scanner.nextLine();
+		scanner = new Scanner(System.in);
+		generatePoints();
+		printPoints();
+		scanner.nextLine();
+		connect();
+		gen.setRotateSpeed(200);
+//		gen.setAcceleration(500);
+		while(true) {
+			scanner.nextLine();
+			com.testLatency();
+//			gen.doTravel(scanner.nextInt());
+		}
 //		go();
+	}
+	
+	public Navigator(Application app) {
+		this();
+		this.app = app;
+	}
+	
+	public void calibrateLength() {
+		//get start position
+		gen.doTravel(500);
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//get end position
 	}
 	
 	private void generatePoints() {
@@ -63,14 +99,16 @@ public class Navigator {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		System.out.println("Starting navigation unit...");
-//		new Navigator();
-//	}
+	public static void main(String[] args) {
+		System.out.println("Starting navigation unit...");
+		new Navigator();
+	}
+	
+	public void connect() {
+		com.connect();
+	}
 	
 	public void go() {
-		com.connect();
-		printPoints();
 		
 		boolean running = true;
 		int elements = points.size();
@@ -94,7 +132,7 @@ public class Navigator {
 		}
 		while(true) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
