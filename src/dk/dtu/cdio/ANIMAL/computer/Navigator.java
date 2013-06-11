@@ -77,16 +77,18 @@ public class Navigator implements Runnable {
 	
 	public void calibrateLength() {
 		float travelDistance = 300;
+		double avgDistance = 0.0d;
 		//get start position
-		Waypoint start = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
-		gen.doTravel(travelDistance);
-		//get end position
-		Waypoint end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
-		double distance = Utilities.getDistance(start, end);
-		
-		System.out.format("Calibrated to %f%n", travelDistance / distance);
-		MM_PR_PIXEL = (float) (travelDistance / distance);
-		System.out.format("Convservative calibration: %f%n", MM_PR_PIXEL);
+		Waypoint start, end;
+		for (int i = 0; i < 6; i++) {
+			start = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
+			gen.doTravel((float) (travelDistance * Math.pow(-1, i)));
+			end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
+			double distance = Utilities.getDistance(start, end);
+			avgDistance = (distance + i * avgDistance) / (i + 1);
+		}
+		MM_PR_PIXEL = (float) (travelDistance / avgDistance);
+		System.out.format("Length calibration: %f%n", MM_PR_PIXEL);
 	}
 	
 //	public static void main(String[] args) {
