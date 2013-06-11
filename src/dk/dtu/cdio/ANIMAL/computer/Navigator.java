@@ -1,16 +1,11 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
-import lejos.util.Delay;
 import main.Application;
-import models.BreakPoint;
-import routeCalculation.Track;
+import models.Robot;
 
 public class Navigator {
 	
@@ -19,38 +14,36 @@ public class Navigator {
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
 	
-	private NXTInfo info = (false) ? info_5a : info_5b;
-	
 	private PCCommunicator com;
 	private CommandGenerator gen;
 	private Application app;
 	
 	private Scanner scanner;
+	private WaypointQueue waypoints;
 	
-	private Queue<Command> queue;
+	boolean a = true;
 	
-	private ArrayList<Point> points;
+	private NXTInfo info = (a) ? info_5a : info_5b;
+	private Robot robot = (a) ? app.robotA : app.robotB;
 	
-	private double angle = 90;
+//	private double angle = 90;
 	
 	public Navigator() {
-		queue = new LinkedList<Command>();
-		com = new PCCommunicator(info, queue);
-		gen = new CommandGenerator(com, queue);
-		points = new ArrayList<Point>();
+		com = new PCCommunicator(info);
+		gen = new CommandGenerator(com);
+		waypoints = new WaypointQueue();
 		scanner = new Scanner(System.in);
-		generatePoints();
-		printPoints();
 		scanner.nextLine();
-		connect();
+		com.connect();
 		gen.setRotateSpeed(200);
 //		gen.setAcceleration(500);
-		while(true) {
-			scanner.nextLine();
-			com.testLatency();
-//			gen.doTravel(scanner.nextInt());
-		}
-//		go();
+		waypoints.generatePoints();
+		
+//		while(true) {
+//			scanner.nextLine();
+//			com.testLatency();
+//		}
+		go();
 	}
 	
 	public Navigator(Application app) {
@@ -70,65 +63,58 @@ public class Navigator {
 		//get end position
 	}
 	
-	private void generatePoints() {
-//		for(int i = 0; i < 10; i++) {
-//			points.add(new Point(i * (int) (Math.random()*20), i * (int) (Math.random()*20)));
-//		}
-		points.add(new Point(0,0));
-		points.add(new Point(50,50));
-		points.add(new Point(0,100));
-		points.add(new Point(50,50));
-		points.add(new Point(100,100));
-		points.add(new Point(50,50));
-		points.add(new Point(100,0));
-		points.add(new Point(50,50));
-		points.add(new Point(0,0));
-	}
-	
-	public void getAndConvertBreakpoints() {
-		points.clear();
-		ArrayList<BreakPoint> breakPoints = Track.getCompleteList();
-		for(BreakPoint bp : breakPoints) {
-			points.add(new Point(bp.getX(), 300-bp.getY()));
-		}
-	}
-	
-	public void printPoints() {
-		for(Point p : points) {
-			System.out.println(p);
-		}
-	}
-	
 	public static void main(String[] args) {
 		System.out.println("Starting navigation unit...");
 		new Navigator();
 	}
 	
-	public void connect() {
-		com.connect();
+	public boolean reachedDestination(Waypoint p) {
+		return Utilities.getDistance(robot, p) <= 1;
 	}
 	
 	public void go() {
-		
 		boolean running = true;
-		int elements = points.size();
-		for(int i = 0; i < elements-1; i++) {
-			Point a, b;
-			a = points.get(i);
-			b = points.get(i+1);
-			if(a.x == b.x && a.y == b.y) {
-				continue;
-			}
-			System.out.format("From %s to %s%n", a, b);
-			double newAngle = Utilities.getAngle(a, b);
-			double rotation = Utilities.getRotation(angle, newAngle);
-			double distance = Utilities.getDistance(a, b);
-			gen.doRotate((float) rotation);
-			System.out.format("Angle: %f => ", angle);
-			angle = (angle + rotation) % 360;
-			System.out.format("%f%n", angle);
+		
+		while(running) {
+			Waypoint next = waypoints.getHead();
 			
-			gen.doTravel((int) (distance * MM_PR_PIXEL));
+			while(!reachedDestination(next)) {
+				double robotAngle = Utilities.getRobotAngle(robot);
+				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
+				double distance;
+				if(Math.abs(rotation) > 1) {
+					gen.doRotate((float) rotation);
+					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.ROTATE);
+					com.reader.replyReady.set(false);
+				} else {
+					distance = Utilities.getDistance(robot, next);
+					gen.doTravel((int) (distance * MM_PR_PIXEL));
+					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.TRAVEL);
+					com.reader.replyReady.set(false);
+				}
+			}
+			
+			waypoints.shift();
+			
+//			int elements = points.size();
+//			for(int i = 0; i < elements-1; i++) {
+//				Waypoint a, b;
+//				a = points.get(i);
+//				b = points.get(i+1);
+//				if(a.x == b.x && a.y == b.y) {
+//					continue;
+//				}
+//				System.out.format("From %s to %s%n", a, b);
+//				double newAngle = Utilities.getAngle(a, b);
+//				double rotation = Utilities.getRotation(angle, newAngle);
+//				double distance = Utilities.getDistance(a, b);
+//				gen.doRotate((float) rotation);
+//				System.out.format("Angle: %f => ", angle);
+//				angle = (angle + rotation) % 360;
+//				System.out.format("%f%n", angle);
+//				
+//				gen.doTravel((int) (distance * MM_PR_PIXEL));
+//			}
 		}
 		while(true) {
 			try {
@@ -139,12 +125,6 @@ public class Navigator {
 			}
 			
 		}
-		// the main loop
-		// analyze next waypoint(s)
-		// send necessary commands
-		// monitor robot proximity
-		// stop and clear if in danger
-			// recalculate route
 	}
 	
 

@@ -1,10 +1,10 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
-public class Point {
+public class Waypoint {
 	
 	int x, y;
 	
-	public Point(int x, int y) {
+	public Waypoint(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}

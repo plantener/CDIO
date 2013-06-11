@@ -1,17 +1,17 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
-import java.util.ArrayList;
+import models.Robot;
 
 public class Utilities {
 	
-	public static double getAngle(Point a, Point b) {
-		double coeff;
-		try {
-			coeff = (b.y - a.y)/(b.x - a.x);
-		} catch(ArithmeticException e) {
-			coeff = 0;
-			System.out.println("Probably divided by zero");
-		}
+	public static double getAngle(Waypoint a, Waypoint b) {
+//		double coeff;
+//		try {
+//			coeff = (b.y - a.y)/(b.x - a.x);
+//		} catch(ArithmeticException e) {
+//			coeff = 0;
+//			System.out.println("Probably divided by zero");
+//		}
 //		double result =Math.toDegrees(Math.atan(coeff));
 		double radians = Math.atan2(b.y-a.y, b.x-a.x);
 		double degrees = Math.toDegrees(radians);
@@ -19,7 +19,29 @@ public class Utilities {
 		return degrees;
 	}
 	
-	public static double getDistance(Point a, Point b) {
+	public static double getAngle(int x1, int y1, int x2, int y2) {
+		double radians = Math.atan2(y2-y1, x2-x1);
+		double degrees = Math.toDegrees(radians);
+		return degrees;
+	}
+	
+	public static double getAngle(Robot r, Waypoint p) {
+		return getAngle(r.getFrontMidX(), r.getFrontmidY(), p.x, p.y);
+	}
+	
+	public static double getRobotAngle(Robot robot) {
+		return getAngle(robot.getBackMidX(), robot.getBackMidY(), robot.getFrontMidX(), robot.getFrontmidY());
+	}
+	
+	public static double getDistance(int x1, int y1, int x2, int y2) {
+		return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+	}
+	
+	public static double getDistance(Robot r, Waypoint p) {
+		return getDistance(r.getFrontMidX(), r.getFrontmidY(), p.x, p.y);
+	}
+	
+	public static double getDistance(Waypoint a, Waypoint b) {
 		return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 	}
 	

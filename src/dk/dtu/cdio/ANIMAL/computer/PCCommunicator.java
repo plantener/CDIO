@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
 
@@ -18,12 +19,10 @@ public class PCCommunicator {
 	private NXTConnector connector;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
-	private Queue<Command> queue;
-	private Reader reader;
+	public Reader reader;
 
-	public PCCommunicator(NXTInfo nxtInfo, Queue<Command> queue) {
+	public PCCommunicator(NXTInfo nxtInfo) {
 		this.nxtInfo = nxtInfo;
-		this.queue = queue;
 		reader = new Reader();
 	}
 	
@@ -81,6 +80,8 @@ public class PCCommunicator {
 	class Reader extends Thread {
 		
 		public boolean isRunning = false;
+		public AtomicBoolean replyReady = new AtomicBoolean(false);
+		public NavCommand reply;
 		
 		public void run() {
 			int incoming;
@@ -88,14 +89,10 @@ public class PCCommunicator {
 			while(isRunning) {
 				try {
 					incoming = dataIn.readInt();
-					if(NavCommand.POP.ordinal() == incoming) {
-						System.out.format("[Queue] size: %d, head: %s%n", queue.size()-1, queue.remove());
-					}
+					reply = NavCommand.values()[incoming];
+					replyReady.set(true);
 				} catch (IOException e) {
 					e.printStackTrace();
-					isRunning = false;
-				} catch (NoSuchElementException e) {
-					System.out.println("Queue empty, but pop received");
 				}
 			}
 		}

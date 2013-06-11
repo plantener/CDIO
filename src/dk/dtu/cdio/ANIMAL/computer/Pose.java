@@ -1,6 +1,6 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
-public class Pose extends Point {
+public class Pose extends Waypoint {
 	
 	double angle;
 	
