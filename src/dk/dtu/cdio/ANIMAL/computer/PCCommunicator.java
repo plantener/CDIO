@@ -52,6 +52,8 @@ public class PCCommunicator {
 		} catch (IOException e) {
 			System.out.println(" send failed ");
 		}
+		
+		waitForReply();
 	}
 
 	public boolean connect() {
@@ -70,11 +72,18 @@ public class PCCommunicator {
 			connected = false;
 			return connected;
 		}
-		if (!reader.isRunning) {
-			reader.start();
-		}
+//		if (!reader.isRunning) {
+//			reader.start();
+//		}
 		return connected;
-
+	}
+	
+	public void waitForReply() {
+		try {
+			dataIn.readInt();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	class Reader extends Thread {

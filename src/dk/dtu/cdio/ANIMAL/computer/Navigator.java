@@ -1,15 +1,17 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 import main.Application;
+import models.BreakPoint;
 import models.Robot;
 
 public class Navigator {
 	
-	public static int MM_PR_PIXEL = 10;
+	public static int MM_PR_PIXEL = 3;
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -24,7 +26,7 @@ public class Navigator {
 	boolean a = true;
 	
 	private NXTInfo info = (a) ? info_5a : info_5b;
-	private Robot robot = (a) ? app.robotA : app.robotB;
+	private Robot robot;
 	
 //	private double angle = 90;
 	
@@ -36,19 +38,28 @@ public class Navigator {
 		scanner.nextLine();
 		com.connect();
 		gen.setRotateSpeed(200);
+		
+		gen.doRotate(150);
+		gen.doTravel(250);
+		gen.doRotate(180);
+		gen.doTravel(250);
 //		gen.setAcceleration(500);
-		waypoints.generatePoints();
+//		waypoints.generatePoints();
 		
 //		while(true) {
 //			scanner.nextLine();
 //			com.testLatency();
 //		}
-		go();
 	}
 	
 	public Navigator(Application app) {
 		this();
 		this.app = app;
+		this.robot = (a) ? app.robotA : app.robotB;
+	}
+	
+	public void feedBreakpoints(ArrayList<BreakPoint> points) {
+		waypoints.convertAndAdd(points);
 	}
 	
 	public void calibrateLength() {
@@ -84,13 +95,13 @@ public class Navigator {
 				double distance;
 				if(Math.abs(rotation) > 1) {
 					gen.doRotate((float) rotation);
-					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.ROTATE);
-					com.reader.replyReady.set(false);
+//					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.ROTATE);
+//					com.reader.replyReady.set(false);
 				} else {
 					distance = Utilities.getDistance(robot, next);
 					gen.doTravel((int) (distance * MM_PR_PIXEL));
-					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.TRAVEL);
-					com.reader.replyReady.set(false);
+//					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.TRAVEL);
+//					com.reader.replyReady.set(false);
 				}
 			}
 			
