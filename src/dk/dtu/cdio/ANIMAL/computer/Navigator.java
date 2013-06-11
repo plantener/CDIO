@@ -9,7 +9,7 @@ import main.Application;
 import models.BreakPoint;
 import models.Robot;
 
-public class Navigator {
+public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
 	
@@ -34,19 +34,19 @@ public class Navigator {
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
-		scanner = new Scanner(System.in);
-		scanner.nextLine();
+//		scanner = new Scanner(System.in);
+//		scanner.nextLine();
 		com.connect();
 		gen.setRotateSpeed(200);
 		
-		calibrateLength();
+//		calibrateLength();
 		
-		scanner.nextLine();
+//		scanner.nextLine();
 		
-		gen.doRotate(150);
-		gen.doTravel(250);
-		gen.doRotate(180);
-		gen.doTravel(250);
+//		gen.doRotate(150);
+//		gen.doTravel(250);
+//		gen.doRotate(180);
+//		gen.doTravel(250);
 //		gen.setAcceleration(500);
 //		waypoints.generatePoints();
 		
@@ -67,24 +67,26 @@ public class Navigator {
 	}
 	
 	public void calibrateLength() {
-		float travelDistance = 300;
+		float travelDistance = 400;
 		//get start position
-		Waypoint start = new Waypoint(robot.getFrontMidX(), robot.getFrontmidY());
+		Waypoint start = new Waypoint(robot.getFrontMidX(), 300-robot.getFrontmidY());
 		gen.doTravel(travelDistance);
 		//get end position
-		Waypoint end = new Waypoint(robot.getFrontMidX(), robot.getFrontmidY());
+		Waypoint end = new Waypoint(robot.getFrontMidX(), 300-robot.getFrontmidY());
 		double distance = Utilities.getDistance(start, end);
 		
+		System.out.format("Calibrated to %f%n", travelDistance / distance);
 		MM_PR_PIXEL = (float) (travelDistance / distance);
+		System.out.format("Convservative calibration: %f%n", MM_PR_PIXEL);
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("Starting navigation unit...");
-		new Navigator();
-	}
+//	public static void main(String[] args) {
+//		System.out.println("Starting navigation unit...");
+//		new Navigator();
+//	}
 	
 	public boolean reachedDestination(Waypoint p) {
-		return Utilities.getDistance(robot, p) <= 1;
+		return Utilities.getDistance(robot, p) <= 5;
 	}
 	
 	public void go() {
@@ -92,20 +94,18 @@ public class Navigator {
 		
 		while(running) {
 			Waypoint next = waypoints.getHead();
-			
+			System.out.format("Next destination: %s%n", next);
 			while(!reachedDestination(next)) {
 				double robotAngle = Utilities.getRobotAngle(robot);
+//				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), 300-robot.getFrontmidY(), robot.getBackMidX(), 300-robot.getBackMidY());
 				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
+				System.out.format("Robot angle %.3f.. Rotation %.3f%n", robotAngle, rotation);
 				double distance;
-				if(Math.abs(rotation) > 1) {
+				if(Math.abs(rotation) > 2) {
 					gen.doRotate((float) rotation);
-//					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.ROTATE);
-//					com.reader.replyReady.set(false);
 				} else {
 					distance = Utilities.getDistance(robot, next);
 					gen.doTravel((float) distance * MM_PR_PIXEL);
-//					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.TRAVEL);
-//					com.reader.replyReady.set(false);
 				}
 			}
 			
@@ -140,6 +140,13 @@ public class Navigator {
 //			}
 //			
 //		}
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		calibrateLength();
+		go();
 	}
 	
 

@@ -26,11 +26,12 @@ public class Utilities {
 	}
 	
 	public static double getAngle(Robot r, Waypoint p) {
-		return getAngle(r.getFrontMidX(), r.getFrontmidY(), p.x, p.y);
+		return getAngle(r.getFrontMidX(), 300-r.getFrontmidY(), p.x, p.y);
 	}
 	
 	public static double getRobotAngle(Robot robot) {
-		return getAngle(robot.getBackMidX(), robot.getBackMidY(), robot.getFrontMidX(), robot.getFrontmidY());
+		return getAngle(robot.getBackMidX(), 300-robot.getBackMidY(), robot.getFrontMidX(), 300-robot.getFrontmidY());
+//		return getAngle(robot.getFrontMidX(), robot.getFrontmidY(), robot.getBackMidX(), robot.getBackMidY());
 	}
 	
 	public static double getDistance(int x1, int y1, int x2, int y2) {
@@ -38,7 +39,7 @@ public class Utilities {
 	}
 	
 	public static double getDistance(Robot r, Waypoint p) {
-		return getDistance(r.getFrontMidX(), r.getFrontmidY(), p.x, p.y);
+		return getDistance(r.getFrontMidX(), 300-r.getFrontmidY(), p.x, p.y);
 	}
 	
 	public static double getDistance(Waypoint a, Waypoint b) {
@@ -50,7 +51,7 @@ public class Utilities {
 	// c = 210 // -150;
 	public static double getRotation(double currentAngle, double newAngle) {
 		double i = -(currentAngle - newAngle);
-		System.out.println("Uncorrected rotation: " +i);
+//		System.out.println("Uncorrected rotation: " +i);
 		if(Math.abs(i) > 180) {
 			if(i > 0) {
 				i = -(360 - i);
@@ -60,7 +61,7 @@ public class Utilities {
 //			i = -(i - 180);
 			
 		}
-		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
+//		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
 		return i;
 //		double diff = Math.abs(currentAngle - newAngle) % 360;
 //		if(diff > 180) {

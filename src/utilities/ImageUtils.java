@@ -28,7 +28,7 @@ public class ImageUtils {
 
 	public ImageUtils(){
 		canvasAlgorithm = new CanvasFrame("algorithm");
-		canvasResized = new CanvasFrame("resized");
+//		canvasResized = new CanvasFrame("resized");
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class ImageUtils {
 		opencv_imgproc.cvResize(img, resizedImage);
 
 		//used for debugging purposes
-		canvasResized.showImage(resizedImage);
+//		canvasResized.showImage(resizedImage);
 
 		return resizedImage;
 	}

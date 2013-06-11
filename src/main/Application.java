@@ -59,38 +59,40 @@ public class Application {
 		robotList = new Robot[2];
 		robotList[0] = new Robot();
 		robotList[1] = new Robot();
+		robotA = robotList[0];
+		robotB = robotList[1];
 	}
 
 	public void frameProcessing() {
 
-//		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib4.jpg");
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib4.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 
 		thresholdGreen();
 		thresholdRed();
-		System.out.println(greenBoxes.toString());
-		System.out.println(redBoxes.toString());
+//		System.out.println(greenBoxes.toString());
+//		System.out.println(redBoxes.toString());
 
 		thresholdBlue();
 		thresholdPurple();
 		thresholdYellow();
 		robotA = robotList[0];
 		robotB = robotList[1];
-		System.out.println("Robot A information:");
-		System.out.println("Front X: " + robotA.getFrontX());
-		System.out.println("Front Y: " + robotA.getFrontY());
-		System.out.println("Back X: " + robotA.getBackX());
-		System.out.println("Back Y: " + robotA.getBackY()+"\n");
-		System.out.println("Robot B information:");
-		System.out.println("Front X: " + robotB.getFrontX());
-		System.out.println("Front Y: " + robotB.getFrontY());
-		System.out.println("Back X: " + robotB.getBackX());
-		System.out.println("Back Y: " + robotB.getBackY()+"\n");
+//		System.out.println("Robot A information:");
+//		System.out.println("Front X: " + robotA.getFrontX());
+//		System.out.println("Front Y: " + robotA.getFrontY());
+//		System.out.println("Back X: " + robotA.getBackX());
+//		System.out.println("Back Y: " + robotA.getBackY()+"\n");
+//		System.out.println("Robot B information:");
+//		System.out.println("Front X: " + robotB.getFrontX());
+//		System.out.println("Front Y: " + robotB.getFrontY());
+//		System.out.println("Back X: " + robotB.getBackX());
+//		System.out.println("Back Y: " + robotB.getBackY()+"\n");
 
 
 		findPort();
@@ -204,30 +206,44 @@ public class Application {
 				}
 
 //Find closest robot front color to the current yellow point
-				double minDistance = 1000;
-				for (int p = 0; p < robotList.length; p++)
+				double minDistance = Double.MAX_VALUE;
+				int robot = 0;
+				for (int p = 0; p < robotList.length; p++)	
 				{
-					double x = Math.abs(robotList[p].getMidX() - sq.x());
-					double y = Math.abs(robotList[p].getMidY() - sq.y());
+					double x = Math.abs(robotList[p].getFrontMidX() - (sq.x()+sq.width()/2));
+					double y = Math.abs(robotList[p].getFrontmidY() - (sq.y()+sq.height()/2));
 					double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-					if (distance < minDistance)
+					if(distance < minDistance)
 					{
-						System.out.println("Is distance smaller than minDistance?");
-						robotList[i].setBackX(sq.x());
-						robotList[i].setBackY(sq.y());
-						robotList[i].setBackWidth(sq.width());
-						robotList[i].setBackHeight(sq.height());
 						minDistance = distance;
+						robot = p;
 					}
+//					distances[p] = distance;
+//					if (distance < minDistance && i < robotList.length)
+//					{
+////						System.out.println("Is distance smaller than minDistance?");
+//						robotList[p].setBackX(sq.x());
+//						robotList[p].setBackY(sq.y());
+//						robotList[p].setBackWidth(sq.width());
+//						robotList[p].setBackHeight(sq.height());
+//						minDistance = distance;
+//					}
 				}
+				robotList[robot].setBackX(sq.x());
+				robotList[robot].setBackY(sq.y());
+				robotList[robot].setBackWidth(sq.width());
+				robotList[robot].setBackHeight(sq.height());
+
+		
+				
 				i++;
 				
 				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
+//				System.out.println("Y er: " + sq.y());
+//				System.out.println("X er: " + sq.x());
+//				System.out.println("Højde er: " + sq.height());
+//				System.out.println("Bredde er: " + sq.width());
+//				System.out.println("\n");
 				
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -243,6 +259,7 @@ public class Application {
 
 		} catch (Exception e) {
 			System.err.println("No yellow contours found");
+			e.printStackTrace();
 		}
 	}
 
@@ -268,11 +285,11 @@ public class Application {
 				robotList[0].setFrontHeight(sq.height());
 
 				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
+//				System.out.println("Y er: " + sq.y());
+//				System.out.println("X er: " + sq.x());
+//				System.out.println("Højde er: " + sq.height());
+//				System.out.println("Bredde er: " + sq.width());
+//				System.out.println("\n");
 
 				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
@@ -315,13 +332,13 @@ public class Application {
 				robotList[1].setFrontHeight(sq.height());
 
 				// Used for debugging
-				System.out.println("Y er: " + sq.y());
-				System.out.println("X er: " + sq.x());
-				System.out.println("Højde er: " + sq.height());
-				System.out.println("Bredde er: " + sq.width());
-				System.out.println("\n");
-				
-				// Below used for debugging
+//				System.out.println("Y er: " + sq.y());
+//				System.out.println("X er: " + sq.x());
+//				System.out.println("Højde er: " + sq.height());
+//				System.out.println("Bredde er: " + sq.width());
+//				System.out.println("\n");
+//				
+//				// Below used for debugging
 				opencv_core.CvScalar color = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
 				p2.x(sq.x() + sq.width());
