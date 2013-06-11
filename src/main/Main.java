@@ -24,7 +24,7 @@ public class Main {
 		greenBoxes = app.greenBoxes;
 //		objectList = app.objectList;
 		Track t = new Track(ports, redBoxes, greenBoxes);
-		int frames = 1000;
+		int frames = 1;
 		while(i < frames){			
 			app.frameProcessing();
 			ports = app.sortedPorts;

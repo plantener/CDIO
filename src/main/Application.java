@@ -63,10 +63,10 @@ public class Application {
 
 	public void frameProcessing() {
 
-		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+//		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup5.jpg");
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib4.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -81,6 +81,16 @@ public class Application {
 		thresholdYellow();
 		robotA = robotList[0];
 		robotB = robotList[1];
+		System.out.println("Robot A information:");
+		System.out.println("Front X: " + robotA.getFrontX());
+		System.out.println("Front Y: " + robotA.getFrontY());
+		System.out.println("Back X: " + robotA.getBackX());
+		System.out.println("Back Y: " + robotA.getBackY()+"\n");
+		System.out.println("Robot B information:");
+		System.out.println("Front X: " + robotB.getFrontX());
+		System.out.println("Front Y: " + robotB.getFrontY());
+		System.out.println("Back X: " + robotB.getBackX());
+		System.out.println("Back Y: " + robotB.getBackY()+"\n");
 
 
 		findPort();
@@ -194,7 +204,7 @@ public class Application {
 				}
 
 //Find closest robot front color to the current yellow point
-				double minDistance = 100;
+				double minDistance = 1000;
 				for (int p = 0; p < robotList.length; p++)
 				{
 					double x = Math.abs(robotList[p].getMidX() - sq.x());
@@ -202,6 +212,7 @@ public class Application {
 					double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 					if (distance < minDistance)
 					{
+						System.out.println("Is distance smaller than minDistance?");
 						robotList[i].setBackX(sq.x());
 						robotList[i].setBackY(sq.y());
 						robotList[i].setBackWidth(sq.width());
