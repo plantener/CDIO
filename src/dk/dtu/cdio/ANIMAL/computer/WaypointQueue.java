@@ -25,7 +25,7 @@ public class WaypointQueue {
 	public void convertAndAdd(ArrayList<BreakPoint> points) {
 		list.clear();
 		for(BreakPoint p : points) {
-			list.add(new Waypoint(p.getX(), 300-p.getY()));
+			list.add(new Waypoint(p.getX(), Navigator.Y_RESOLUTION-p.getY()));
 		}
 	}
 	

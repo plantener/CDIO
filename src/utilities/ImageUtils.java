@@ -15,6 +15,8 @@ import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 
+import dk.dtu.cdio.ANIMAL.computer.Navigator;
+
 public class ImageUtils {
 	private CanvasFrame canvasResized;
 	private IplImage resizedImage = null;
@@ -39,7 +41,7 @@ public class ImageUtils {
 	public IplImage resizeImage(IplImage img){
 
 		resizedImage = null;
-		resizedImage = opencv_core.cvCreateImage( opencv_core.cvSize( 400, 300 ), 8, 3 );
+		resizedImage = opencv_core.cvCreateImage( opencv_core.cvSize( Navigator.X_RESOLUTION, Navigator.Y_RESOLUTION ), 8, 3 );
 		opencv_imgproc.cvResize(img, resizedImage);
 
 		//used for debugging purposes

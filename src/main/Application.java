@@ -21,6 +21,8 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 
+import dk.dtu.cdio.ANIMAL.computer.Navigator;
+
 public class Application {
 	private CaptureImage ci;
 	private ImageUtils iu;
@@ -43,6 +45,8 @@ public class Application {
 	private Robot[] robotList;
 	public Robot robotA;
 	public Robot robotB;
+	
+	public static final int SQ_THRESHOLD = 12;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -117,7 +121,7 @@ public class Application {
 			for (; redObjects != null; redObjects = redObjects.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						redObjects, 0);
-				if (sq.width() < 6 || sq.height() < 6) {
+				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
 				tempBox= new Box();
@@ -159,7 +163,7 @@ public class Application {
 			for (; greenObjects != null; greenObjects = greenObjects.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						greenObjects, 0);
-				if (sq.width() < 6 || sq.height() < 6) {
+				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
 				tempBox = new Box();
@@ -201,7 +205,7 @@ public class Application {
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						yellowObjects, 0);
-				if (sq.width() < 6 || sq.height() < 6) {
+				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
 
@@ -275,7 +279,7 @@ public class Application {
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						blueObjects, 0);
-				if (sq.width() < 6 || sq.height() < 6) {
+				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
 				robotList[0].setRobotId("a");
@@ -322,7 +326,7 @@ public class Application {
 					.h_next()) {
 				opencv_core.CvRect sq = opencv_imgproc.cvBoundingRect(
 						purpleObjects, 0);
-				if (sq.width() < 6 || sq.height() < 6) {
+				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
 				robotList[1].setRobotId("b");
@@ -380,7 +384,7 @@ public class Application {
 			}
 			Port tempPort = new Port(redBox,tempGreenBox);
 			tempPort.setPairId(i);
-			if (tempPort.getMidY() < 150) {
+			if (tempPort.getMidY() < Navigator.Y_RESOLUTION/2) {
 				sortedUpperPorts.add(tempPort);
 			}else {
 				sortedLowerPorts.add(tempPort);

@@ -1,5 +1,7 @@
 package models;
 
+import dk.dtu.cdio.ANIMAL.computer.Navigator;
+
 public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int pairId;
 	private int midX;
@@ -64,7 +66,7 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	public int compareTo(Port comparePort) {
 		int compareMidX = ((Port) comparePort).getMidX();
 		
-		if(comparePort.getMidY() < 150){
+		if(comparePort.getMidY() < Navigator.Y_RESOLUTION/2){
 		return this.midX - compareMidX;
 		}else{
 			return compareMidX - this.midX;

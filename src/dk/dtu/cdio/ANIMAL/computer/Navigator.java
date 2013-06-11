@@ -3,6 +3,8 @@ package dk.dtu.cdio.ANIMAL.computer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import routeCalculation.Connect;
+
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 import main.Application;
@@ -12,6 +14,12 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
+	
+	public static final int X_RESOLUTION = 800;
+	public static final int Y_RESOLUTION = 600;
+	
+	public static int DIST_THRESHOLD = 14;
+	public static int ANGLE_THRESHOLD = 3;
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -36,8 +44,9 @@ public class Navigator implements Runnable {
 		waypoints = new WaypointQueue();
 //		scanner = new Scanner(System.in);
 //		scanner.nextLine();
-		com.connect();
-		gen.setRotateSpeed(200);
+//		com.connect();
+//		gen.setRotateSpeed(150);
+//		gen.setTravelSpeed(500);
 		
 //		calibrateLength();
 		
@@ -67,12 +76,12 @@ public class Navigator implements Runnable {
 	}
 	
 	public void calibrateLength() {
-		float travelDistance = 400;
+		float travelDistance = 300;
 		//get start position
-		Waypoint start = new Waypoint(robot.getFrontMidX(), 300-robot.getFrontmidY());
+		Waypoint start = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
 		gen.doTravel(travelDistance);
 		//get end position
-		Waypoint end = new Waypoint(robot.getFrontMidX(), 300-robot.getFrontmidY());
+		Waypoint end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
 		double distance = Utilities.getDistance(start, end);
 		
 		System.out.format("Calibrated to %f%n", travelDistance / distance);
@@ -86,7 +95,7 @@ public class Navigator implements Runnable {
 //	}
 	
 	public boolean reachedDestination(Waypoint p) {
-		return Utilities.getDistance(robot, p) <= 5;
+		return Utilities.getDistance(robot, p) <= DIST_THRESHOLD;
 	}
 	
 	public void go() {
@@ -97,11 +106,11 @@ public class Navigator implements Runnable {
 			System.out.format("Next destination: %s%n", next);
 			while(!reachedDestination(next)) {
 				double robotAngle = Utilities.getRobotAngle(robot);
-//				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), 300-robot.getFrontmidY(), robot.getBackMidX(), 300-robot.getBackMidY());
+				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
 				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
-				System.out.format("Robot angle %.3f.. Rotation %.3f%n", robotAngle, rotation);
+//				System.out.format("Robot angle %.3f.. Rotation %.3f%n", robotAngle, rotation);
 				double distance;
-				if(Math.abs(rotation) > 2) {
+				if(Math.abs(rotation) > ANGLE_THRESHOLD) {
 					gen.doRotate((float) rotation);
 				} else {
 					distance = Utilities.getDistance(robot, next);
@@ -145,6 +154,7 @@ public class Navigator implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		com.connect();
 		calibrateLength();
 		go();
 	}

@@ -29,18 +29,23 @@ public class Main {
 //		objectList = app.objectList;
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
-		for(i=0; i < 100; i++) {			
+		for(i=0; i < 500; i++) {			
 			app.frameProcessing();
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
 			greenBoxes = app.greenBoxes;
+			frames++;
 //			i++;
 //			System.out.println("BILLEDE NUMMER: " + i);
 			t.updateObjects(ports, redBoxes, greenBoxes);
 		}
-		nav.feedBreakpoints(Track.getCompleteList());
 		System.out.println("############################");
-//		sc.nextLine();		
+		Long endTime = System.nanoTime();
+		double fps = (double)frames/((endTime-startTime)/1000000000);
+		System.out.println("FPS: " + fps);
+		System.out.println("############################");
+		sc.nextLine();		
+		nav.feedBreakpoints(Track.getCompleteList());
 		new Thread(nav).start();
 		while(true) {
 			app.frameProcessing();
@@ -51,9 +56,6 @@ public class Main {
 //			System.out.println("BILLEDE NUMMER: " + i);
 //			t.updateObjects(ports, redBoxes, greenBoxes);
 		}
-//		Long endTime = System.nanoTime();
-//		double fps = (double)frames/((endTime-startTime)/1000000000);
-//		System.out.println("FPS: " + fps);
 //		System.out.println("FPS: " + fps);
 	}
 	

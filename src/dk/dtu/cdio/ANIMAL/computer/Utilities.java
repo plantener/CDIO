@@ -26,11 +26,11 @@ public class Utilities {
 	}
 	
 	public static double getAngle(Robot r, Waypoint p) {
-		return getAngle(r.getFrontMidX(), 300-r.getFrontmidY(), p.x, p.y);
+		return getAngle(r.getFrontMidX(), Navigator.Y_RESOLUTION-r.getFrontmidY(), p.x, p.y);
 	}
 	
 	public static double getRobotAngle(Robot robot) {
-		return getAngle(robot.getBackMidX(), 300-robot.getBackMidY(), robot.getFrontMidX(), 300-robot.getFrontmidY());
+		return getAngle(robot.getBackMidX(), Navigator.Y_RESOLUTION-robot.getBackMidY(), robot.getFrontMidX(), Navigator.Y_RESOLUTION-robot.getFrontmidY());
 //		return getAngle(robot.getFrontMidX(), robot.getFrontmidY(), robot.getBackMidX(), robot.getBackMidY());
 	}
 	
@@ -39,7 +39,7 @@ public class Utilities {
 	}
 	
 	public static double getDistance(Robot r, Waypoint p) {
-		return getDistance(r.getFrontMidX(), 300-r.getFrontmidY(), p.x, p.y);
+		return getDistance(r.getFrontMidX(), Navigator.Y_RESOLUTION-r.getFrontmidY(), p.x, p.y);
 	}
 	
 	public static double getDistance(Waypoint a, Waypoint b) {
@@ -47,7 +47,7 @@ public class Utilities {
 	}
 	
 	// a = 90
-	// b = 300;
+	// b = Navigator.Y_RESOLUTION;
 	// c = 210 // -150;
 	public static double getRotation(double currentAngle, double newAngle) {
 		double i = -(currentAngle - newAngle);
@@ -61,7 +61,7 @@ public class Utilities {
 //			i = -(i - 180);
 			
 		}
-//		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
+		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
 		return i;
 //		double diff = Math.abs(currentAngle - newAngle) % 360;
 //		if(diff > 180) {
