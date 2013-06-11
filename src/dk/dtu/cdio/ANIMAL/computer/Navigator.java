@@ -11,7 +11,7 @@ import models.Robot;
 
 public class Navigator {
 	
-	public static int MM_PR_PIXEL = 3;
+	public static float MM_PR_PIXEL = 3.0f;
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -39,6 +39,10 @@ public class Navigator {
 		com.connect();
 		gen.setRotateSpeed(200);
 		
+		calibrateLength();
+		
+		scanner.nextLine();
+		
 		gen.doRotate(150);
 		gen.doTravel(250);
 		gen.doRotate(180);
@@ -63,15 +67,15 @@ public class Navigator {
 	}
 	
 	public void calibrateLength() {
+		float travelDistance = 300;
 		//get start position
-		gen.doTravel(500);
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Waypoint start = new Waypoint(robot.getFrontMidX(), robot.getFrontmidY());
+		gen.doTravel(travelDistance);
 		//get end position
+		Waypoint end = new Waypoint(robot.getFrontMidX(), robot.getFrontmidY());
+		double distance = Utilities.getDistance(start, end);
+		
+		MM_PR_PIXEL = (float) (travelDistance / distance);
 	}
 	
 	public static void main(String[] args) {
@@ -99,7 +103,7 @@ public class Navigator {
 //					com.reader.replyReady.set(false);
 				} else {
 					distance = Utilities.getDistance(robot, next);
-					gen.doTravel((int) (distance * MM_PR_PIXEL));
+					gen.doTravel((float) distance * MM_PR_PIXEL);
 //					while(!com.reader.replyReady.get() && com.reader.reply == NavCommand.TRAVEL);
 //					com.reader.replyReady.set(false);
 				}
@@ -127,15 +131,15 @@ public class Navigator {
 //				gen.doTravel((int) (distance * MM_PR_PIXEL));
 //			}
 		}
-		while(true) {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
+//		while(true) {
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//		}
 	}
 	
 
