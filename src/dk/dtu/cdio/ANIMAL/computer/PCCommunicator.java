@@ -43,8 +43,7 @@ public class PCCommunicator {
 			dataOut.writeFloat(v2);
 			dataOut.writeBoolean(bit);
 			dataOut.flush();
-			System.out.println("sent " + NavCommand.values()[code] + " " + v0
-					+ " " + v1);
+//			System.out.println("sent " + NavCommand.values()[code] + " " + v0 + " " + v1);
 		} catch (IOException e) {
 			System.out.println(" send failed ");
 		}

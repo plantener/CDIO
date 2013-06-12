@@ -15,7 +15,12 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 		setMidX(this.red,this.green);
 		setMidY(this.red,this.green);
 	}
-
+	
+	public Port(int midX, int midY, int pairId){
+		this.midX = midX;
+		this.midY = midY;
+		this.pairId = pairId;
+	}
 
 	public int getPairId() {
 		return pairId;

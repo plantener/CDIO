@@ -6,9 +6,10 @@ import java.util.Scanner;
 import models.Box;
 import models.ObjectOnMap;
 import routeCalculation.Track;
-import sun.awt.windows.ThemeReader;
+//import sun.awt.windows.ThemeReader;
 import dk.dtu.cdio.ANIMAL.computer.ControlCenter;
 import dk.dtu.cdio.ANIMAL.computer.Navigator;
+import dk.dtu.cdio.ANIMAL.computer.Utilities;
 
 public class Main {
 

@@ -41,15 +41,16 @@ public class Navigator implements Runnable {
 	boolean useRobotA;
 	boolean paused = false;
 	
-	private NXTInfo info;
+	public NXTInfo info;
 	public Robot robot;
 	
 	public Navigator(boolean useRobotA) {
 		this.useRobotA = useRobotA;
+		info = (useRobotA) ? info_5a : info_5b;
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
-		info = (useRobotA) ? info_5a : info_5b;
+		com.connect();
 	}
 	
 	public Navigator(boolean useRobotA, Application app) {
@@ -73,7 +74,7 @@ public class Navigator implements Runnable {
 			end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
 			double distance = Utilities.getDistance(start, end);
 			avgDistance = (distance + i * avgDistance) / (i + 1);
-			System.out.format("[Calibration: %d: %f mm/pixel]%n", i, travelDistance/distance);
+//			System.out.format("[Calibration: %d: %f mm/pixel]%n", i, travelDistance/distance);
 		}
 		MM_PR_PIXEL = (float) (travelDistance / avgDistance);
 		System.out.format("Length calibration: %f%n", MM_PR_PIXEL);
@@ -106,7 +107,7 @@ public class Navigator implements Runnable {
 			System.out.format("Next destination: %s%n", next);
 			while(adjustingAngle) {
 				double robotAngle = Utilities.getRobotAngle(robot);
-				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
+//				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
 				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
 				if(Math.abs(rotation) > ANGLE_THRESHOLD) {
 					gen.doRotate((float) rotation);
@@ -126,12 +127,39 @@ public class Navigator implements Runnable {
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
+//			int turn = 1;
+//			int maxAngle = (robotAngle < 0) ? -180 : 180;
+//			if(robotAngle < newAngle && newAngle < robotAngle-maxAngle) {
+//				turn =1;
+//			} else if (robotAngle-maxAngle < newAngle && newAngle < robotAngle) {
+//				turn = -1;
+//			}
+			int arcDir;
+			if(robotAngle < 0) {
+				if(newAngle < robotAngle) {
+					arcDir = 1;
+				} else if (newAngle > robotAngle+180) {
+					arcDir = 1;
+				} else {
+					arcDir = -1;
+				}
+			}
+			else
+			{
+				if(newAngle > robotAngle) {
+					arcDir = -1;
+				} else if (robotAngle - 180 > newAngle) {
+					arcDir = -1;
+				} else {
+					arcDir = 1;
+				}
+			}
 			if(angle > 180) {
 				angle = 360 - angle;
 			}
-			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
+//			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
 			
-			gen.doArc(-ARC_RADIUS, (float) -angle);
+			gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
 			
 			adjustingAngle = true;
 			
@@ -143,7 +171,6 @@ public class Navigator implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		com.connect();
 		gen.setRotateSpeed(ROTATE_SPEED);
 		gen.setTravelSpeed(300);
 		calibrateLength();

@@ -34,7 +34,7 @@ public class Utilities {
 	}
 	
 	public static double getAngleRelativeToCenter(Robot r) {
-		return getAngleRelativeToCenter(r.getFrontMidX(), r.getFrontmidY());
+		return getAngleRelativeToCenter(r.getFrontMidX(), Navigator.Y_RESOLUTION-r.getFrontmidY());
 	}
 	
 	public static double getAngleRelativeToCenter(Waypoint p) {
@@ -77,7 +77,7 @@ public class Utilities {
 //			i = -(i - 180);
 			
 		}
-		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
+//		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
 		return i;
 //		double diff = Math.abs(currentAngle - newAngle) % 360;
 //		if(diff > 180) {

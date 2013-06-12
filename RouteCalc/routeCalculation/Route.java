@@ -76,6 +76,30 @@ public class Route {
 		Track.addList(breaksPoints, oldBreaksPoints);
 		System.out.println("Done!");
 	}
+
+	public ArrayList<BreakPoint> findRoute() {
+		ArrayList<BreakPoint> bP = c.routePositions();
+		boolean collitions = true;
+
+		while (collitions) {
+			for (BreakPoint breakPoint : bP) {
+				Box b;
+				if ((b = DeadSpaceCalculation.collisionDetection(breakPoint)) != null) {
+					System.out.println("found collision");
+					c.addMid(b, breakPoint);
+					bP = c.routePositions();
+					collitions = true;
+					break;
+				}
+				collitions = false;
+			}
+			if(crash){
+				break;
+			}
+		}
+		crash = false;
+		return c.getBreakPoints();
+	}
 	
 	public static void setCrash(){
 		crash = true;
