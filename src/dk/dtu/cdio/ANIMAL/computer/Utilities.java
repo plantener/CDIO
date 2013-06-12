@@ -5,24 +5,12 @@ import models.Robot;
 public class Utilities {
 	
 	public static double getAngle(Waypoint a, Waypoint b) {
-//		double coeff;
-//		try {
-//			coeff = (b.y - a.y)/(b.x - a.x);
-//		} catch(ArithmeticException e) {
-//			coeff = 0;
-//			System.out.println("Probably divided by zero");
-//		}
-//		double result =Math.toDegrees(Math.atan(coeff));
-		double radians = Math.atan2(b.y-a.y, b.x-a.x);
-		double degrees = Math.toDegrees(radians);
 //		System.out.format("[%s ; %s] => %f radians : %f degrees%n", a, b, radians, degrees);
-		return degrees;
+		return Math.toDegrees(Math.atan2(b.y-a.y, b.x-a.x));
 	}
 	
 	public static double getAngle(int x1, int y1, int x2, int y2) {
-		double radians = Math.atan2(y2-y1, x2-x1);
-		double degrees = Math.toDegrees(radians);
-		return degrees;
+		return Math.toDegrees(Math.atan2(y2-y1, x2-x1));
 	}
 	
 	public static double getAngle(Robot r, Waypoint p) {
@@ -43,7 +31,6 @@ public class Utilities {
 	
 	public static double getRobotAngle(Robot robot) {
 		return getAngle(robot.getBackMidX(), Navigator.Y_RESOLUTION-robot.getBackMidY(), robot.getFrontMidX(), Navigator.Y_RESOLUTION-robot.getFrontmidY());
-//		return getAngle(robot.getFrontMidX(), robot.getFrontmidY(), robot.getBackMidX(), robot.getBackMidY());
 	}
 	
 	public static double getDistance(int x1, int y1, int x2, int y2) {
@@ -62,34 +49,17 @@ public class Utilities {
 		return getDistance(a.getFrontMidX(), a.getFrontmidY(), b.getFrontMidX(), b.getFrontmidY());
 	}
 	
-	// a = 90
-	// b = Navigator.Y_RESOLUTION;
-	// c = 210 // -150;
 	public static double getRotation(double currentAngle, double newAngle) {
 		double i = -(currentAngle - newAngle);
-//		System.out.println("Uncorrected rotation: " +i);
 		if(Math.abs(i) > 180) {
 			if(i > 0) {
 				i = -(360 - i);
 			} else {
 				i = 360 + i;
 			}
-//			i = -(i - 180);
-			
 		}
 //		System.out.format("[Rotation: %f => %f : %f%n", currentAngle, newAngle, i);
 		return i;
-//		double diff = Math.abs(currentAngle - newAngle) % 360;
-//		if(diff > 180) {
-//			return -180 + Math.abs(180 - diff);
-//		} else {
-//			return diff;
-//		}
 		
 	}
-	
-//	public static ArrayList<Point> breakpointToPoint(ArrayList<BreakPoint> list) {
-//		
-//	}
-
 }
