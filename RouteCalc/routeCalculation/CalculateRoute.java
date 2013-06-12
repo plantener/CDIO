@@ -26,7 +26,7 @@ public class CalculateRoute {
 	
 	public CalculateRoute(Port start, Port end) {
 		this.port = start.getPairId();
-		this.end = new BreakPoint(end.getMidX(), end.getMidY(), end.getPairId());
+		this.end = new BreakPoint(end.getMidX(), end.getMidY(), port);
 		this.nextStart = new BreakPoint(start.getMidX(), start.getMidY(), port);
 		this.nextEnd = this.end;
 		breakPoints.add(this.nextStart);

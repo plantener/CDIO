@@ -1,6 +1,8 @@
 package routeCalculation;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import objectHandling.DeadSpaceCalculation;
 
@@ -14,7 +16,7 @@ public class Track {
 	private ArrayList<ObjectOnMap> ports = new ArrayList<ObjectOnMap>();
 	private ArrayList<Box> boxes = new ArrayList<Box>();
 	
-	private ArrayList<Route> r = new ArrayList<Route>();
+	private static ArrayList<Route> r = new ArrayList<Route>();
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
@@ -37,22 +39,33 @@ public class Track {
 	public static void addList(ArrayList<BreakPoint> newBreak,
 			ArrayList<BreakPoint> oldBreak) {
 		int index = 0;
-
-		newBreak.remove(newBreak.size()-1);
-		
-		if (!oldBreak.isEmpty()) {
-			for (int i = 0; i < complete.size(); i++) {
-				if(complete.get(index).getPort() == newBreak.get(0).getPort()){
-					complete.remove(index);
-				}else if(index == i){  
-					index++;
-				}else
-					break;
-			}
-			complete.addAll(index, newBreak);
-		} else {
-			complete.addAll(newBreak);
+		complete.clear();
+		for (Route set : r) {
+			complete.addAll(set.getBreakPoints());
 		}
+		
+//		
+//		if (!oldBreak.isEmpty()) {
+//			index = complete.indexOf(oldBreak.get(0));
+//			System.out.println("size:" + oldBreak.size());
+//			complete.removeAll(oldBreak);
+//			complete.addAll(index, newBreak);
+//		} else {
+//			complete.addAll(newBreak);
+//		}
+	}
+	
+	private static void removePort(int port){
+		int index = 0;
+		System.out.print(port + ": ");
+		for (int i = 0; i < complete.size(); i++) {
+			System.out.print(complete.get(i));
+			if(port == complete.get(index).getPort()){
+				complete.remove(index);
+			}else
+				index++;
+		}
+		System.out.println();
 	}
 
 	public static ArrayList<BreakPoint> getCompleteList() {

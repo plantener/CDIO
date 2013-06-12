@@ -72,6 +72,7 @@ public class Route {
 		}
 		crash = false;
 		breaksPoints = c.getBreakPoints();
+		breaksPoints.remove(breaksPoints.size()-1);
 		Track.addList(breaksPoints, oldBreaksPoints);
 		System.out.println("Done!");
 	}
