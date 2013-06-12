@@ -17,6 +17,10 @@ public class WaypointQueue {
 		return list.peek();
 	}
 	
+	public Waypoint afterHead() {
+		return list.get(1);
+	}
+	
 	public void shift() {
 		Waypoint p = list.poll();
 		list.add(p);
