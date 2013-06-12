@@ -14,7 +14,7 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
-	public static final	int ARC_RADIUS = 70;
+	public static final	int ARC_RADIUS = 150; // in mm
 	
 	public static final int X_RESOLUTION = 800;
 	public static final int Y_RESOLUTION = 600;
@@ -128,6 +128,7 @@ public class Navigator implements Runnable {
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
+			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
 			
 			gen.doArc(ARC_RADIUS, (float) angle);
 			
