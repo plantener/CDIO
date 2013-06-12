@@ -18,6 +18,10 @@ public class CommandGenerator {
 		com.sendData(NavCommand.TRAVEL_ARC.ordinal(), radius, distance, 0, false);
 	}
 	
+	public void doArc(float radius, float angle) {
+		com.sendData(NavCommand.ARC.ordinal(), radius, angle, 0, false);
+	}
+	
 	public void doRotate(float angle) {
 		com.sendData(NavCommand.ROTATE.ordinal(), angle, 0, 0, false);
 	}

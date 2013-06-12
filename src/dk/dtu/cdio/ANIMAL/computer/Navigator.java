@@ -14,12 +14,13 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
+	public static final	int ARC_RADIUS = 150; // in mm
 	
 	public static final int X_RESOLUTION = 800;
 	public static final int Y_RESOLUTION = 600;
 	
 	public static int DIST_THRESHOLD = 14;
-	public static int ANGLE_THRESHOLD = 3;
+	public static int ANGLE_THRESHOLD = 2;
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -34,9 +35,8 @@ public class Navigator implements Runnable {
 	boolean a = true;
 	
 	private NXTInfo info = (a) ? info_5a : info_5b;
+	private Robot robotRef;
 	private Robot robot;
-	
-//	private double angle = 90;
 	
 	public Navigator() {
 		com = new PCCommunicator(info);
@@ -68,7 +68,7 @@ public class Navigator implements Runnable {
 	public Navigator(Application app) {
 		this();
 		this.app = app;
-		this.robot = (a) ? app.robotA : app.robotB;
+		this.robotRef = (a) ? app.robotA : app.robotB;
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -77,16 +77,19 @@ public class Navigator implements Runnable {
 	
 	public void calibrateLength() {
 		float travelDistance = 300;
+		double avgDistance = 0.0d;
 		//get start position
-		Waypoint start = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
-		gen.doTravel(travelDistance);
-		//get end position
-		Waypoint end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
-		double distance = Utilities.getDistance(start, end);
-		
-		System.out.format("Calibrated to %f%n", travelDistance / distance);
-		MM_PR_PIXEL = (float) (travelDistance / distance);
-		System.out.format("Convservative calibration: %f%n", MM_PR_PIXEL);
+		Waypoint start, end;
+		for (int i = 0; i < 6; i++) {
+			start = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
+			gen.doTravel((float) (travelDistance * Math.pow(-1, i)));
+			end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
+			double distance = Utilities.getDistance(start, end);
+			avgDistance = (distance + i * avgDistance) / (i + 1);
+			System.out.format("[Calibration: %d: %f mm/pixel]%n", i, travelDistance/distance);
+		}
+		MM_PR_PIXEL = (float) (travelDistance / avgDistance);
+		System.out.format("Length calibration: %f%n", MM_PR_PIXEL);
 	}
 	
 //	public static void main(String[] args) {
@@ -100,55 +103,39 @@ public class Navigator implements Runnable {
 	
 	public void go() {
 		boolean running = true;
+		boolean adjustingAngle = true;
 		
 		while(running) {
 			Waypoint next = waypoints.getHead();
 			System.out.format("Next destination: %s%n", next);
-			while(!reachedDestination(next)) {
+			while(adjustingAngle) {
+				robot = robotRef.clone();
 				double robotAngle = Utilities.getRobotAngle(robot);
 				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
 				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
-//				System.out.format("Robot angle %.3f.. Rotation %.3f%n", robotAngle, rotation);
-				double distance;
 				if(Math.abs(rotation) > ANGLE_THRESHOLD) {
 					gen.doRotate((float) rotation);
 				} else {
-					distance = Utilities.getDistance(robot, next);
-					gen.doTravel((float) distance * MM_PR_PIXEL);
+					adjustingAngle = false;
 				}
+				
 			}
 			
-			waypoints.shift();
+			robot = robotRef.clone();
 			
-//			int elements = points.size();
-//			for(int i = 0; i < elements-1; i++) {
-//				Waypoint a, b;
-//				a = points.get(i);
-//				b = points.get(i+1);
-//				if(a.x == b.x && a.y == b.y) {
-//					continue;
-//				}
-//				System.out.format("From %s to %s%n", a, b);
-//				double newAngle = Utilities.getAngle(a, b);
-//				double rotation = Utilities.getRotation(angle, newAngle);
-//				double distance = Utilities.getDistance(a, b);
-//				gen.doRotate((float) rotation);
-//				System.out.format("Angle: %f => ", angle);
-//				angle = (angle + rotation) % 360;
-//				System.out.format("%f%n", angle);
-//				
-//				gen.doTravel((int) (distance * MM_PR_PIXEL));
-//			}
+			double distance = Utilities.getDistance(robot, next);
+			gen.doTravel((float) (distance*MM_PR_PIXEL-ARC_RADIUS));
+			double robotAngle = Utilities.getRobotAngle(robot);
+			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
+			double angle = Math.abs(robotAngle - newAngle);
+			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
+			
+			gen.doArc(ARC_RADIUS, (float) angle);
+			
+			adjustingAngle = true;
+			
+			waypoints.shift();
 		}
-//		while(true) {
-//			try {
-//				Thread.sleep(500);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//		}
 	}
 
 	@Override
