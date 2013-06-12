@@ -1,7 +1,5 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
-import java.util.Queue;
-
 public class CommandGenerator {
 	
 	private PCCommunicator com;
@@ -23,9 +21,7 @@ public class CommandGenerator {
 	}
 	
 	public void doRotate(float angle) {
-//		com.sendData(NavCommand.SET_ACCELERATION.ordinal(), 200, 0, 0, false);
 		com.sendData(NavCommand.ROTATE.ordinal(), angle, 0, 0, false);
-//		com.sendData(NavCommand.SET_ACCELERATION.ordinal(), 1200, 0, 0, false);
 	}
 	
 	public void setTravelSpeed(float speed) {
@@ -51,10 +47,4 @@ public class CommandGenerator {
 	public void sendClear() {
 		com.sendData(NavCommand.CLEAR.ordinal(), 0, 0, 0, false);
 	}
-	
-	// 2 * radius * pi
-	public void forwardArcRight(float angle, float radius) {
-		
-	}
-
 }

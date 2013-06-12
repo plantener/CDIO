@@ -1,9 +1,6 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import routeCalculation.Connect;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
@@ -14,19 +11,20 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
-	public static final int STOP = 100;
+	public static final int STOP = 100; // in mm
 	public static final	int ARC_RADIUS = 200; // in mm
-	public static final int BITES = 250;
+	public static final int BITES = 250; // in mm
 	
 	public static final int X_RESOLUTION = 400;
 	public static final int Y_RESOLUTION = 300;
 	
 	public static final int ROTATE_SPEED = 100;
 	
+	// number of calibrations before running
 	public static final int CALIBRATIONS = 4;
 	
-	public static int DIST_THRESHOLD = 14;
-	public static int ANGLE_THRESHOLD = 5;
+	public static int DIST_THRESHOLD = 14; // pixels
+	public static int ANGLE_THRESHOLD = 5; //degrees.
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -35,7 +33,6 @@ public class Navigator implements Runnable {
 	private CommandGenerator gen;
 	private Application app;
 	
-	private Scanner scanner;
 	private WaypointQueue waypoints;
 	
 	boolean useRobotA;
@@ -44,19 +41,15 @@ public class Navigator implements Runnable {
 	public NXTInfo info;
 	public Robot robot;
 	
-	public Navigator(boolean useRobotA) {
+	public Navigator(boolean useRobotA, Application app) {
 		this.useRobotA = useRobotA;
+		this.app = app;
+		this.robot = (useRobotA) ? this.app.robotA : this.app.robotB;
 		info = (useRobotA) ? info_5a : info_5b;
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
 		com.connect();
-	}
-	
-	public Navigator(boolean useRobotA, Application app) {
-		this(useRobotA);
-		this.app = app;
-		this.robot = (useRobotA) ? app.robotA : app.robotB;
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -134,25 +127,11 @@ public class Navigator implements Runnable {
 //			} else if (robotAngle-maxAngle < newAngle && newAngle < robotAngle) {
 //				turn = -1;
 //			}
-			int arcDir;
-			if(robotAngle < 0) {
-				if(newAngle < robotAngle) {
-					arcDir = 1;
-				} else if (newAngle > robotAngle+180) {
-					arcDir = 1;
-				} else {
-					arcDir = -1;
-				}
-			}
-			else
-			{
-				if(newAngle > robotAngle) {
-					arcDir = -1;
-				} else if (robotAngle - 180 > newAngle) {
-					arcDir = -1;
-				} else {
-					arcDir = 1;
-				}
+			int arcDir; // 1 = left turn, -1 = right turn
+			if(robotAngle > 0) {
+				arcDir = (robotAngle > newAngle && newAngle > robotAngle - 180) ? 1 : -1;
+			} else {
+				arcDir = (robotAngle < newAngle && newAngle < robotAngle + 180) ? -1 : 1;
 			}
 			if(angle > 180) {
 				angle = 360 - angle;

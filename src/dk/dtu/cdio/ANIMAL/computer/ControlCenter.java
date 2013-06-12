@@ -1,32 +1,29 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
-import routeCalculation.Track;
 import main.Application;
+import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
 	
-	private static final double DISTANCE_THRESHOLD = 300/Navigator.MM_PR_PIXEL;
+	private static final double DISTANCE_THRESHOLD = 300; // in mm
 	
 	private Application app;
 	private Navigator navA, navB;
 	
-	private Waypoint middle = new Waypoint(Navigator.X_RESOLUTION/2, Navigator.Y_RESOLUTION/2);
-	
 	public ControlCenter(Application app) {
 		this.app = app;
-		navA = new Navigator(true, app);
-		navB = new Navigator(false, app);
+		navA = new Navigator(true, this.app);
+		navB = new Navigator(false, this.app);
 	}
 
 	@Override
 	public void run() {
 		boolean running = true;
-		boolean anyPaused = false;
 		navA.feedBreakpoints(Track.getCompleteList());
 		navB.feedBreakpoints(Track.getCompleteList());
 		System.out.println("Starting A:");
 		new Thread(navA).start();
-		while(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot))
+		while(DISTANCE_THRESHOLD / Navigator.MM_PR_PIXEL > Utilities.getDistance(navA.robot, navB.robot))
 		{
 			try {
 				Thread.sleep(500);
@@ -38,16 +35,21 @@ public class ControlCenter implements Runnable {
 		System.out.println("Starting B:");
 		new Thread(navB).start();
 		while(running) {
-			if(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot)) {
-				Navigator temp = theOneBehind();
-				temp.paused = true;
-				System.out.format("Pausing %s%n", temp.info.name);
-			}
-			else
-			{
-				navA.paused = false;
-				navB.paused = false;
-				System.out.println("Unpausing both");
+			if(DISTANCE_THRESHOLD / Navigator.MM_PR_PIXEL > Utilities.getDistance(navA.robot, navB.robot)) {
+				if(!navA.paused && !navB.paused) {
+					Navigator temp = theOneBehind();
+					temp.paused = true;
+					System.out.format("Pausing %s%n", temp.info.name);
+				}
+			} else {
+				if(navA.paused) {
+					navA.paused = false;
+					System.out.println("Unpausing A");
+				}
+				if(navB.paused) {
+					navB.paused = false;
+					System.out.println("Unpausing B");
+				}
 			}
 			
 			try {
