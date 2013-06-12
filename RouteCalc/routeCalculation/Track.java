@@ -18,13 +18,15 @@ public class Track {
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int OFFSET = 16;
+	private final int OFFSET = 10;
+	
+	private final int UPDATE_OFFSET = 0;
 	
 	public Track(ArrayList<ObjectOnMap> ports, ArrayList<Box> red, ArrayList<Box> green) {
 		this.ports = ports;
 		this.boxes.addAll(red);
 		this.boxes.addAll(green);
-		
+		System.out.println(red.size() + " " + green.size() + " " + boxes.size());
 		initRoute();
 		initBoxes();
 		for (Route start : r) {
@@ -34,18 +36,19 @@ public class Track {
 
 	public static void addList(ArrayList<BreakPoint> newBreak,
 			ArrayList<BreakPoint> oldBreak) {
-		int index;
+		int index = 0;
 
 		newBreak.remove(newBreak.size()-1);
 		
 		if (!oldBreak.isEmpty()) {
-			for (BreakPoint breakPoint : complete) {
-				System.out.print(breakPoint + "" + (breakPoint == oldBreak.get(0)) + " ");
+			for (int i = 0; i < complete.size(); i++) {
+				if(complete.get(index).getPort() == newBreak.get(0).getPort()){
+					complete.remove(index);
+				}else if(index == i){  
+					index++;
+				}else
+					break;
 			}
-			System.out.println();
-			index = complete.indexOf(oldBreak.get(0));
-			System.out.println(oldBreak.get(0) + " " + index);
-			complete.removeAll(oldBreak);
 			complete.addAll(index, newBreak);
 		} else {
 			complete.addAll(newBreak);
@@ -72,7 +75,6 @@ public class Track {
 	}
 	
 	private void initBoxes(){
-		boxes.clear();
 		for (Box box : boxes) {
 			Box temp = box;
 			temp.setX(temp.getX() - OFFSET);
@@ -84,11 +86,16 @@ public class Track {
 	}
 
 	public void updateObjects(ArrayList<ObjectOnMap> ports, ArrayList<Box> red, ArrayList<Box> green) {
-		if(ports.size() != this.r.size())
+		if(ports.size() != this.r.size()){
 			initRoute();
-		else
+		}
+		else{
 			updateNewPort(ports);
+		}
 		if(boxes.size() != (red.size()+green.size())){
+			boxes.clear();
+			this.boxes.addAll(red);
+			this.boxes.addAll(green);
 			initBoxes();
 		}else
 			updateBoxes(red, green);
@@ -97,10 +104,9 @@ public class Track {
 	public void updateNewPort(ArrayList<ObjectOnMap> newObjects) {
 		int size = newObjects.size()-1;
 		for (int i = 0; i < newObjects.size(); i++) {
-			//System.out.println("123 "+i);
-			if (((Port) newObjects.get(i)).getMidX() != r.get(i).getStart().getMidX()
-					|| ((Port) newObjects.get(i)).getMidY() != r.get(i).getStart()
-							.getMidY()) {
+			if (!(((Port) newObjects.get(i)).getMidX() >= r.get(i).getStart().getMidX()-UPDATE_OFFSET && ((Port) newObjects.get(i)).getMidX() <= r.get(i).getStart().getMidX()+UPDATE_OFFSET)
+					||!(((Port) newObjects.get(i)).getMidY() >= r.get(i).getStart().getMidY()-UPDATE_OFFSET && ((Port) newObjects.get(i)).getMidY() <= r.get(i).getStart().getMidY()+UPDATE_OFFSET)
+					) {
 				System.out.println("updates" + i);
 				if (i == 0) {
 					r.get(i).update((Port) newObjects.get(i), (Port) newObjects.get(i + 1));
@@ -126,7 +132,7 @@ public class Track {
 	}
 
 	public void updateBoxes(ArrayList<Box> red, ArrayList<Box> green) {
-		ArrayList<Box> newBoxes = new ArrayList<Box>();;
+		ArrayList<Box> newBoxes = new ArrayList<Box>();
 		newBoxes.addAll(red);
 		newBoxes.addAll(green);
 		for (int i = 0; i < boxes.size(); i++) {
