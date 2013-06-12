@@ -23,7 +23,9 @@ public class CommandGenerator {
 	}
 	
 	public void doRotate(float angle) {
+//		com.sendData(NavCommand.SET_ACCELERATION.ordinal(), 200, 0, 0, false);
 		com.sendData(NavCommand.ROTATE.ordinal(), angle, 0, 0, false);
+//		com.sendData(NavCommand.SET_ACCELERATION.ordinal(), 1200, 0, 0, false);
 	}
 	
 	public void setTravelSpeed(float speed) {

@@ -14,7 +14,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 30;
+	private int offset = 20;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;

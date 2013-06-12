@@ -3,11 +3,7 @@ package dk.dtu.cdio.ANIMAL.computer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTConnector;

@@ -29,7 +29,7 @@ public class Main {
 //		objectList = app.objectList;
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
-		for(i=0; i < 500; i++) {			
+		for(i=0; i < 200; i++) {			
 			app.frameProcessing();
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
@@ -44,7 +44,13 @@ public class Main {
 		double fps = (double)frames/((endTime-startTime)/1000000000);
 		System.out.println("FPS: " + fps);
 		System.out.println("############################");
-		sc.nextLine();		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		sc.nextLine();		
 		nav.feedBreakpoints(Track.getCompleteList());
 		new Thread(nav).start();
 		while(true) {

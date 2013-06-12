@@ -110,6 +110,8 @@ public void setRobotId(String robotId){
 		clone.setBackY(backY);
 		clone.setFrontHeight(frontHeight);
 		clone.setFrontWidth(frontWidth);
+		clone.setFrontX(frontX);
+		clone.setFrontY(frontY);
 		clone.setRobotId(robotId);
 		return clone;
 	}

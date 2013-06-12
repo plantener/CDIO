@@ -14,13 +14,19 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
-	public static final	int ARC_RADIUS = 150; // in mm
+	public static final int STOP = 100;
+	public static final	int ARC_RADIUS = 200; // in mm
+	public static final int BITES = 250;
 	
-	public static final int X_RESOLUTION = 800;
-	public static final int Y_RESOLUTION = 600;
+	public static final int X_RESOLUTION = 400;
+	public static final int Y_RESOLUTION = 300;
+	
+	public static final int ROTATE_SPEED = 100;
+	
+	public static final int CALIBRATIONS = 4;
 	
 	public static int DIST_THRESHOLD = 14;
-	public static int ANGLE_THRESHOLD = 2;
+	public static int ANGLE_THRESHOLD = 5;
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -32,7 +38,7 @@ public class Navigator implements Runnable {
 	private Scanner scanner;
 	private WaypointQueue waypoints;
 	
-	boolean a = true;
+	boolean a = false;
 	
 	private NXTInfo info = (a) ? info_5a : info_5b;
 	private Robot robotRef;
@@ -42,33 +48,12 @@ public class Navigator implements Runnable {
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
-//		scanner = new Scanner(System.in);
-//		scanner.nextLine();
-//		com.connect();
-//		gen.setRotateSpeed(150);
-//		gen.setTravelSpeed(500);
-		
-//		calibrateLength();
-		
-//		scanner.nextLine();
-		
-//		gen.doRotate(150);
-//		gen.doTravel(250);
-//		gen.doRotate(180);
-//		gen.doTravel(250);
-//		gen.setAcceleration(500);
-//		waypoints.generatePoints();
-		
-//		while(true) {
-//			scanner.nextLine();
-//			com.testLatency();
-//		}
 	}
 	
 	public Navigator(Application app) {
 		this();
 		this.app = app;
-		this.robotRef = (a) ? app.robotA : app.robotB;
+		this.robot = (a) ? app.robotA : app.robotB;
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -80,7 +65,7 @@ public class Navigator implements Runnable {
 		double avgDistance = 0.0d;
 		//get start position
 		Waypoint start, end;
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < CALIBRATIONS; i++) {
 			start = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
 			gen.doTravel((float) (travelDistance * Math.pow(-1, i)));
 			end = new Waypoint(robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY());
@@ -104,12 +89,12 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		boolean adjustingAngle = true;
-		
+
+		outerloop:
 		while(running) {
 			Waypoint next = waypoints.getHead();
 			System.out.format("Next destination: %s%n", next);
 			while(adjustingAngle) {
-				robot = robotRef.clone();
 				double robotAngle = Utilities.getRobotAngle(robot);
 				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
 				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
@@ -121,16 +106,22 @@ public class Navigator implements Runnable {
 				
 			}
 			
-			robot = robotRef.clone();
-			
-			double distance = Utilities.getDistance(robot, next);
-			gen.doTravel((float) (distance*MM_PR_PIXEL-ARC_RADIUS));
+			double distance;
+			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > STOP+BITES) {
+				gen.doTravel(BITES);
+				adjustingAngle = true;
+				continue outerloop;
+			}
+			gen.doTravel((float) (distance*MM_PR_PIXEL - STOP));
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
+			if(angle > 180) {
+				angle = 360 - angle;
+			}
 			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
 			
-			gen.doArc(ARC_RADIUS, (float) angle);
+			gen.doArc(-ARC_RADIUS, (float) -angle);
 			
 			adjustingAngle = true;
 			
@@ -142,6 +133,8 @@ public class Navigator implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		com.connect();
+		gen.setRotateSpeed(ROTATE_SPEED);
+		gen.setTravelSpeed(300);
 		calibrateLength();
 		go();
 	}

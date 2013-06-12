@@ -46,7 +46,7 @@ public class Application {
 	public Robot robotA;
 	public Robot robotB;
 	
-	public static final int SQ_THRESHOLD = 12;
+	public static final int SQ_THRESHOLD = 6;
 
 	public Application() {
 		ci = new CaptureImage();
