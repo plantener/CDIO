@@ -6,6 +6,8 @@ import java.util.Scanner;
 import models.Box;
 import models.ObjectOnMap;
 import routeCalculation.Track;
+import sun.awt.windows.ThemeReader;
+import dk.dtu.cdio.ANIMAL.computer.ControlCenter;
 import dk.dtu.cdio.ANIMAL.computer.Navigator;
 
 public class Main {
@@ -17,7 +19,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		Application app = new Application();
-		Navigator nav = new Navigator(app);
+//		Navigator nav = new Navigator(app);
+		ControlCenter control = new ControlCenter(app);
 
 		Scanner sc = new Scanner(System.in);
 		int i = 0;
@@ -51,8 +54,9 @@ public class Main {
 			e.printStackTrace();
 		}
 //		sc.nextLine();		
-		nav.feedBreakpoints(Track.getCompleteList());
-		new Thread(nav).start();
+//		nav.feedBreakpoints(Track.getCompleteList());
+//		new Thread(nav).start();
+		new Thread(control).start();
 		while(true) {
 			app.frameProcessing();
 			ports = app.sortedPorts;

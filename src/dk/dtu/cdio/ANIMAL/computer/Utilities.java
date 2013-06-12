@@ -29,6 +29,18 @@ public class Utilities {
 		return getAngle(r.getFrontMidX(), Navigator.Y_RESOLUTION-r.getFrontmidY(), p.x, p.y);
 	}
 	
+	public static double getAngleRelativeToCenter(int x, int y) {
+		return getAngle(Navigator.X_RESOLUTION/2, Navigator.Y_RESOLUTION/2, x, y);
+	}
+	
+	public static double getAngleRelativeToCenter(Robot r) {
+		return getAngleRelativeToCenter(r.getFrontMidX(), r.getFrontmidY());
+	}
+	
+	public static double getAngleRelativeToCenter(Waypoint p) {
+		return getAngleRelativeToCenter(p.x, p.y);
+	}
+	
 	public static double getRobotAngle(Robot robot) {
 		return getAngle(robot.getBackMidX(), Navigator.Y_RESOLUTION-robot.getBackMidY(), robot.getFrontMidX(), Navigator.Y_RESOLUTION-robot.getFrontmidY());
 //		return getAngle(robot.getFrontMidX(), robot.getFrontmidY(), robot.getBackMidX(), robot.getBackMidY());
@@ -44,6 +56,10 @@ public class Utilities {
 	
 	public static double getDistance(Waypoint a, Waypoint b) {
 		return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+	}
+	
+	public static double getDistance(Robot a, Robot b) {
+		return getDistance(a.getFrontMidX(), a.getFrontmidY(), b.getFrontMidX(), b.getFrontmidY());
 	}
 	
 	// a = 90

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import models.BreakPoint;
+import models.Robot;
 
 public class WaypointQueue {
 	
@@ -37,6 +38,15 @@ public class WaypointQueue {
 		for(Waypoint p : list) {
 			System.out.println(p);
 		}
+	}
+	
+	public void shiftToNextBreakpoint(Robot r) {
+//		Waypoint middle = new Waypoint(, y)
+		double robotAngle = Utilities.getAngle(Navigator.X_RESOLUTION/2, Navigator.Y_RESOLUTION/2, r.getFrontMidX(), r.getFrontmidY());
+		if (robotAngle > 0) {
+			
+		}
+		
 	}
 	
 	public void generatePoints() {

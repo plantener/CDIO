@@ -38,22 +38,24 @@ public class Navigator implements Runnable {
 	private Scanner scanner;
 	private WaypointQueue waypoints;
 	
-	boolean a = false;
+	boolean useRobotA;
+	boolean paused = false;
 	
-	private NXTInfo info = (a) ? info_5a : info_5b;
-	private Robot robotRef;
-	private Robot robot;
+	private NXTInfo info;
+	public Robot robot;
 	
-	public Navigator() {
+	public Navigator(boolean useRobotA) {
+		this.useRobotA = useRobotA;
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
+		info = (useRobotA) ? info_5a : info_5b;
 	}
 	
-	public Navigator(Application app) {
-		this();
+	public Navigator(boolean useRobotA, Application app) {
+		this(useRobotA);
 		this.app = app;
-		this.robot = (a) ? app.robotA : app.robotB;
+		this.robot = (useRobotA) ? app.robotA : app.robotB;
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -92,6 +94,14 @@ public class Navigator implements Runnable {
 
 		outerloop:
 		while(running) {
+			while(paused) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			Waypoint next = waypoints.getHead();
 			System.out.format("Next destination: %s%n", next);
 			while(adjustingAngle) {
@@ -126,6 +136,7 @@ public class Navigator implements Runnable {
 			adjustingAngle = true;
 			
 			waypoints.shift();
+			
 		}
 	}
 
