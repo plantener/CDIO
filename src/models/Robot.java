@@ -1,6 +1,6 @@
 package models;
 
-public class Robot extends ObjectOnMap {
+public class Robot extends ObjectOnMap implements Cloneable {
 
 	
 	private int frontX;
@@ -100,6 +100,18 @@ public void setRobotId(String robotId){
 				+ ", backWidth=" + backWidth + ", frontMidX=" + frontMidX
 				+ ", frontmidY=" + frontmidY + ", backMidX=" + backMidX
 				+ ", backMidY=" + backMidY; 
+	}
+	
+	public Robot clone() {
+		Robot clone = new Robot();
+		clone.setBackHeight(backHeight);
+		clone.setBackWidth(backWidth);
+		clone.setBackX(backX);
+		clone.setBackY(backY);
+		clone.setFrontHeight(frontHeight);
+		clone.setFrontWidth(frontWidth);
+		clone.setRobotId(robotId);
+		return clone;
 	}
 	
 }

@@ -14,6 +14,7 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
+	public static final	int ARC_RADIUS = 70;
 	
 	public static final int X_RESOLUTION = 800;
 	public static final int Y_RESOLUTION = 600;
@@ -34,6 +35,7 @@ public class Navigator implements Runnable {
 	boolean a = true;
 	
 	private NXTInfo info = (a) ? info_5a : info_5b;
+	private Robot robotRef;
 	private Robot robot;
 	
 	public Navigator() {
@@ -66,7 +68,7 @@ public class Navigator implements Runnable {
 	public Navigator(Application app) {
 		this();
 		this.app = app;
-		this.robot = (a) ? app.robotA : app.robotB;
+		this.robotRef = (a) ? app.robotA : app.robotB;
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -101,34 +103,35 @@ public class Navigator implements Runnable {
 	
 	public void go() {
 		boolean running = true;
-		boolean adjusting = true;
-		int arcRadius = 70;
+		boolean adjustingAngle = true;
 		
 		while(running) {
 			Waypoint next = waypoints.getHead();
 			System.out.format("Next destination: %s%n", next);
-			while(adjusting) {
+			while(adjustingAngle) {
+				robot = robotRef.clone();
 				double robotAngle = Utilities.getRobotAngle(robot);
 				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
 				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
-				double distance;
 				if(Math.abs(rotation) > ANGLE_THRESHOLD) {
 					gen.doRotate((float) rotation);
 				} else {
-					adjusting = false;
+					adjustingAngle = false;
 				}
 				
 			}
 			
+			robot = robotRef.clone();
+			
 			double distance = Utilities.getDistance(robot, next);
-			gen.doTravel((float) (distance*MM_PR_PIXEL-arcRadius));
+			gen.doTravel((float) (distance*MM_PR_PIXEL-ARC_RADIUS));
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
 			
-			gen.doArc(arcRadius, (float) angle);
+			gen.doArc(ARC_RADIUS, (float) angle);
 			
-			adjusting = true;
+			adjustingAngle = true;
 			
 			waypoints.shift();
 		}
