@@ -4,16 +4,21 @@ package utilities;
 import java.util.ArrayList;
 
 import models.BreakPoint;
+import models.ObjectOnMap;
+import models.Port;
 import routeCalculation.Track;
 
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvContour;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.googlecode.javacv.cpp.opencv_core.CvFont;
+import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 
 import dk.dtu.cdio.ANIMAL.computer.Navigator;
 
@@ -122,5 +127,13 @@ public class ImageUtils {
 		canvasAlgorithm.showImage(resized);
 		//		opencv_core.cvReleaseImage(resized);
 	}
+	
+	public void drawText(IplImage resizedFrame, ArrayList<ObjectOnMap> sortedPorts){
+		CvFont font = new CvFont(1, 1, 1);
+		for (ObjectOnMap obj : sortedPorts) {
+			opencv_core.cvPutText(resizedFrame,"" + (((Port)obj).getPairId()),cvPoint(((Port)obj).getMidX(), ((Port)obj).getMidY()), font, CvScalar.BLUE);
 
+		}
+	}
+	
 }

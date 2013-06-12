@@ -3,16 +3,18 @@ package models;
 public class BreakPoint {
 	private int x;
 	private int y;
-	private double a;
+	private int port;
 
-	public BreakPoint(int x, int y, double a) {
-		this.x = x;
-		this.y = y;
-		this.a = a;
-	}
 	public BreakPoint(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.port = 0;
+	}
+	
+	public BreakPoint(int x, int y, int port) {
+		this.x = x;
+		this.y = y;
+		this.port = port;
 	}
 	
 	public int getX() {
@@ -31,12 +33,12 @@ public class BreakPoint {
 		this.y = y;
 	}
 	
-	public double getA() {
-		return a;
+	public int getPort() {
+		return port;
 	}
 	
-	public void setA(double a) {
-		this.a = a;
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	@Override

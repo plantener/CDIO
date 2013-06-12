@@ -14,7 +14,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 20;
+	private int offset = 30;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
@@ -22,9 +22,12 @@ public class CalculateRoute {
 
 	private BreakPoint pre;
 	
+	private int port;
+	
 	public CalculateRoute(Port start, Port end) {
-		this.end = new BreakPoint(end.getMidX(), end.getMidY());
-		this.nextStart = new BreakPoint(start.getMidX(), start.getMidY());
+		this.port = start.getPairId();
+		this.end = new BreakPoint(end.getMidX(), end.getMidY(), end.getPairId());
+		this.nextStart = new BreakPoint(start.getMidX(), start.getMidY(), port);
 		this.nextEnd = this.end;
 		breakPoints.add(this.nextStart);
 		breakPoints.add(this.end);
@@ -43,18 +46,18 @@ public class CalculateRoute {
 		if (b.getColor() == 1) { // red
 			if (b.getX() == c.getX()) { // Left
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
-						b.getY()-offset));
+						b.getY()-offset, port));
 			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
-						b.getY()+b.getHeight()+offset));
+						b.getY()+b.getHeight()+offset, port));
 			} else if (b.getY() == c.getY()) { // Top
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
-						b.getY()-offset));
+						b.getY()-offset, port));
 			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
-						b.getY()+b.getHeight()));
+						b.getY()+b.getHeight(), port));
 			}
-		} else if (b.getColor() == 1) {
+		} else if (b.getColor() == 2) {
 			if (b.getX() == c.getX()) { // Left
 
 			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
