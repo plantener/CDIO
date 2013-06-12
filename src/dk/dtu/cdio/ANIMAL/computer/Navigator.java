@@ -39,14 +39,18 @@ public class Navigator {
 		com.connect();
 		gen.setRotateSpeed(200);
 		
-		calibrateLength();
+//		calibrateLength();
+		int i;
+		while((i = scanner.nextInt()) != 0) {
+			gen.doRotate(i);
+		}
 		
-		scanner.nextLine();
+//		scanner.nextLine();
 		
-		gen.doRotate(150);
-		gen.doTravel(250);
-		gen.doRotate(180);
-		gen.doTravel(250);
+//		gen.doRotate(150);
+//		gen.doTravel(250);
+//		gen.doRotate(180);
+//		gen.doTravel(250);
 //		gen.setAcceleration(500);
 //		waypoints.generatePoints();
 		
