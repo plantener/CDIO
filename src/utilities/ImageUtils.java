@@ -31,11 +31,13 @@ public class ImageUtils {
 	CvSeq contours;
 
 	private CanvasFrame canvasAlgorithm;
+	private CanvasFrame imgSmoothed;
 
 
 	public ImageUtils(){
 		canvasAlgorithm = new CanvasFrame("algorithm");
 //		canvasResized = new CanvasFrame("resized");
+//		imgSmoothed= new CanvasFrame("smoothed");
 	}
 
 	/**
@@ -51,6 +53,8 @@ public class ImageUtils {
 
 		//used for debugging purposes
 //		canvasResized.showImage(resizedImage);
+		smoothImage(resizedImage);
+//		imgSmoothed.showImage(resizedImage);
 
 		return resizedImage;
 	}
@@ -135,5 +139,8 @@ public class ImageUtils {
 
 		}
 	}
-	
+	public void smoothImage(IplImage threshold){
+		opencv_imgproc.cvSmooth(threshold, threshold, opencv_imgproc.CV_GAUSSIAN, 3);
+		
+	}
 }
