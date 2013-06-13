@@ -20,7 +20,7 @@ public class Track {
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int OFFSET = 10;
+	private final int OFFSET = 6;
 
 	private final int UPDATE_OFFSET = 0;
 

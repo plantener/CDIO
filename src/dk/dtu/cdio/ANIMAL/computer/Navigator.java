@@ -23,8 +23,10 @@ public class Navigator implements Runnable {
 	// number of calibrations before running
 	public static final int CALIBRATIONS = 4;
 	
+	public String name;
+	
 	public static int DIST_THRESHOLD = 14; // pixels
-	public static int ANGLE_THRESHOLD = 5; //degrees.
+	public static int ANGLE_THRESHOLD = 4; //degrees.
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -45,6 +47,7 @@ public class Navigator implements Runnable {
 		this.useRobotA = useRobotA;
 		this.app = app;
 		this.robot = (useRobotA) ? this.app.robotA : this.app.robotB;
+		this.name = (useRobotA) ? "Robot A" : "Robot B";
 		info = (useRobotA) ? info_5a : info_5b;
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
@@ -85,6 +88,7 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		boolean adjustingAngle = true;
+		Waypoint next;
 
 		outerloop:
 		while(running) {
@@ -96,8 +100,8 @@ public class Navigator implements Runnable {
 					e.printStackTrace();
 				}
 			}
-			Waypoint next = waypoints.getHead();
-			System.out.format("Next destination: %s%n", next);
+			next = waypoints.getHead();
+			System.out.format("%s : Next destination: %s%n", name, next);
 			while(adjustingAngle) {
 				double robotAngle = Utilities.getRobotAngle(robot);
 //				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
@@ -120,38 +124,26 @@ public class Navigator implements Runnable {
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
-//			int turn = 1;
-//			int maxAngle = (robotAngle < 0) ? -180 : 180;
-//			if(robotAngle < newAngle && newAngle < robotAngle-maxAngle) {
-//				turn =1;
-//			} else if (robotAngle-maxAngle < newAngle && newAngle < robotAngle) {
-//				turn = -1;
-//			}
 			int arcDir; // 1 = left turn, -1 = right turn
-//			if(robotAngle > 0) {
-//				arcDir = (robotAngle > newAngle && newAngle > robotAngle - 180) ? 1 : -1;
-//			} else {
-//				arcDir = (robotAngle < newAngle && newAngle < robotAngle + 180) ? -1 : 1;
-//			}
-//			if(angle > 180) {
-//				angle = 360 - angle;
-//			}
+			if(angle > 180) {
+				angle = 360 - angle;
+			}
 			
 			if(robotAngle < 0) {
-				if(newAngle < robotAngle  || newAngle+180 < robotAngle) {
+				if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
 					arcDir = -1;
 				} else {
 					arcDir = 1;
 				}
 			} else {
-				if(newAngle > robotAngle || newAngle < robotAngle - 180) {
+				if(robotAngle < newAngle || newAngle < robotAngle - 180) {
 					arcDir = 1;
 				} else {
 					arcDir = -1;
 				}
 			}
 			
-//			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
+			System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f]%n", name, robotAngle, newAngle, angle);
 			
 			gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
 			

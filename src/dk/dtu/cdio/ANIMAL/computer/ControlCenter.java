@@ -5,7 +5,7 @@ import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
 	
-	private static final double DISTANCE_THRESHOLD = 300; // in mm
+	private static final double DISTANCE_THRESHOLD = 450; // in mm
 	
 	private Application app;
 	private Navigator navA, navB;
@@ -53,7 +53,7 @@ public class ControlCenter implements Runnable {
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

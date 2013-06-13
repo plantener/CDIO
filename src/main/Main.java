@@ -19,9 +19,15 @@ public class Main {
 	private static ArrayList<Box> greenBoxes;
 
 	public static void main(String[] args) {
+		boolean runRobots = true;
+		if(args.length > 0) {
+			runRobots = false;
+		}
 		Application app = new Application();
-//		Navigator nav = new Navigator(app);
-		ControlCenter control = new ControlCenter(app);
+		ControlCenter control = null;
+		if(runRobots) {
+			 control = new ControlCenter(app);
+		}
 
 		Scanner sc = new Scanner(System.in);
 		int i = 0;
@@ -54,10 +60,9 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		sc.nextLine();		
-//		nav.feedBreakpoints(Track.getCompleteList());
-//		new Thread(nav).start();
-		new Thread(control).start();
+		if(runRobots) {
+			new Thread(control).start();
+		}
 		while(true) {
 			app.frameProcessing();
 			ports = app.sortedPorts;
@@ -65,7 +70,9 @@ public class Main {
 			greenBoxes = app.greenBoxes;
 //			i++;
 //			System.out.println("BILLEDE NUMMER: " + i);
-//			t.updateObjects(ports, redBoxes, greenBoxes);
+			if(!runRobots) {
+				t.updateObjects(ports, redBoxes, greenBoxes);
+			}
 		}
 //		System.out.println("FPS: " + fps);
 	}
