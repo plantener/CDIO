@@ -128,14 +128,29 @@ public class Navigator implements Runnable {
 //				turn = -1;
 //			}
 			int arcDir; // 1 = left turn, -1 = right turn
-			if(robotAngle > 0) {
-				arcDir = (robotAngle > newAngle && newAngle > robotAngle - 180) ? 1 : -1;
+//			if(robotAngle > 0) {
+//				arcDir = (robotAngle > newAngle && newAngle > robotAngle - 180) ? 1 : -1;
+//			} else {
+//				arcDir = (robotAngle < newAngle && newAngle < robotAngle + 180) ? -1 : 1;
+//			}
+//			if(angle > 180) {
+//				angle = 360 - angle;
+//			}
+			
+			if(robotAngle < 0) {
+				if(newAngle < robotAngle  || newAngle+180 < robotAngle) {
+					arcDir = -1;
+				} else {
+					arcDir = 1;
+				}
 			} else {
-				arcDir = (robotAngle < newAngle && newAngle < robotAngle + 180) ? -1 : 1;
+				if(newAngle > robotAngle || newAngle < robotAngle - 180) {
+					arcDir = 1;
+				} else {
+					arcDir = -1;
+				}
 			}
-			if(angle > 180) {
-				angle = 360 - angle;
-			}
+			
 //			System.out.format("# Arc'ing: [%.2f -> %.2f : %.2f]%n", robotAngle, newAngle, angle);
 			
 			gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
