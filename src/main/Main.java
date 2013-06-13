@@ -54,12 +54,6 @@ public class Main {
 		double fps = (double)frames/((endTime-startTime)/1000000000);
 		System.out.println("FPS: " + fps);
 		System.out.println("############################");
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		if(runRobots) {
 			new Thread(control).start();
 		}

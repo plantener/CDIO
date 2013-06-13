@@ -9,9 +9,9 @@ import models.BreakPoint;
 import models.Robot;
 
 public class Navigator implements Runnable {
-	
+
 	public static float MM_PR_PIXEL = 3.0f;
-	public int STOP = 100; // in mm
+	public int STOP_DIST = 100; // in mm
 	public int ARC_RADIUS = 200; // in mm
 	public static final int BITES = 250; // in mm
 	
@@ -113,8 +113,12 @@ public class Navigator implements Runnable {
 				
 			}
 			
+			float factor = 1.5f; // a scaling factor for arcradius
+			float stopFactor = 1.9f; // a scaling factor for stop distance
+			int extraStop = (int) ((factor * 180 + 60) / stopFactor);
+
 			double distance;
-			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > 192+BITES) {
+			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > extraStop+BITES) {
 				gen.doTravel(BITES);
 				adjustingAngle = true;
 				continue outerloop;
@@ -125,11 +129,16 @@ public class Navigator implements Runnable {
 			if(angle > 180) {
 				angle = 360 - angle;
 			}
-			float factor = 2.0f;
 			ARC_RADIUS = (int) (factor * 180 + 60 - factor * angle); 
-			STOP = ARC_RADIUS / 2;
+			STOP_DIST = (int) (ARC_RADIUS / stopFactor);
 			
-			gen.doTravel((float) (distance*MM_PR_PIXEL - STOP));
+			if(distance * MM_PR_PIXEL > STOP_DIST) {
+				gen.doTravel((float) (distance*MM_PR_PIXEL - STOP_DIST));
+			} else {
+				STOP_DIST = (int) (distance * MM_PR_PIXEL);
+				ARC_RADIUS = (int) (STOP_DIST * stopFactor);
+			}
+
 			int arcDir; // 1 = left turn, -1 = right turn
 			
 			if(robotAngle < 0) {
@@ -146,7 +155,7 @@ public class Navigator implements Runnable {
 				}
 			}
 			
-			System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP, ARC_RADIUS);
+			System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP_DIST, ARC_RADIUS);
 			
 			gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
 			
@@ -162,7 +171,9 @@ public class Navigator implements Runnable {
 		// TODO Auto-generated method stub
 		gen.setRotateSpeed(ROTATE_SPEED);
 		gen.setTravelSpeed(300);
-		calibrateLength();
+		if(name.equals("Robot A")) {
+			calibrateLength();
+		}
 		go();
 	}
 	
