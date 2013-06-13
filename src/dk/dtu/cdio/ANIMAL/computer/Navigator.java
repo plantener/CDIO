@@ -123,6 +123,8 @@ public class Navigator implements Runnable {
 				adjustingAngle = true;
 				continue outerloop;
 			}
+			double breakpointDistance = Utilities.getDistance(next, waypoints.afterHead());
+
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
@@ -131,33 +133,36 @@ public class Navigator implements Runnable {
 			}
 			ARC_RADIUS = (int) (factor * 180 + 60 - factor * angle); 
 			STOP_DIST = (int) (ARC_RADIUS / stopFactor);
+			if(breakpointDistance * MM_PR_PIXEL < STOP_DIST) {
 			
-			if(distance * MM_PR_PIXEL > STOP_DIST) {
-				gen.doTravel((float) (distance*MM_PR_PIXEL - STOP_DIST));
-			} else {
-				STOP_DIST = (int) (distance * MM_PR_PIXEL);
-				ARC_RADIUS = (int) (STOP_DIST * stopFactor);
-			}
-
-			int arcDir; // 1 = left turn, -1 = right turn
-			
-			if(robotAngle < 0) {
-				if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
-					arcDir = -1;
+				if(distance * MM_PR_PIXEL > STOP_DIST) {
+					gen.doTravel((float) (distance*MM_PR_PIXEL - STOP_DIST));
 				} else {
-					arcDir = 1;
+					STOP_DIST = (int) (distance * MM_PR_PIXEL);
+					ARC_RADIUS = (int) (STOP_DIST * stopFactor);
 				}
-			} else {
-				if(robotAngle < newAngle || newAngle < robotAngle - 180) {
-					arcDir = 1;
+	
+				int arcDir; // 1 = left turn, -1 = right turn
+				
+				if(robotAngle < 0) {
+					if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
+						arcDir = -1;
+					} else {
+						arcDir = 1;
+					}
 				} else {
-					arcDir = -1;
+					if(robotAngle < newAngle || newAngle < robotAngle - 180) {
+						arcDir = 1;
+					} else {
+						arcDir = -1;
+					}
 				}
+				
+				System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP_DIST, ARC_RADIUS);
+				
+				gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
+				
 			}
-			
-			System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP_DIST, ARC_RADIUS);
-			
-			gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
 			
 			adjustingAngle = true;
 			
