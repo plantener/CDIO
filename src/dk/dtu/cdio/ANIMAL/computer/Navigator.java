@@ -11,8 +11,8 @@ import models.Robot;
 public class Navigator implements Runnable {
 	
 	public static float MM_PR_PIXEL = 3.0f;
-	public static final int STOP = 100; // in mm
-	public static final	int ARC_RADIUS = 200; // in mm
+	public int STOP = 100; // in mm
+	public int ARC_RADIUS = 200; // in mm
 	public static final int BITES = 250; // in mm
 	
 	public static final int X_RESOLUTION = 400;
@@ -96,7 +96,6 @@ public class Navigator implements Runnable {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -115,19 +114,23 @@ public class Navigator implements Runnable {
 			}
 			
 			double distance;
-			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > STOP+BITES) {
+			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > 192+BITES) {
 				gen.doTravel(BITES);
 				adjustingAngle = true;
 				continue outerloop;
 			}
-			gen.doTravel((float) (distance*MM_PR_PIXEL - STOP));
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
 			double angle = Math.abs(robotAngle - newAngle);
-			int arcDir; // 1 = left turn, -1 = right turn
 			if(angle > 180) {
 				angle = 360 - angle;
 			}
+			float factor = 2.0f;
+			ARC_RADIUS = (int) (factor * 180 + 60 - factor * angle); 
+			STOP = ARC_RADIUS / 2;
+			
+			gen.doTravel((float) (distance*MM_PR_PIXEL - STOP));
+			int arcDir; // 1 = left turn, -1 = right turn
 			
 			if(robotAngle < 0) {
 				if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
@@ -143,7 +146,7 @@ public class Navigator implements Runnable {
 				}
 			}
 			
-			System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f]%n", name, robotAngle, newAngle, angle);
+			System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP, ARC_RADIUS);
 			
 			gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
 			

@@ -5,7 +5,7 @@ import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
 	
-	private static final double DISTANCE_THRESHOLD = 450; // in mm
+	private static final double DISTANCE_THRESHOLD = 500; // in mm
 	
 	private Application app;
 	private Navigator navA, navB;
