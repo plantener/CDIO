@@ -20,6 +20,7 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_core.CvFont;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 
+
 import dk.dtu.cdio.ANIMAL.computer.Navigator;
 
 public class ImageUtils {
@@ -78,6 +79,8 @@ public class ImageUtils {
 		opencv_core.cvInRangeS(imgHSV, opencv_core.cvScalar(threshold_lower.getB(),threshold_lower.getG(), threshold_lower.getR(),0),
 				opencv_core.cvScalar(threshold_upper.getB(), threshold_upper.getG(), threshold_upper.getR(),0), imgThreshold);
 
+		opencv_imgproc.cvErode(imgThreshold, imgThreshold, null /* 3x3 square */ , 1/* iterations */);
+		opencv_imgproc.cvDilate(imgThreshold, imgThreshold, null /* 3x3 square */ ,1 /* iterations */);
 		opencv_core.cvReleaseImage(imgHSV);
 
 		return imgThreshold;
