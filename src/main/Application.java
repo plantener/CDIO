@@ -37,9 +37,7 @@ public class Application {
 	private CvSeq yellowObjects;
 	private CvSeq blueObjects;
 	private CvSeq purpleObjects;
-	public ArrayList<ObjectOnMap> sortedPorts;
-	public ArrayList<Port> sortedUpperPorts;
-	public ArrayList<Port> sortedLowerPorts;
+	public ArrayList<Port> sortedPorts;
 	public ArrayList<Box> redBoxes;
 	public ArrayList<Box> greenBoxes;
 	private Robot[] robotList;
@@ -55,9 +53,7 @@ public class Application {
 	}
 
 	private void initializeObjectList() {
-		sortedPorts = new ArrayList<ObjectOnMap>();
-		sortedUpperPorts = new ArrayList<Port>();
-		sortedLowerPorts = new ArrayList<Port>();
+		sortedPorts = new ArrayList<Port>();
 		redBoxes = new ArrayList<Box>();
 		greenBoxes = new ArrayList<Box>();
 		robotList = new Robot[2];
@@ -360,8 +356,7 @@ public class Application {
 	}
 
 	public void findPort() {
-		sortedUpperPorts.clear();
-		sortedLowerPorts.clear();
+		sortedPorts.clear();
 		Box tempGreenBox = new Box();
 		int i = 0;
 		for (Box redBox : redBoxes) {
@@ -384,15 +379,7 @@ public class Application {
 				}
 			}
 			Port tempPort = new Port(redBox,tempGreenBox);
-			tempPort.setPairId(i);
-			if (tempPort.getMidY() < Navigator.Y_RESOLUTION/2) {
-				sortedUpperPorts.add(tempPort);
-			}else {
-				sortedLowerPorts.add(tempPort);
-			}
-		}
-		for (Port upperPort : sortedUpperPorts) {
-			upperPort.toString();
+			sortedPorts.add(tempPort);
 		}
 		sortPorts();
 	}
@@ -400,19 +387,11 @@ public class Application {
 	// Sorts the last 6 elements in objectList, in the order we want to visit
 	// the ports
 	public void sortPorts() {
-		Collections.sort(sortedUpperPorts);
-		Collections.sort(sortedLowerPorts);
-		sortedPorts.clear();
+		Collections.sort(sortedPorts);
 		int i = 0;
-		for (Port upperPort : sortedUpperPorts) {
+		for (Port port : sortedPorts) {
 			i++;
-			upperPort.setPairId(i);
-			sortedPorts.add(upperPort);
-		}
-		for (Port lowerPort : sortedLowerPorts) {
-			i++;
-			lowerPort.setPairId(i);
-			sortedPorts.add(lowerPort);
+			port.setPairId(i);
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class CalculateRoute {
 		setSlope(this.nextStart, this.end);
 	}
 
-	public void addMid(Box b, BreakPoint c) {
+	public int addMid(Box b, BreakPoint c) {
 		System.out.println("Crash: " + c.toString());
 		if(pre != null){
 			if(c.getX() == pre.getX() && c.getY() == pre.getY()){
@@ -45,31 +45,57 @@ public class CalculateRoute {
 		}
 		if (b.getColor() == 1) { // red
 			if (b.getX() == c.getX()) { // Left
-				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
-						b.getY()-offset, port));
+				if(c.getPort() == port){
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+							b.getY()+b.getHeight(), port));
+				}else{
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
+							b.getY()+b.getHeight()+offset, port));
+				}
 			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
-				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
-						b.getY()+b.getHeight()+offset, port));
+				if(c.getPort() == port){
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+							b.getY()+b.getHeight(), port));
+				}else{
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
+							b.getY()+b.getHeight()+offset, port));
+				}
 			} else if (b.getY() == c.getY()) { // Top
-				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
-						b.getY()-offset, port));
+				if(c.getPort() == port){
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
+							b.getY()+b.getHeight()+offset, port));
+				}else{
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
+							b.getY()-offset, port));
+				}
 			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
-				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
-						b.getY()+b.getHeight(), port));
+				if(c.getPort() == port){
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX(),
+							b.getY()-offset, port));
+				}else{
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+							b.getY()+b.getHeight(), port));
+				}
 			}
 		} else if (b.getColor() == 2) {
 			if (b.getX() == c.getX()) { // Left
-
+				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+						b.getY()+b.getHeight(), port));
 			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
-
+				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+ b.getWidth()+offset,
+						b.getY()-offset, port));
 			} else if (b.getY() == c.getY()) { // Top
-
-			} else if (b.getY() - b.getHeight() == c.getY()) { // Bottom
-
+				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+						b.getY()-offset, port));
+			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
+				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
+						b.getY()+b.getHeight()+offset, port));
 			}
 		}
 		System.out.println("mid" + breakPoints.size());
 		pre = c;
+		
+		return breakPoints.size();
 	}
 
 	public void setSlope(BreakPoint start, BreakPoint end) {
@@ -80,10 +106,10 @@ public class CalculateRoute {
 	public BreakPoint calcPosition(int count, int check) {
 		if (check == 1) {
 			return new BreakPoint(Math.round((count - nextEnd.getY()) / slope
-					+ nextEnd.getX()), count);
+					+ nextEnd.getX()), count, port);
 		} else if (check == 0) {
 			return new BreakPoint(count, Math.round(slope
-					* (count - nextEnd.getX()) + nextEnd.getY()));
+					* (count - nextEnd.getX()) + nextEnd.getY()), port);
 		}
 		return null;
 	}

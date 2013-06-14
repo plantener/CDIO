@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import models.Box;
 import models.ObjectOnMap;
+import models.Port;
 import routeCalculation.Track;
 //import sun.awt.windows.ThemeReader;
 import dk.dtu.cdio.ANIMAL.computer.ControlCenter;
@@ -12,9 +13,8 @@ import dk.dtu.cdio.ANIMAL.computer.Navigator;
 import dk.dtu.cdio.ANIMAL.computer.Utilities;
 
 public class Main {
-
-	private static ObjectOnMap[] objectList;
-	private static ArrayList<ObjectOnMap> ports;
+	
+	private static ArrayList<Port> ports;
 	private static ArrayList<Box> redBoxes;
 	private static ArrayList<Box> greenBoxes;
 
@@ -39,7 +39,7 @@ public class Main {
 //		objectList = app.objectList;
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
-		for(i=0; i < 200; i++) {			
+		for(i=0; i < 100; i++) {			
 			app.frameProcessing();
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;

@@ -1,30 +1,28 @@
 package routeCalculation;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 import objectHandling.DeadSpaceCalculation;
 
 import models.BreakPoint;
-import models.ObjectOnMap;
 import models.Port;
 import models.Box;
 
 public class Track {
 
-	private ArrayList<ObjectOnMap> ports = new ArrayList<ObjectOnMap>();
+	private ArrayList<Port> ports = new ArrayList<Port>();
 	private ArrayList<Box> boxes = new ArrayList<Box>();
 
 	private static ArrayList<Route> r = new ArrayList<Route>();
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int OFFSET = 6;
+	private final int WIDTH_OFFSET = 14;
+	private final int HEIGHT_OFFSET = 8;
 
-	private final int UPDATE_OFFSET = 0;
+	private final int UPDATE_OFFSET = 1;
 
-	public Track(ArrayList<ObjectOnMap> ports, ArrayList<Box> red,
+	public Track(ArrayList<Port> ports, ArrayList<Box> red,
 			ArrayList<Box> green) {
 		this.ports = ports;
 		this.boxes.addAll(red);
@@ -79,11 +77,11 @@ public class Track {
 		complete.clear();
 		int i = 0;
 		System.out.println(ports.size());
-		for (ObjectOnMap port : ports) {
+		for (Port port : ports) {
 			if (port != ports.get(ports.size() - 1)) {
-				r.add(new Route((Port) port, (Port) ports.get(i + 1)));
+				r.add(new Route(port, ports.get(i + 1)));
 			} else {
-				r.add(new Route((Port) port, (Port) ports.get(0)));
+				r.add(new Route(port, ports.get(0)));
 			}
 			i++;
 		}
@@ -91,62 +89,86 @@ public class Track {
 
 	private void initBoxes() {
 		for (Box box : boxes) {
-			Box temp = box;
-			temp.setX(temp.getX() - OFFSET);
-			temp.setY(temp.getY() - OFFSET);
-			temp.setHeight(temp.getHeight() + (OFFSET * 2));
-			temp.setWidth(temp.getWidth() + (OFFSET * 2));
+			Box temp;
+			if(box.getColor() == 2){
+				temp = box;
+			}else {
+				temp = box;
+				temp.setX(temp.getX() - WIDTH_OFFSET);
+				temp.setY(temp.getY() - HEIGHT_OFFSET);
+				temp.setHeight(temp.getHeight() + (HEIGHT_OFFSET * 2));
+				temp.setWidth(temp.getWidth() + (WIDTH_OFFSET * 2));
+			}
 			DeadSpaceCalculation.addBox(temp);
 		}
 	}
 
-	public void updateObjects(ArrayList<ObjectOnMap> ports, ArrayList<Box> red,
+	public void updateObjects(ArrayList<Port> ports, ArrayList<Box> red,
 			ArrayList<Box> green) {
-		if (ports.size() != this.r.size()) {
+		int check = 0;
+		if (ports.size() != r.size()) {
 			initRoute();
+			for (Route start : r) {
+				start.find();
+			}
+			check = 1;
 		} else {
 			updateNewPort(ports);
+			check = 1;
 		}
 		if (boxes.size() != (red.size() + green.size())) {
 			boxes.clear();
 			this.boxes.addAll(red);
 			this.boxes.addAll(green);
 			initBoxes();
-		} else
+			if(check == 0){
+				for (Route start : r) {
+					start.find();
+				}
+			}
+		} else{
 			updateBoxes(red, green);
+			if(check == 0){
+				for (Route start : r) {
+					start.find();
+				}
+			}
+		}
 	}
 
-	public void updateNewPort(ArrayList<ObjectOnMap> newObjects) {
+	public void updateNewPort(ArrayList<Port> newObjects) {
 		int size = newObjects.size() - 1;
 		for (int i = 0; i < newObjects.size(); i++) {
-			if (!(((Port) newObjects.get(i)).getMidX() >= r.get(i).getStart()
+			if (!((newObjects.get(i)).getMidX() >= r.get(i).getStart()
 					.getMidX()
-					- UPDATE_OFFSET && ((Port) newObjects.get(i)).getMidX() <= r
+					- UPDATE_OFFSET && (newObjects.get(i)).getMidX() <= r
 					.get(i).getStart().getMidX()
 					+ UPDATE_OFFSET)
-					|| !(((Port) newObjects.get(i)).getMidY() >= r.get(i)
+					|| !((newObjects.get(i)).getMidY() >= r.get(i)
 							.getStart().getMidY()
-							- UPDATE_OFFSET && ((Port) newObjects.get(i))
+							- UPDATE_OFFSET && (newObjects.get(i))
 							.getMidY() <= r.get(i).getStart().getMidY()
 							+ UPDATE_OFFSET)) {
 				System.out.println("updates" + i);
 				if (i == 0) {
-					r.get(i).update((Port) newObjects.get(i),
-							(Port) newObjects.get(i + 1));
-					r.get(size).update((Port) newObjects.get(size),
-							(Port) newObjects.get(i));
-					r.get(size).find();
-					r.get(i).find();
-					System.out.println("updates" + i);
+					if(size != 0){
+						r.get(i).update(newObjects.get(i),
+								newObjects.get(i + 1));
+						r.get(size).update(newObjects.get(size),
+								newObjects.get(i));
+						r.get(size).find();
+						r.get(i).find();
+						System.out.println("updates" + i);
+					}
 				} else {
-					r.get(i - 1).update((Port) newObjects.get(i - 1),
-							(Port) newObjects.get(i));
+					r.get(i - 1).update(newObjects.get(i - 1),
+							newObjects.get(i));
 					if (i == size) {
-						r.get(i).update((Port) newObjects.get(i),
-								(Port) newObjects.get(0));
+						r.get(i).update(newObjects.get(i),
+								newObjects.get(0));
 					} else {
-						r.get(i).update((Port) newObjects.get(i),
-								(Port) newObjects.get(i + 1));
+						r.get(i).update(newObjects.get(i),
+								newObjects.get(i + 1));
 					}
 					System.out.println("updates" + i);
 					r.get(i - 1).find();
@@ -164,12 +186,21 @@ public class Track {
 		for (int i = 0; i < boxes.size(); i++) {
 			if (boxes.get(i).getMidX() != newBoxes.get(i).getMidX()
 					&& boxes.get(i).getMidY() != newBoxes.get(i).getMidY()) {
-				Box temp = newBoxes.get(i);
-				temp.setX(temp.getX() - OFFSET);
-				temp.setY(temp.getY() - OFFSET);
-				temp.setHeight(temp.getHeight() + (OFFSET * 2));
-				temp.setWidth(temp.getWidth() + (OFFSET * 2));
-
+				Box temp;
+				if(boxes.get(i).getColor() == 2){
+					temp = newBoxes.get(i);
+					temp.setX(temp.getX());
+					temp.setY(temp.getY());
+					temp.setHeight(temp.getHeight());
+					temp.setWidth(temp.getWidth());
+				}else {
+					temp = newBoxes.get(i);
+					temp.setX(temp.getX() - WIDTH_OFFSET);
+					temp.setY(temp.getY() - HEIGHT_OFFSET);
+					temp.setHeight(temp.getHeight() + (HEIGHT_OFFSET * 2));
+					temp.setWidth(temp.getWidth() + (WIDTH_OFFSET * 2));
+					
+				}
 				DeadSpaceCalculation.replaceBox((Box) temp, (Box) boxes.get(i));
 			}
 		}
