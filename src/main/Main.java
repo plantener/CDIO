@@ -13,6 +13,7 @@ import dk.dtu.cdio.ANIMAL.computer.Navigator;
 import dk.dtu.cdio.ANIMAL.computer.Utilities;
 
 public class Main {
+	public static int DEBUG_ROBOT = 0;
 	
 	private static ArrayList<Port> ports;
 	private static ArrayList<Box> redBoxes;

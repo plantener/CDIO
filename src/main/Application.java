@@ -7,9 +7,7 @@ import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-
 import models.*;
 import utilities.ImageUtils;
 import utilities.Threshold;
@@ -30,13 +28,8 @@ public class Application {
 	private IplImage resizedFrame;
 	private IplImage thresholdedFrame;
 	private IplImage contoursFrame;
-	private CvSeq redObjects;
-	private CvSeq greenObjects;
 	public ObjectOnMap[] objectList;
 	Box box = new Box();
-	private CvSeq yellowObjects;
-	private CvSeq blueObjects;
-	private CvSeq purpleObjects;
 	public ArrayList<Port> sortedPorts;
 	public ArrayList<Box> redBoxes;
 	public ArrayList<Box> greenBoxes;
@@ -76,7 +69,7 @@ public class Application {
 		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("correctSetup5.jpg");
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib4.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -89,27 +82,19 @@ public class Application {
 		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
 		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
 
-//		thresholdGreen();
-//		thresholdRed();
-//		System.out.println(greenBoxes.toString());
-//		System.out.println(redBoxes.toString());
-
-//		thresholdBlue();
-//		thresholdPurple();
-//		thresholdYellow();
-		robotA = robotList[0];
-		robotB = robotList[1];
-//		System.out.println("Robot A information:");
-//		System.out.println("Front X: " + robotA.getFrontX());
-//		System.out.println("Front Y: " + robotA.getFrontY());
-//		System.out.println("Back X: " + robotA.getBackX());
-//		System.out.println("Back Y: " + robotA.getBackY()+"\n");
-//		System.out.println("Robot B information:");
-//		System.out.println("Front X: " + robotB.getFrontX());
-//		System.out.println("Front Y: " + robotB.getFrontY());
-//		System.out.println("Back X: " + robotB.getBackX());
-//		System.out.println("Back Y: " + robotB.getBackY()+"\n");
-
+		//Set variable in Main class. Prints info on both robots
+		if(Main.DEBUG_ROBOT == 1){
+			System.out.println("Robot A information:");
+			System.out.println("Front X: " + robotA.getFrontX());
+			System.out.println("Front Y: " + robotA.getFrontY());
+			System.out.println("Back X: " + robotA.getBackX());
+			System.out.println("Back Y: " + robotA.getBackY()+"\n");
+			System.out.println("Robot B information:");
+			System.out.println("Front X: " + robotB.getFrontX());
+			System.out.println("Front Y: " + robotB.getFrontY());
+			System.out.println("Back X: " + robotB.getBackX());
+			System.out.println("Back Y: " + robotB.getBackY()+"\n");
+		}
 
 		findPort();
 		iu.drawText(resizedFrame, sortedPorts);
@@ -117,8 +102,6 @@ public class Application {
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
-
-		// opencv_core.cvReleaseImage(contoursFrame);
 
 	}
 
@@ -152,8 +135,7 @@ public class Application {
 		sortPorts();
 	}
 
-	// Sorts the last 6 elements in objectList, in the order we want to visit
-	// the ports
+	//Sort all elements in the sortedPorts array using their relative angle to the centre.
 	public void sortPorts() {
 		Collections.sort(sortedPorts);
 		int i = 0;
@@ -179,7 +161,7 @@ public class Application {
 				
 				colorOperation(colour);
 				
-				//Update the image with the information
+				//Update displayed image with threshold information
 				opencv_core.CvScalar drawColor = opencv_core.CvScalar.BLUE;
 				p1.x(sq.x());
 				p2.x(sq.x() + sq.width());
@@ -191,7 +173,7 @@ public class Application {
 			}
 
 		} catch (Exception e) {
-			System.err.println();
+			System.err.println("Error occured thresholding " + colour);
 		}
 	}
 	public void colorOperation(int colour){
