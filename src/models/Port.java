@@ -8,12 +8,14 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int midY;
 	private Box red, green;
 	private final int OFFSET = 12;
+	private double angleRelativeToCenter;
 
 	public Port(Box red, Box green){
 		this.red = red;
 		this.green = green;
 		setMidX(this.red,this.green);
 		setMidY(this.red,this.green);
+		angleRelativeToCenter = dk.dtu.cdio.ANIMAL.computer.Utilities.getAngleRelativeToCenter(red.getMidX(), red.getMidY());
 	}
 	
 	public Port(int midX, int midY, int pairId){
@@ -66,16 +68,18 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 				+ ", red=" + red + ", green=" + green + "]\n";
 	}
 
-
 	@Override
 	public int compareTo(Port comparePort) {
-		int compareMidX = ((Port) comparePort).getMidX();
-		
-		if(comparePort.getMidY() < Navigator.Y_RESOLUTION/2){
-		return this.midX - compareMidX;
-		}else{
-			return compareMidX - this.midX;
-		}
+		double comparePortAngle = comparePort.getAngleRelativeToCenter();
+		return (int) (this.angleRelativeToCenter - comparePortAngle);
+	}
+
+	public double getAngleRelativeToCenter() {
+		return angleRelativeToCenter;
+	}
+
+	public void setAngleRelativeToCenter(double angleRelativeToCenter) {
+		this.angleRelativeToCenter = angleRelativeToCenter;
 	}
 
 
