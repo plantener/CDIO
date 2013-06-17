@@ -38,6 +38,7 @@ public class Application {
 	public Robot robotB;
 	private CvSeq contours;
 	private opencv_core.CvRect sq;
+	private boolean calibrateRobot = false;
 	
 	
 	public static final int SQ_THRESHOLD = 6;
@@ -51,6 +52,7 @@ public class Application {
 		ci = new CaptureImage();
 		iu = new ImageUtils();
 		initializeObjectList();
+		
 	}
 
 	private void initializeObjectList() {
@@ -73,6 +75,11 @@ public class Application {
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
+		
+		if(!calibrateRobot){
+		iu.calibrateRobot(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, resizedFrame);
+		calibrateRobot = true;
+		}
 		
 		greenBoxes.clear();
 		redBoxes.clear();
