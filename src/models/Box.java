@@ -10,8 +10,15 @@ public class Box extends ObjectOnMap{
 	private int midY;
 	// Red = 1, Green = 2
 	private int color;
+	private int pairId;
 	
 	
+	public int getPairId() {
+		return pairId;
+	}
+	public void setPairId(int pairId) {
+		this.pairId = pairId;
+	}
 	public int getX() {
 		return x;
 	}

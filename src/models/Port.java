@@ -7,7 +7,7 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int midX;
 	private int midY;
 	private Box red, green;
-	private final int OFFSET = 12;
+	private final int OFFSET = 8;
 	private double angleRelativeToCenter;
 
 	public Port(Box red, Box green){
@@ -29,6 +29,9 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	}
 	public void setPairId(int pairId) {
 		this.pairId = pairId;
+		red.setPairId(pairId);
+		green.setPairId(pairId);
+		
 	}
 	public int getMidX() {
 		return midX;

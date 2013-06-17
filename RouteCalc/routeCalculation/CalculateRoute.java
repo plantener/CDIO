@@ -2,6 +2,7 @@ package routeCalculation;
 
 import java.util.ArrayList;
 
+import main.Application;
 import models.Box;
 import models.BreakPoint;
 import models.Port;
@@ -14,7 +15,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 20;
+	private int offset = 10;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
@@ -36,48 +37,49 @@ public class CalculateRoute {
 	}
 
 	public int addMid(Box b, BreakPoint c) {
-		System.out.println("Crash: " + c.toString());
+		System.out.println("Crash: " + c.toString() + " " + port);
 		if(pre != null){
 			if(c.getX() == pre.getX() && c.getY() == pre.getY()){
 				System.out.println("double: " + c.toString());
 				Route.setCrash();
+				return 0;
 			}
 		}
-		if (b.getColor() == 1) { // red
+		if (b.getColor() == Application.RED) { // red
 			if (b.getX() == c.getX()) { // Left
-				if(c.getPort() == port){
+				if(b.getPairId() == port){
 					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
-							b.getY()+b.getHeight(), port));
+							b.getY(), port));
 				}else{
 					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
-							b.getY()+b.getHeight()+offset, port));
-				}
-			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
-				if(c.getPort() == port){
-					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
-							b.getY()+b.getHeight(), port));
-				}else{
-					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
 							b.getY()+b.getHeight()+offset, port));
 				}
 			} else if (b.getY() == c.getY()) { // Top
-				if(c.getPort() == port){
+				if(b.getPairId() == port){
 					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
 							b.getY()+b.getHeight()+offset, port));
 				}else{
-					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
 							b.getY()-offset, port));
 				}
+			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
+				if(b.getPairId() == port){
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+							b.getY()+b.getHeight(), port));
+				}else{
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
+							b.getY()+b.getHeight()+offset, port));
+				}
 			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
-				if(c.getPort() == port){
-					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX(),
-							b.getY()-offset, port));
+				if(b.getPairId() == port){
+					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+							b.getY()+b.getHeight(), port));
 				}else{
 					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 							b.getY()+b.getHeight(), port));
 				}
 			}
-		} else if (b.getColor() == 2) {
+		} else if (b.getColor() == Application.GREEN) {
 			if (b.getX() == c.getX()) { // Left
 				breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 						b.getY()+b.getHeight(), port));

@@ -13,7 +13,7 @@ public class Navigator implements Runnable {
 	public static float MM_PR_PIXEL = 3.0f;
 	public int STOP_DIST = 100; // in mm
 	public int ARC_RADIUS = 200; // in mm
-	public static final int BITES = 250; // in mm
+	public static final int BITES = 350; // in mm
 	
 	public static final int X_RESOLUTION = 400;
 	public static final int Y_RESOLUTION = 300;
@@ -25,8 +25,8 @@ public class Navigator implements Runnable {
 	
 	public String name;
 	
-	public static int DIST_THRESHOLD = 14; // pixels
-	public static int ANGLE_THRESHOLD = 4; //degrees.
+	public static int DIST_THRESHOLD = 10; // pixels
+	public static int ANGLE_THRESHOLD = 3; //degrees.
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -72,7 +72,7 @@ public class Navigator implements Runnable {
 			avgDistance = (distance + i * avgDistance) / (i + 1);
 //			System.out.format("[Calibration: %d: %f mm/pixel]%n", i, travelDistance/distance);
 		}
-		MM_PR_PIXEL = (float) (travelDistance / avgDistance);
+//		MM_PR_PIXEL = (float) (travelDistance / avgDistance);
 		System.out.format("Length calibration: %f%n", MM_PR_PIXEL);
 	}
 	
@@ -123,7 +123,7 @@ public class Navigator implements Runnable {
 				adjustingAngle = true;
 				continue outerloop;
 			}
-			double breakpointDistance = Utilities.getDistance(next, waypoints.afterHead());
+//			double breakpointDistance = Utilities.getDistance(next, waypoints.afterHead());
 
 			double robotAngle = Utilities.getRobotAngle(robot);
 			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
@@ -133,7 +133,7 @@ public class Navigator implements Runnable {
 			}
 			ARC_RADIUS = (int) (factor * 180 + 60 - factor * angle); 
 			STOP_DIST = (int) (ARC_RADIUS / stopFactor);
-			if(breakpointDistance * MM_PR_PIXEL < STOP_DIST) {
+//			if(breakpointDistance * MM_PR_PIXEL < STOP_DIST) {
 			
 				if(distance * MM_PR_PIXEL > STOP_DIST) {
 					gen.doTravel((float) (distance*MM_PR_PIXEL - STOP_DIST));
@@ -162,7 +162,7 @@ public class Navigator implements Runnable {
 				
 				gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
 				
-			}
+//			}
 			
 			adjustingAngle = true;
 			
