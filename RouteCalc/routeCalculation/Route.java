@@ -62,7 +62,7 @@ public class Route {
 //					if(c.addMid(b, breakPoint) > 9){
 //						break;
 //					}
-					c.addMid(b, breakPoint);
+//					c.addMid(b, breakPoint);
 					c.addMid(b, breakPoint);
 					bP = c.routePositions();
 					collitions = true;

@@ -7,7 +7,7 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int midX;
 	private int midY;
 	private Box red, green;
-	private final int OFFSET = 8;
+	private final int OFFSET = 0;
 	private double angleRelativeToCenter;
 
 	public Port(Box red, Box green){

@@ -2,12 +2,17 @@ package dk.dtu.cdio.ANIMAL.computer;
 
 import java.util.ArrayList;
 
+import com.googlecode.javacv.cpp.opencv_core;
+
+import lejos.nxt.Motor;
 import lejos.nxt.remote.NXTCommand;
 import lejos.nxt.remote.RemoteMotor;
+import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommBluecove;
 import lejos.pc.comm.NXTCommBluez;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTConnector;
 import lejos.pc.comm.NXTInfo;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
@@ -26,7 +31,7 @@ public class Navigator implements Runnable {
 	public static final int X_RESOLUTION = 400;
 	public static final int Y_RESOLUTION = 300;
 	
-	public static final int MARCH_SPEED = 200;
+	public static final int MARCH_SPEED = 400;
 	
 	public static final int ROTATE_SPEED = 100;
 	
@@ -35,8 +40,8 @@ public class Navigator implements Runnable {
 	
 	public String name;
 	
-	public static int DIST_THRESHOLD = 10; // pixels
-	public static int ANGLE_THRESHOLD = 3; //degrees.
+	public static final int DIST_THRESHOLD = 15;
+	public static final int ANGLE_THRESHOLD = 3; //degrees.
 	
 	private NXTInfo info_5a = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private NXTInfo info_5b = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -44,6 +49,7 @@ public class Navigator implements Runnable {
 	private PCCommunicator com;
 	private CommandGenerator gen;
 	private Application app;
+	private DifferentialPilot pilot;
 	
 	private WaypointQueue waypoints;
 	
@@ -63,20 +69,20 @@ public class Navigator implements Runnable {
 		this.robot = (useRobotA) ? this.app.robotA : this.app.robotB;
 		this.name = (useRobotA) ? "Robot A" : "Robot B";
 		info = (useRobotA) ? info_5a : info_5b;
-		bluez = new NXTCommBluez();
-		try {
-			bluez.open(info);
-		} catch (NXTCommException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		NXTConnector connector = new NXTConnector();
+		if(!connector.connectTo(info, NXTComm.LCP)) {
+			System.out.println("ERROR");
+			System.exit(-1);
 		}
-		comm = new NXTCommand(bluez);
-		left = new RemoteMotor(comm, 'B');
-		right = new RemoteMotor(comm, 'C');
+		comm = new NXTCommand(connector.getNXTComm());
+				
+		left = new RemoteMotor(comm, 1);
+		right = new RemoteMotor(comm, 2);
+		pilot = new DifferentialPilot(56, 120, left, right);
 //		com = new PCCommunicator(info);
 //		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
-		com.connect();
+//		com.connect();
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -105,69 +111,81 @@ public class Navigator implements Runnable {
 //		new Navigator();
 //	}
 	
-	public boolean reachedDestination(Waypoint p) {
-		return Utilities.getDistance(robot, p) <= DIST_THRESHOLD;
-	}
-	
 	public void go() {
 		boolean running = true;
 		boolean adjustingAngle = true;
 		Waypoint next = null;
 		Waypoint previous = null;
-		left.setSpeed(MARCH_SPEED);
-		right.setSpeed(MARCH_SPEED);
-		left.forward();
-		right.forward();
+		pilot.setTravelSpeed(250);
+		pilot.steer(0);
 
-		outerloop:
+		double breakpointAngle;
+		double robotAngle, angle, turnRate, oldRate, distance, newAngle;
+		int steer;
+		long start, end;
+		start = end = 0;
+		oldRate = turnRate = 0;
+
 		while(running) {
-//			while(paused) {
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-			double breakpointAngle;
-			double robotAngle, angle;
-			next = waypoints.getHead();
-			if(previous == null) {
-				breakpointAngle = Utilities.getAngle(robot, next);
-			} else {
-				breakpointAngle = Utilities.getAngle(previous, next);
+			while(paused) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-			while(Utilities.getAngleRelativeToCenter(robot) > Utilities.getAngleRelativeToCenter(next)) {
+			next = waypoints.getHead();
+			System.out.format("%n%n%n%s : Next destination: %s%n%n%n", name, next);
+//			System.out.format("RC: %.3f, NX: %.3f%n", Utilities.getAngleRelativeToCenter(robot), Utilities.getAngleRelativeToCenter(next));
+//			while(Utilities.getAngleRelativeToCenter(robot) > Utilities.getAngleRelativeToCenter(next)) {
+			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
+				opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, opencv_core.CvScalar.BLUE, 3, 8, 0);
+				long diff = start-end;
+				start = System.currentTimeMillis();
+				try {
+					Thread.sleep(25);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+//				while(System.currentTimeMillis() - start < 20);
 				robotAngle = Utilities.getRobotAngle(robot);
-	//			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
-				angle = Math.abs(robotAngle - breakpointAngle);
+				newAngle = Utilities.getAngle(robot, next);
+				angle = Math.abs(robotAngle - newAngle);
 				if(angle > 180) {
 					angle = 360 - angle;
 				}
 		
-				int steer; // 1 = left turn, -1 = right turn
-				
 				if(robotAngle < 0) {
-					if(breakpointAngle < robotAngle  || robotAngle+180 < breakpointAngle) {
+					if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
 						steer = -1;
 					} else {
 						steer = 1;
 					}
 				} else {
-					if(robotAngle < breakpointAngle || breakpointAngle < robotAngle - 180) {
+					if(robotAngle < newAngle || newAngle < robotAngle - 180) {
 						steer = 1;
 					} else {
-						steer = -1;
+						steer = -1;			if(previous == null) {
+							breakpointAngle = Utilities.getAngle(robot, next);
+						} else {
+							breakpointAngle = Utilities.getAngle(previous, next);
+						}
 					}
 				}
-				if(steer == 1) {
-					left.setSpeed((int) (MARCH_SPEED - (180/MARCH_SPEED) * angle));
-					right.setSpeed(MARCH_SPEED);
-				} else {
-					right.setSpeed((int) (MARCH_SPEED -(180/MARCH_SPEED) * angle));
-					left.setSpeed(MARCH_SPEED);
+
+				oldRate = turnRate;
+//				turnRate = Math.pow(Math.sin(Math.PI * angle / 100.0),2)*100;
+				turnRate = Math.log(angle / 3.0) * 30;
+				turnRate = (turnRate < 0) ? 0 : turnRate;
+//				turnRate = Math.min(100, turnRate);
+				turnRate *= steer;
+				if(Math.abs(oldRate - turnRate) > 3) {
+					System.out.format("diff: %d, distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f%n", diff, distance, robotAngle, newAngle, angle, turnRate);
+					pilot.steer(turnRate);
 				}
+				end = System.currentTimeMillis();
 			}
-			System.out.format("%s : Next destination: %s%n", name, next);
 //			while(adjustingAngle) {
 //				double robotAngle = Utilities.getRobotAngle(robot);
 ////				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
@@ -233,7 +251,6 @@ public class Navigator implements Runnable {
 //			
 //			adjustingAngle = true;
 			
-			previous = waypoints.getHead();
 			waypoints.shift();
 			
 		}
@@ -242,11 +259,11 @@ public class Navigator implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		gen.setRotateSpeed(ROTATE_SPEED);
-		gen.setTravelSpeed(300);
-		if(name.equals("Robot A")) {
-			calibrateLength();
-		}
+//		gen.setRotateSpeed(ROTATE_SPEED);
+//		gen.setTravelSpeed(300);
+//		if(name.equals("Robot A")) {
+//			calibrateLength();
+//		}
 		go();
 	}
 	

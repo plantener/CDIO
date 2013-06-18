@@ -32,15 +32,17 @@ public class Main {
 
 		Scanner sc = new Scanner(System.in);
 		int i = 0;
-		long startTime = System.nanoTime();
+		long startTime = System.currentTimeMillis();
 		app.frameProcessing();
 		ports = app.sortedPorts;
 		redBoxes = app.redBoxes;
 		greenBoxes = app.greenBoxes;
-//		objectList = app.objectList;
+//		objectList = app.objectList;//		if(name.equals("Robot A")) {
+//		calibrateLength();
+//	}
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
-		for(i=0; i < 100; i++) {			
+		for(i=0; i < 25; i++) {			
 			app.frameProcessing();
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
@@ -51,8 +53,8 @@ public class Main {
 			t.updateObjects(ports, redBoxes, greenBoxes);
 		}
 		System.out.println("############################");
-		Long endTime = System.nanoTime();
-		double fps = (double)frames/((endTime-startTime)/1000000000);
+		long endTime = System.currentTimeMillis();
+		double fps = (double) frames /((endTime-startTime)/1000);
 		System.out.println("FPS: " + fps);
 		System.out.println("############################");
 		if(runRobots) {

@@ -15,7 +15,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 10;
+	private int offset = 7;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
@@ -60,10 +60,10 @@ public class CalculateRoute {
 							b.getY()-offset, port));
 				}else{
 					if(slope > 0){
-						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
 								b.getY()-offset, port));
 					}else {
-						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
+						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 								b.getY()-offset, port));
 					}
 				}
@@ -76,8 +76,8 @@ public class CalculateRoute {
 						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
 								b.getY()+b.getHeight()+offset, port));
 					}else {
-						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
-								b.getY()-offset, port));
+						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth(),
+								b.getY()+b.getHeight()+offset, port));
 					}
 				}
 			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
@@ -86,11 +86,11 @@ public class CalculateRoute {
 							b.getY()+b.getHeight(), port));
 				}else{
 					if(slope < 0){
-						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX(),
-								b.getY()+b.getHeight()+offset, port));
-					}else {
 						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
 								b.getY(), port));
+					}else {
+						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX(),
+								b.getY()+b.getHeight()+offset, port));
 					}
 				}
 			}

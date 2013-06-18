@@ -25,7 +25,7 @@ public class Application {
 	private CaptureImage ci;
 	private ImageUtils iu;
 	private IplImage grabbedFrame;
-	private IplImage resizedFrame;
+	public IplImage resizedFrame;
 	private IplImage thresholdedFrame;
 	private IplImage contoursFrame;
 	public ObjectOnMap[] objectList;
