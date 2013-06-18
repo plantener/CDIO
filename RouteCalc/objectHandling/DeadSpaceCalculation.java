@@ -26,7 +26,6 @@ public class DeadSpaceCalculation {
 	}
 	
 	public static Box collisionDetection(BreakPoint p){
-		System.out.println("Size: " + Boxs.size());
 		for(Box b : Boxs){
 			for(int x = b.getX(); x <= b.getX()+b.getWidth(); x++){
 				if(p.getX() == x){

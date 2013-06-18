@@ -19,7 +19,7 @@ public class PCCommunicator {
 
 	public PCCommunicator(NXTInfo nxtInfo) {
 		this.nxtInfo = nxtInfo;
-		reader = new Reader();
+//		reader = new Reader();
 	}
 	
 	public void testLatency(){
@@ -48,7 +48,7 @@ public class PCCommunicator {
 			System.out.println(" send failed ");
 		}
 		
-		waitForReply();
+//		waitForReply();
 	}
 
 	public boolean connect() {

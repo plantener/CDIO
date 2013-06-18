@@ -15,7 +15,7 @@ public class CalculateRoute {
 
 	private float slope;
 
-	private int offset = 7;
+	private int offset = 10;
 
 	private BreakPoint end;
 	private BreakPoint nextStart;
@@ -59,11 +59,11 @@ public class CalculateRoute {
 					breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
 							b.getY()-offset, port));
 				}else{
-					if(slope > 0){
+					if(slope < 0){
 						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
-								b.getY()-offset, port));
+								b.getY()+b.getHeight()+offset, port));
 					}else {
-						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()-offset,
+						breakPoints.add(breakPoints.indexOf(end), new BreakPoint(b.getX()+b.getWidth()+offset,
 								b.getY()-offset, port));
 					}
 				}

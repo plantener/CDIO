@@ -17,10 +17,10 @@ public class Track {
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int WIDTH_OFFSET = 16;
-	private final int HEIGHT_OFFSET = 10;
+	private final int WIDTH_OFFSET = 14;
+	private final int HEIGHT_OFFSET = 8;
 
-	private final int UPDATE_OFFSET = 0;
+	private final int UPDATE_OFFSET = 5;
 
 	public Track(ArrayList<Port> ports, ArrayList<Box> red,
 			ArrayList<Box> green) {
