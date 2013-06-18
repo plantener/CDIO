@@ -17,12 +17,16 @@ public class DeadSpaceCalculation {
 		return Boxs.remove(b);
 	}
 	
+	public static void removeAll(){
+		Boxs.clear();
+	}
+	
 	public static boolean replaceBox(Box newBox, Box oldBox){
 		return Boxs.remove(oldBox) && Boxs.add(newBox);
 	}
 	
 	public static Box collisionDetection(BreakPoint p){
-
+		System.out.println("Size: " + Boxs.size());
 		for(Box b : Boxs){
 			for(int x = b.getX(); x <= b.getX()+b.getWidth(); x++){
 				if(p.getX() == x){
