@@ -17,10 +17,10 @@ public class Track {
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
 
-	private final int WIDTH_OFFSET = 14;
-	private final int HEIGHT_OFFSET = 8;
+	private final int WIDTH_OFFSET = 16;
+	private final int HEIGHT_OFFSET = 10;
 
-	private final int UPDATE_OFFSET = 1;
+	private final int UPDATE_OFFSET = 0;
 
 	public Track(ArrayList<Port> ports, ArrayList<Box> red,
 			ArrayList<Box> green) {
@@ -88,6 +88,7 @@ public class Track {
 	}
 
 	private void initBoxes() {
+		DeadSpaceCalculation.removeAll();
 		for (Box box : boxes) {
 			Box temp;
 			if(box.getColor() == 2){
@@ -106,32 +107,27 @@ public class Track {
 	public void updateObjects(ArrayList<Port> ports, ArrayList<Box> red,
 			ArrayList<Box> green) {
 		int check = 0;
-		if (ports.size() != r.size()) {
-			initRoute();
-			for (Route start : r) {
-				start.find();
-			}
-			check = 1;
-		} else {
-			updateNewPort(ports);
-			check = 1;
-		}
+		
 		if (boxes.size() != (red.size() + green.size())) {
 			boxes.clear();
 			this.boxes.addAll(red);
 			this.boxes.addAll(green);
 			initBoxes();
-			if(check == 0){
-				for (Route start : r) {
-					start.find();
-				}
-			}
+			check = 0;
 		} else{
 			updateBoxes(red, green);
-			if(check == 0){
-				for (Route start : r) {
-					start.find();
-				}
+			check = 0;
+		}
+		if (ports.size() != r.size()) {
+			initRoute();
+			check = 0;
+		} else {
+			updateNewPort(ports);
+			check = 1;
+		}
+		if(check == 0){
+			for (Route start : r) {
+				start.find();
 			}
 		}
 	}

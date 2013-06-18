@@ -58,7 +58,7 @@ public class Route {
 			for (BreakPoint breakPoint : bP) {
 				Box b;
 				if ((b = DeadSpaceCalculation.collisionDetection(breakPoint)) != null) {
-					System.out.println("found collision");
+//					System.out.println("found collision");
 //					if(c.addMid(b, breakPoint) > 9){
 //						break;
 //					}
