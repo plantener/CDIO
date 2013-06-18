@@ -2,8 +2,16 @@ package dk.dtu.cdio.ANIMAL.computer;
 
 import java.util.ArrayList;
 
+import lejos.nxt.remote.NXTCommand;
+import lejos.nxt.remote.RemoteMotor;
+import lejos.pc.comm.NXTCommBluecove;
+import lejos.pc.comm.NXTCommBluez;
+import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
+import lejos.robotics.RegulatedMotor;
+import lejos.robotics.RegulatedMotorListener;
+import lejos.robotics.navigation.DifferentialPilot;
 import main.Application;
 import models.BreakPoint;
 import models.Robot;
@@ -17,6 +25,8 @@ public class Navigator implements Runnable {
 	
 	public static final int X_RESOLUTION = 400;
 	public static final int Y_RESOLUTION = 300;
+	
+	public static final int MARCH_SPEED = 200;
 	
 	public static final int ROTATE_SPEED = 100;
 	
@@ -42,6 +52,10 @@ public class Navigator implements Runnable {
 	
 	public NXTInfo info;
 	public Robot robot;
+	private NXTCommBluez bluez;
+	private NXTCommand comm;
+	private RemoteMotor left;
+	private RemoteMotor right;
 	
 	public Navigator(boolean useRobotA, Application app) {
 		this.useRobotA = useRobotA;
@@ -49,8 +63,18 @@ public class Navigator implements Runnable {
 		this.robot = (useRobotA) ? this.app.robotA : this.app.robotB;
 		this.name = (useRobotA) ? "Robot A" : "Robot B";
 		info = (useRobotA) ? info_5a : info_5b;
-		com = new PCCommunicator(info);
-		gen = new CommandGenerator(com);
+		bluez = new NXTCommBluez();
+		try {
+			bluez.open(info);
+		} catch (NXTCommException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		comm = new NXTCommand(bluez);
+		left = new RemoteMotor(comm, 'B');
+		right = new RemoteMotor(comm, 'C');
+//		com = new PCCommunicator(info);
+//		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
 		com.connect();
 	}
@@ -88,84 +112,128 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		boolean adjustingAngle = true;
-		Waypoint next;
+		Waypoint next = null;
+		Waypoint previous = null;
+		left.setSpeed(MARCH_SPEED);
+		right.setSpeed(MARCH_SPEED);
+		left.forward();
+		right.forward();
 
 		outerloop:
 		while(running) {
-			while(paused) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+//			while(paused) {
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+			double breakpointAngle;
+			double robotAngle, angle;
 			next = waypoints.getHead();
-			System.out.format("%s : Next destination: %s%n", name, next);
-			while(adjustingAngle) {
-				double robotAngle = Utilities.getRobotAngle(robot);
-//				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
-				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
-				if(Math.abs(rotation) > ANGLE_THRESHOLD) {
-					gen.doRotate((float) rotation);
-				} else {
-					adjustingAngle = false;
+			if(previous == null) {
+				breakpointAngle = Utilities.getAngle(robot, next);
+			} else {
+				breakpointAngle = Utilities.getAngle(previous, next);
+			}
+			while(Utilities.getAngleRelativeToCenter(robot) > Utilities.getAngleRelativeToCenter(next)) {
+				robotAngle = Utilities.getRobotAngle(robot);
+	//			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
+				angle = Math.abs(robotAngle - breakpointAngle);
+				if(angle > 180) {
+					angle = 360 - angle;
 				}
-				
-			}
-			
-			float factor = 1.5f; // a scaling factor for arcradius
-			float stopFactor = 1.9f; // a scaling factor for stop distance
-			int extraStop = (int) ((factor * 180 + 60) / stopFactor);
-
-			double distance;
-			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > extraStop+BITES) {
-				gen.doTravel(BITES);
-				adjustingAngle = true;
-				continue outerloop;
-			}
-//			double breakpointDistance = Utilities.getDistance(next, waypoints.afterHead());
-
-			double robotAngle = Utilities.getRobotAngle(robot);
-			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
-			double angle = Math.abs(robotAngle - newAngle);
-			if(angle > 180) {
-				angle = 360 - angle;
-			}
-			ARC_RADIUS = (int) (factor * 180 + 60 - factor * angle); 
-			STOP_DIST = (int) (ARC_RADIUS / stopFactor);
-//			if(breakpointDistance * MM_PR_PIXEL < STOP_DIST) {
-			
-				if(distance * MM_PR_PIXEL > STOP_DIST) {
-					gen.doTravel((float) (distance*MM_PR_PIXEL - STOP_DIST));
-				} else {
-					STOP_DIST = (int) (distance * MM_PR_PIXEL);
-					ARC_RADIUS = (int) (STOP_DIST * stopFactor);
-				}
-	
-				int arcDir; // 1 = left turn, -1 = right turn
+		
+				int steer; // 1 = left turn, -1 = right turn
 				
 				if(robotAngle < 0) {
-					if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
-						arcDir = -1;
+					if(breakpointAngle < robotAngle  || robotAngle+180 < breakpointAngle) {
+						steer = -1;
 					} else {
-						arcDir = 1;
+						steer = 1;
 					}
 				} else {
-					if(robotAngle < newAngle || newAngle < robotAngle - 180) {
-						arcDir = 1;
+					if(robotAngle < breakpointAngle || breakpointAngle < robotAngle - 180) {
+						steer = 1;
 					} else {
-						arcDir = -1;
+						steer = -1;
 					}
 				}
-				
-				System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP_DIST, ARC_RADIUS);
-				
-				gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
-				
+				if(steer == 1) {
+					left.setSpeed((int) (MARCH_SPEED - (180/MARCH_SPEED) * angle));
+					right.setSpeed(MARCH_SPEED);
+				} else {
+					right.setSpeed((int) (MARCH_SPEED -(180/MARCH_SPEED) * angle));
+					left.setSpeed(MARCH_SPEED);
+				}
+			}
+			System.out.format("%s : Next destination: %s%n", name, next);
+//			while(adjustingAngle) {
+//				double robotAngle = Utilities.getRobotAngle(robot);
+////				System.out.format("[Robot: fX %d, fY %d, bX %d, bY %d]%n", robot.getFrontMidX(), Y_RESOLUTION-robot.getFrontmidY(), robot.getBackMidX(), Y_RESOLUTION-robot.getBackMidY());
+//				double rotation = Utilities.getRotation(robotAngle, Utilities.getAngle(robot, next));
+//				if(Math.abs(rotation) > ANGLE_THRESHOLD) {
+//					gen.doRotate((float) rotation);
+//				} else {
+//					adjustingAngle = false;
+//				}
+//				
 //			}
 			
-			adjustingAngle = true;
+//			float factor = 1.5f; // a scaling factor for arcradius
+//			float stopFactor = 1.9f; // a scaling factor for stop distance
+//			int extraStop = (int) ((factor * 180 + 60) / stopFactor);
+//
+//			double distance;
+//			while((distance =  Utilities.getDistance(robot, next)) * MM_PR_PIXEL > extraStop+BITES) {
+//				gen.doTravel(BITES);
+//				adjustingAngle = true;
+//				continue outerloop;
+//			}
+////			double breakpointDistance = Utilities.getDistance(next, waypoints.afterHead());
+//
+//			double robotAngle = Utilities.getRobotAngle(robot);
+//			double newAngle = Utilities.getAngle(next, waypoints.afterHead());
+//			double angle = Math.abs(robotAngle - newAngle);
+//			if(angle > 180) {
+//				angle = 360 - angle;
+//			}
+//			ARC_RADIUS = (int) (factor * 180 + 60 - factor * angle); 
+//			STOP_DIST = (int) (ARC_RADIUS / stopFactor);
+////			if(breakpointDistance * MM_PR_PIXEL < STOP_DIST) {
+//			
+//				if(distance * MM_PR_PIXEL > STOP_DIST) {
+//					gen.doTravel((float) (distance*MM_PR_PIXEL - STOP_DIST));
+//				} else {
+//					STOP_DIST = (int) (distance * MM_PR_PIXEL);
+//					ARC_RADIUS = (int) (STOP_DIST * stopFactor);
+//				}
+//	
+//				int arcDir; // 1 = left turn, -1 = right turn
+//				
+//				if(robotAngle < 0) {
+//					if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
+//						arcDir = -1;
+//					} else {
+//						arcDir = 1;
+//					}
+//				} else {
+//					if(robotAngle < newAngle || newAngle < robotAngle - 180) {
+//						arcDir = 1;
+//					} else {
+//						arcDir = -1;
+//					}
+//				}
+//				
+//				System.out.format("# %s : Arc'ing: [%.2f -> %.2f : %.2f - STOP %d: , RADIUS: %d]%n", name, robotAngle, newAngle, angle, STOP_DIST, ARC_RADIUS);
+//				
+//				gen.doArc(arcDir*ARC_RADIUS, (float) (arcDir*angle));
+//				
+////			}
+//			
+//			adjustingAngle = true;
 			
+			previous = waypoints.getHead();
 			waypoints.shift();
 			
 		}
