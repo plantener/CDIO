@@ -58,7 +58,7 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		Waypoint next = null;
-		gen.setTravelSpeed(500);
+		gen.setTravelSpeed((useRobotA) ? 580 : 447);
 		gen.doSteer(0);
 
 		double robotAngle, angle, turnRate, oldRate, distance, newAngle;
@@ -90,13 +90,13 @@ public class Navigator implements Runnable {
 				
 				diff = start-end;
 				start = System.currentTimeMillis();
-				try {
-//					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
-					Thread.sleep(15);
-				} catch (Exception e) {
-					// interrupts should occur, so we just catch all
-					e.printStackTrace();
-				}
+//				try {
+////					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
+////					Thread.sleep(10);
+//				} catch (Exception e) {
+//					// interrupts should occur, so we just catch all
+//					e.printStackTrace();
+//				}
 				
 				robotAngle = Utilities.getRobotAngle(robot);
 				newAngle = Utilities.getAngle(robot, next);
@@ -122,14 +122,17 @@ public class Navigator implements Runnable {
 				oldRate = turnRate;
 //				turnRate = Math.pow(Math.sin(Math.PI * angle / 100.0),2)*100;
 //				if(angle < 90) {
-					turnRate = Math.log(angle / 3.0) * 30;
-					turnRate = (turnRate < 0) ? 0 : turnRate;
+//					turnRate = Math.log(angle / 3.0) * 30;
+//					turnRate = (turnRate < 0) ? 0 : turnRate;
 //				} else {
-//					turnRate = (10.0/9)*angle;
+					turnRate = (10.0/9)*angle;
 //				}
+					if(turnRate > 100) {
+						turnRate = 100;
+					}
 				turnRate *= steer;
 				if(Math.abs(oldRate - turnRate) > TURNRATE_THRESHOLD || robotHasBeenStopped) {
-					System.out.format("%s - distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f, Diff: %d, speed: %d%n", name, distance, robotAngle, newAngle, angle, turnRate, diff, oldTravelSpeed);
+//					System.out.format("%s - distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f, Diff: %d, speed: %d%n", name, distance, robotAngle, newAngle, angle, turnRate, diff, oldTravelSpeed);
 					gen.doSteer((float) turnRate);
 					robotHasBeenStopped = false;
 					
