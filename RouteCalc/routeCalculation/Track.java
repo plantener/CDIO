@@ -38,34 +38,10 @@ public class Track {
 
 	public static void addList(ArrayList<BreakPoint> newBreak,
 			ArrayList<BreakPoint> oldBreak) {
-		int index = 0;
 		complete.clear();
 		for (Route set : r) {
 			complete.addAll(set.getBreakPoints());
 		}
-
-		//
-		// if (!oldBreak.isEmpty()) {
-		// index = complete.indexOf(oldBreak.get(0));
-		// System.out.println("size:" + oldBreak.size());
-		// complete.removeAll(oldBreak);
-		// complete.addAll(index, newBreak);
-		// } else {
-		// complete.addAll(newBreak);
-		// }
-	}
-
-	private static void removePort(int port) {
-		int index = 0;
-		System.out.print(port + ": ");
-		for (int i = 0; i < complete.size(); i++) {
-			System.out.print(complete.get(i));
-			if (port == complete.get(index).getPort()) {
-				complete.remove(index);
-			} else
-				index++;
-		}
-		System.out.println();
 	}
 
 	public static ArrayList<BreakPoint> getCompleteList() {

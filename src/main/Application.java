@@ -71,23 +71,23 @@ public class Application {
 		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib4.jpg");
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
-		if(!calibrateRobot){
-		iu.calibrateRobot(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, resizedFrame);
-		calibrateRobot = true;
-		}
+//		if(!calibrateRobot){
+//		iu.calibrateRobot(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, resizedFrame);
+//		calibrateRobot = true;
+//		}
 		
 		greenBoxes.clear();
 		redBoxes.clear();
 		thresholdColour(Threshold.RED_LOWER, Threshold.RED_UPPER, RED);
 		thresholdColour(Threshold.GREEN_LOWER, Threshold.GREEN_UPPER, GREEN);
-		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
-		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
-		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
+//		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
+//		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
+//		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
 
 		//Set variable in Main class. Prints info on both robots
 		if(Main.DEBUG_ROBOT == 1){
