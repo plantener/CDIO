@@ -58,7 +58,7 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		Waypoint next = null;
-		gen.setTravelSpeed(TRAVEL_SPEED);
+		gen.setTravelSpeed(500);
 		gen.doSteer(0);
 
 		double robotAngle, angle, turnRate, oldRate, distance, newAngle;
@@ -83,16 +83,16 @@ public class Navigator implements Runnable {
 					}
 				}
 				
-				if((travelSpeed = ((int) (distance / 10)) * 10 + 200) != oldTravelSpeed ) {
-					gen.setTravelSpeed(travelSpeed);
-					oldTravelSpeed = travelSpeed;
-				}
+//				if((travelSpeed = ((int) (distance / 10)) * 10 + 200) != oldTravelSpeed ) {
+//					gen.setTravelSpeed(travelSpeed);
+//					oldTravelSpeed = travelSpeed;
+//				}
 				
 				diff = start-end;
 				start = System.currentTimeMillis();
 				try {
-					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLUE : opencv_core.CvScalar.RED, 3, 8, 0);
-					Thread.sleep(10);
+//					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
+					Thread.sleep(15);
 				} catch (Exception e) {
 					// interrupts should occur, so we just catch all
 					e.printStackTrace();
@@ -121,12 +121,12 @@ public class Navigator implements Runnable {
 
 				oldRate = turnRate;
 //				turnRate = Math.pow(Math.sin(Math.PI * angle / 100.0),2)*100;
-				if(angle < 90) {
+//				if(angle < 90) {
 					turnRate = Math.log(angle / 3.0) * 30;
 					turnRate = (turnRate < 0) ? 0 : turnRate;
-				} else {
-					turnRate = (10.0/9)*angle;
-				}
+//				} else {
+//					turnRate = (10.0/9)*angle;
+//				}
 				turnRate *= steer;
 				if(Math.abs(oldRate - turnRate) > TURNRATE_THRESHOLD || robotHasBeenStopped) {
 					System.out.format("%s - distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f, Diff: %d, speed: %d%n", name, distance, robotAngle, newAngle, angle, turnRate, diff, oldTravelSpeed);

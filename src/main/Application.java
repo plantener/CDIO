@@ -182,12 +182,12 @@ public class Application {
 				colorOperation(colour);
 				
 				//Update displayed image with threshold information
-				opencv_core.CvScalar drawColor = opencv_core.CvScalar.BLUE;
+				opencv_core.CvScalar drawColor = opencv_core.CvScalar.BLACK;
 				p1.x(sq.x());
 				p2.x(sq.x() + sq.width());
 				p1.y(sq.y());
 				p2.y(sq.y() + sq.height());
-				cvRectangle(resizedFrame, p1, p2, CV_RGB(255, 0, 0), 2, 8, 0);
+				cvRectangle(resizedFrame, p1, p2, CV_RGB(0, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, contours, drawColor,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
 			}
