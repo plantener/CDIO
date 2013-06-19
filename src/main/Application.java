@@ -75,15 +75,15 @@ public class Application {
 		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib4.jpg");
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
-		if(!calibrateRobot){
-		iu.calibrateRobot(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, resizedFrame);
-		calibrateRobot = true;
-		}
+//		if(!calibrateRobot){
+//		iu.calibrateRobot(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, resizedFrame);
+//		calibrateRobot = true;
+//		}
 		
 		greenBoxes.clear();
 		redBoxes.clear();

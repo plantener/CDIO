@@ -1,7 +1,5 @@
 package models;
 
-import dk.dtu.cdio.ANIMAL.computer.Navigator;
-
 public class Port extends ObjectOnMap implements Comparable<Port>{
 	private int pairId;
 	private int midX;
@@ -18,6 +16,14 @@ public class Port extends ObjectOnMap implements Comparable<Port>{
 		angleRelativeToCenter = dk.dtu.cdio.ANIMAL.computer.Utilities.getAngleRelativeToCenter(red.getMidX(), red.getMidY());
 	}
 	
+	public Box getRed() {
+		return red;
+	}
+
+	public Box getGreen() {
+		return green;
+	}
+
 	public Port(int midX, int midY, int pairId){
 		this.midX = midX;
 		this.midY = midY;
