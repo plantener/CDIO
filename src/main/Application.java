@@ -25,7 +25,7 @@ public class Application {
 	private CaptureImage ci;
 	private ImageUtils iu;
 	private IplImage grabbedFrame;
-	public IplImage resizedFrame;
+	public static IplImage resizedFrame;
 	private IplImage thresholdedFrame;
 	private IplImage contoursFrame;
 	public ObjectOnMap[] objectList;
@@ -48,9 +48,29 @@ public class Application {
 	public static final int SQ_THRESHOLD = 6;
 	public static final int RED = 1;
 	public static final int GREEN = 2;
-	public static final int BLUE = 3;
-	public static final int PURPLE = 4;
-	public static final int YELLOW = 5;
+	public static final int BLUE = 4;
+	public static final int PURPLE = 5;
+	public static final int YELLOW = 3;
+	public static int green_h = 39;
+	public static int green_s = 100;
+	public static int green_v = 80;
+	public static int green_upper_h = 75;
+	public static int red_h = 160;
+	public static int red_s = 100;
+	public static int red_v = 100;
+	public static int red_upper_h = 179;
+	public static int lightBlue_h = 23;
+	public static int lightBlue_s = 100;
+	public static int lightBlue_v = 150;
+	public static int lightBlue_upper_h = 33;
+	public static int blue_h = 100;
+	public static int blue_s = 100;
+	public static int blue_v = 100;
+	public static int blue_upper_h = 125;
+	public static int purple_h = 135;
+	public static int purple_s = 120;
+	public static int purple_v = 120;
+	public static int purple_upper_h = 159;
 
 	public Application() {
 		ci = new CaptureImage();
@@ -72,10 +92,11 @@ public class Application {
 
 	public void frameProcessing() {
 
-		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+//		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
 //		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
+
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -91,17 +112,17 @@ public class Application {
 		blueFound = false;
 		yellowFound = false;
 		
-		thresholdColour(Threshold.RED_LOWER, Threshold.RED_UPPER, RED);
-		thresholdColour(Threshold.GREEN_LOWER, Threshold.GREEN_UPPER, GREEN);
-		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
-		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
-		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
-		
 		if (yellowFound == false || purpleFound == false || blueFound == false){
 			robotsDetected = false;
 		}else{
 			robotsDetected = true;
 		}
+		
+		thresholdColour(RED);
+		thresholdColour(GREEN);
+		thresholdColour(BLUE);
+		thresholdColour(PURPLE);
+		thresholdColour(YELLOW);
 
 		//Set variable in Main class. Prints info on both robots
 		if(Main.DEBUG_ROBOT == 1){
@@ -165,12 +186,11 @@ public class Application {
 			port.setPairId(i);
 		}
 	}
-	public void thresholdColour(Threshold lowerThreshold, Threshold upperThreshold, int colour){
+	public void thresholdColour(int colour){
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
 
-		thresholdedFrame = iu.thresholdFrame(resizedFrame,
-				lowerThreshold, upperThreshold);
+		thresholdedFrame = iu.thresholdFrame(resizedFrame, colour);
 		contours = iu.findContours(thresholdedFrame, resizedFrame);
 		try {
 			for (;contours != null; contours = contours.h_next()) {

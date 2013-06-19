@@ -3,6 +3,8 @@ package main;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Calibrate.SliderDemo;
+
 import models.Box;
 import models.ObjectOnMap;
 import models.Port;
@@ -42,7 +44,8 @@ public class Main {
 //	}
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
-		for(i=0; i < 25; i++) {			
+		SliderDemo.main(null);
+		for(i=0; i < 100; i++) {		
 			app.frameProcessing();
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
@@ -65,6 +68,7 @@ public class Main {
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
 			greenBoxes = app.greenBoxes;
+			System.out.println("h:" + Application.red_h + "\n s:" + Application.red_s + "\n v:" + Application.red_v + "\n upper h" + Application.red_upper_h);
 //			i++;
 //			System.out.println("BILLEDE NUMMER: " + i);
 			if(!runRobots) {
