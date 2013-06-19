@@ -40,13 +40,12 @@ public class WaypointQueue {
 		}
 	}
 	
-	public void shiftToNextBreakpoint(Robot r) {
-//		Waypoint middle = new Waypoint(, y)
-		double robotAngle = Utilities.getAngle(Navigator.X_RESOLUTION/2, Navigator.Y_RESOLUTION/2, r.getFrontMidX(), r.getFrontmidY());
-		if (robotAngle > 0) {
-			
-		}
-		
+	public void shiftToNextBreakpoint(Robot robot) {
+		for(int i = list.size();
+			Utilities.getAngleRelativeToCenter(getHead()) > Utilities.getAngleRelativeToCenter(robot)
+			&& i > 0;
+			shift(), i--
+		);
 	}
 	
 	public void generatePoints() {
