@@ -63,7 +63,7 @@ public class Navigator implements Runnable {
 
 		double robotAngle, angle, turnRate, oldRate, distance, newAngle;
 		int steer, oldTravelSpeed = 0, travelSpeed = 0;
-		long start, end;
+		long start, end, diff;
 		boolean robotHasBeenStopped = false;
 		start = end = 0;
 		oldRate = turnRate = 0;
@@ -88,7 +88,7 @@ public class Navigator implements Runnable {
 					oldTravelSpeed = travelSpeed;
 				}
 				
-				long diff = start-end;
+				diff = start-end;
 				start = System.currentTimeMillis();
 				try {
 					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLUE : opencv_core.CvScalar.RED, 3, 8, 0);
@@ -129,7 +129,7 @@ public class Navigator implements Runnable {
 				}
 				turnRate *= steer;
 				if(Math.abs(oldRate - turnRate) > TURNRATE_THRESHOLD || robotHasBeenStopped) {
-					System.out.format("%s - distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f, Diff: %d%n", name, distance, robotAngle, newAngle, angle, turnRate, diff);
+					System.out.format("%s - distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f, Diff: %d, speed: %d%n", name, distance, robotAngle, newAngle, angle, turnRate, diff, oldTravelSpeed);
 					gen.doSteer((float) turnRate);
 					robotHasBeenStopped = false;
 					
