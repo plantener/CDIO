@@ -39,8 +39,12 @@ public class Application {
 	private CvSeq contours;
 	private opencv_core.CvRect sq;
 	private boolean calibrateRobot = false;
+	private int contourCount;
+	private boolean purpleFound;
+	private boolean blueFound;
+	private boolean yellowFound;
 	
-	
+	public static boolean robotsDetected = false;
 	public static final int SQ_THRESHOLD = 6;
 	public static final int RED = 1;
 	public static final int GREEN = 2;
@@ -83,11 +87,21 @@ public class Application {
 		
 		greenBoxes.clear();
 		redBoxes.clear();
+		purpleFound = false;
+		blueFound = false;
+		yellowFound = false;
+		
 		thresholdColour(Threshold.RED_LOWER, Threshold.RED_UPPER, RED);
 		thresholdColour(Threshold.GREEN_LOWER, Threshold.GREEN_UPPER, GREEN);
 		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
 		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
 		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
+		
+		if (yellowFound == false || purpleFound == false || blueFound == false){
+			robotsDetected = false;
+		}else{
+			robotsDetected = true;
+		}
 
 		//Set variable in Main class. Prints info on both robots
 		if(Main.DEBUG_ROBOT == 1){
@@ -165,7 +179,6 @@ public class Application {
 				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
-				
 				colorOperation(colour);
 				
 				//Update displayed image with threshold information
@@ -178,6 +191,7 @@ public class Application {
 				cvDrawContours(resizedFrame, contours, drawColor,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
 			}
+			contourCount = 0;
 
 		} catch (Exception e) {
 			System.err.println("Error occured thresholding " + colour);
@@ -209,6 +223,7 @@ public class Application {
 			break;
 
 		case BLUE:
+			blueFound = true;
 			robotList[0].setRobotId("a");
 			robotList[0].setFrontX(sq.x());
 			robotList[0].setFrontY(sq.y());
@@ -217,6 +232,7 @@ public class Application {
 			break;
 
 		case PURPLE:
+			purpleFound = true;
 			robotList[1].setRobotId("b");
 			robotList[1].setFrontX(sq.x());
 			robotList[1].setFrontY(sq.y());
@@ -225,6 +241,11 @@ public class Application {
 			break;
 
 		case YELLOW:
+			contourCount++;
+			
+			if (contourCount == 2){
+				yellowFound = true;
+			}
 			//Find closest robot front color to the current yellow point
 			double minDistance = Double.MAX_VALUE;
 			int robot = 0;
