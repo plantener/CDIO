@@ -154,8 +154,8 @@ public class ImageUtils {
 			area = opencv_imgproc.cvContourArea(ptr, opencv_core.CV_WHOLE_SEQ, 0);
 			ptr = ptr.h_next();
 			
-			Navigator.MM_PR_PIXEL = (float) (73/(Math.sqrt((area)/Math.PI)*2));
-			System.out.println("MM_pr_pixel er: " + Navigator.MM_PR_PIXEL);
+//			Navigator.MM_PR_PIXEL = (float) (73/(Math.sqrt((area)/Math.PI)*2));
+//			System.out.println("MM_pr_pixel er: " + Navigator.MM_PR_PIXEL);
 		}
 		
 //		opencv_core.cvReleaseImage(img);
