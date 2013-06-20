@@ -13,7 +13,7 @@ public class Navigator implements Runnable {
 	public static final int X_RESOLUTION = 400;
 	public static final int Y_RESOLUTION = 300;
 	public static final int DIST_THRESHOLD = 20;
-	public static final int TURNRATE_THRESHOLD = 5;
+	public static final int TURNRATE_THRESHOLD = 7;
 	
 	private static NXTInfo INFO_5A = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private static NXTInfo INFO_5B = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
@@ -49,7 +49,7 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		Waypoint next = null;
-		gen.setTravelSpeed(550);
+		gen.setTravelSpeed(575);
 		gen.doSteer(0);
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
@@ -60,7 +60,7 @@ public class Navigator implements Runnable {
 
 		while(running) {
 			next = waypoints.getHead();
-//			System.out.format("%n%s : Next destination: %s%n", name, next);
+			System.out.format("%n%s : Next destination: %s%n", name, next);
 			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
 //				System.out.print("X");
 				while(paused || !Application.robotsDetected  ) {
@@ -104,7 +104,7 @@ public class Navigator implements Runnable {
 
 					gen.doSteer((float) turnRate);
 
-					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
+//					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
 					last = System.currentTimeMillis();
 					robotHasBeenStopped = false;
 //					while(System.currentTimeMillis() - last < 4);
