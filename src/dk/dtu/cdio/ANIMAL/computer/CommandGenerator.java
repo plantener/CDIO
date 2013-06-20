@@ -8,47 +8,47 @@ public class CommandGenerator {
 		this.com = communicator;
 	}
 	
-	public void doTravel(float distance) {
-		com.sendData(NavCommand.TRAVEL.ordinal(), distance, 0, 0, false);
-	}
+//	public void doTravel(float distance) {
+//		com.sendData(NavCommand.TRAVEL.ordinal(), distance, 0, 0, false);
+//	}
 	
 	public void doSteer(float turnRate) {
-		com.sendData(NavCommand.STEER.ordinal(), turnRate, 0, 0, false);
+		com.sendData(NavCommand.STEER.ordinal(), turnRate);
 	}
 	
-	public void doTravelArc(float radius, float distance) {
-		com.sendData(NavCommand.TRAVEL_ARC.ordinal(), radius, distance, 0, false);
-	}
-	
-	public void doArc(float radius, float angle) {
-		com.sendData(NavCommand.ARC.ordinal(), radius, angle, 0, false);
-	}
-	
-	public void doRotate(float angle) {
-		com.sendData(NavCommand.ROTATE.ordinal(), angle, 0, 0, false);
-	}
+//	public void doTravelArc(float radius, float distance) {
+//		com.sendData(NavCommand.TRAVEL_ARC.ordinal(), radius, distance, 0, false);
+//	}
+//	
+//	public void doArc(float radius, float angle) {
+//		com.sendData(NavCommand.ARC.ordinal(), radius, angle, 0, false);
+//	}
+//	
+//	public void doRotate(float angle) {
+//		com.sendData(NavCommand.ROTATE.ordinal(), angle, 0, 0, false);
+//	}
 	
 	public void setTravelSpeed(float speed) {
-		com.sendData(NavCommand.SET_TRAVELSPEED.ordinal(), speed, 0, 0, false);
+		com.sendData(NavCommand.SET_TRAVELSPEED.ordinal(), speed);
 	}
 	
-	public void setRotateSpeed(float speed) {
-		com.sendData(NavCommand.SET_ROTATESPEED.ordinal(), speed, 0, 0, false);
-	}
-	
-	public void setAcceleration(int accel) {
-		com.sendData(NavCommand.SET_ACCELERATION.ordinal(), accel, 0, 0, false);
-	}
+//	public void setRotateSpeed(float speed) {
+//		com.sendData(NavCommand.SET_ROTATESPEED.ordinal(), speed, 0, 0, false);
+//	}
+//	
+//	public void setAcceleration(int accel) {
+//		com.sendData(NavCommand.SET_ACCELERATION.ordinal(), accel, 0, 0, false);
+//	}
 	
 	public void sendStop() {
-		com.sendData(NavCommand.STOP.ordinal(), 0, 0, 0, false);
+		com.sendData(NavCommand.STOP.ordinal(), 0);
 	}
 	
-	public void sendStopAndClear() {
-		com.sendData(NavCommand.STOP_AND_CLEAR.ordinal(), 0, 0, 0, false);
-	}
-	
-	public void sendClear() {
-		com.sendData(NavCommand.CLEAR.ordinal(), 0, 0, 0, false);
-	}
+//	public void sendStopAndClear() {
+//		com.sendData(NavCommand.STOP_AND_CLEAR.ordinal(), 0, 0, 0, false);
+//	}
+//	
+//	public void sendClear() {
+//		com.sendData(NavCommand.CLEAR.ordinal(), 0, 0, 0, false);
+//	}
 }

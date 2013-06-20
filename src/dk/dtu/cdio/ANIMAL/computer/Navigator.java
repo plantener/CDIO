@@ -49,19 +49,21 @@ public class Navigator implements Runnable {
 	public void go() {
 		boolean running = true;
 		Waypoint next = null;
-		gen.setTravelSpeed((useRobotA) ? 580 : 447);
+		gen.setTravelSpeed(550);
 		gen.doSteer(0);
 
-		double robotAngle, angle, turnRate, oldRate, distance, newAngle;
+		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
+		long last = 0;
 		int steer;
 		boolean robotHasBeenStopped = false;
 		oldRate = turnRate = 0;
 
 		while(running) {
 			next = waypoints.getHead();
-			System.out.format("%n%s : Next destination: %s%n", name, next);
+//			System.out.format("%n%s : Next destination: %s%n", name, next);
 			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
-				while(paused || !Application.robotsDetected) {
+//				System.out.print("X");
+				while(paused || !Application.robotsDetected  ) {
 					gen.sendStop();
 					robotHasBeenStopped = true;
 					try {
@@ -70,14 +72,6 @@ public class Navigator implements Runnable {
 						e.printStackTrace();
 					}
 				}
-				
-//				try {
-//					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
-//					Thread.sleep(10);
-//				} catch (Exception e) {
-//					// interrupts should occur, so we just catch all
-//					e.printStackTrace();
-//				}
 				
 				robotAngle = Utilities.getRobotAngle(robot);
 				newAngle = Utilities.getAngle(robot, next);
@@ -100,17 +94,29 @@ public class Navigator implements Runnable {
 					}
 				}
 
-				oldRate = turnRate;
+//				oldRate = turnRate;
 //				turnRate = Math.pow(Math.sin(Math.PI * angle / 100.0),2)*100;
 				
-				turnRate = Math.min((10.0/9)*angle, 100);
-				turnRate *= steer;
+				turnRate = Math.min((10.0/9)*angle, 100) * steer;
 				
-				if(Math.abs(oldRate - turnRate) > TURNRATE_THRESHOLD || robotHasBeenStopped) {
-//					System.out.format("%s - distance: %.3f, RA: %.3f, NA: %.3f, Angle : %.3f - turnRate: %.3f%n", name, distance, robotAngle, newAngle, angle, turnRate);
+				if(((diffRate = Math.abs(oldRate - turnRate)) > TURNRATE_THRESHOLD && diffRate != 200) || robotHasBeenStopped) {
+					oldRate = turnRate;
+
 					gen.doSteer((float) turnRate);
+
+					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
+					last = System.currentTimeMillis();
 					robotHasBeenStopped = false;
+//					while(System.currentTimeMillis() - last < 4);
+//					try {
+//	//					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
+//						Thread.sleep(4);
+//					} catch (Exception e) {
+//						// interrupts should occur, so we just catch all
+//						e.printStackTrace();
+//					}
 				}
+
 			}
 			
 			waypoints.shift();

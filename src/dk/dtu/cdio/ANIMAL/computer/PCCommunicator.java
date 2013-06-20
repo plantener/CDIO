@@ -22,51 +22,50 @@ public class PCCommunicator {
 //		reader = new Reader();
 	}
 	
-	public void testLatency(){
-		long start = System.currentTimeMillis();
-		sendData(NavCommand.LATENCY_TEST.ordinal(), 0, 0, 0, false);
-		try {
-			dataIn.readInt();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		long end = System.currentTimeMillis();
-		System.out.println(end-start);
-	}
+//	public void testLatency(){
+//		long start = System.currentTimeMillis();
+//		sendData(NavCommand.LATENCY_TEST.ordinal(), 0, 0, 0, false);
+//		try {
+//			dataIn.readInt();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		long end = System.currentTimeMillis();
+//		System.out.println(end-start);
+//	}
 	
-	public void sendData(int code, float v0, float v1, float v2, boolean bit) {
+	public void sendData(int code, float v0) {
 		try {
 			dataOut.writeInt(code);
 			dataOut.writeFloat(v0);
-			dataOut.writeFloat(v1);
-			dataOut.writeFloat(v2);
-			dataOut.writeBoolean(bit);
 			dataOut.flush();
-//			System.out.println("sent " + NavCommand.values()[code] + " " + v0 + " " + v1);
 		} catch (IOException e) {
 			System.out.println(" send failed ");
 		}
 		
-//		waitForReply();
 	}
 
 	public boolean connect() {
-		System.out.println(" connecting to " + nxtInfo.name + " "
-				+ nxtInfo.deviceAddress);
+		boolean connected = false;
 		connector = new NXTConnector();
-		boolean connected = connector.connectTo(nxtInfo.name,
+		do {
+			System.out.println(" connecting to " + nxtInfo.name + " " + nxtInfo.deviceAddress);
+			connected = connector.connectTo(nxtInfo.name,
 				nxtInfo.deviceAddress, NXTCommFactory.BLUETOOTH);
+		} while (!connected);
 		System.out.println(" connect result " + connected);
 		if (!connected) {
-			return connected;
+			System.out.println("Connect fail");
+			System.exit(-1);
+//			return connected;
 		}
-		dataIn = new DataInputStream(connector.getInputStream());
+//		dataIn = new DataInputStream(connector.getInputStream());
 		dataOut = new DataOutputStream(connector.getOutputStream());
-		if (dataIn == null) {
-			connected = false;
-			return connected;
-		}
+//		if (dataIn == null) {
+//			connected = false;
+//			return connected;
+//		}
 //		if (!reader.isRunning) {
 //			reader.start();
 //		}

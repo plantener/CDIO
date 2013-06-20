@@ -96,7 +96,7 @@ public class Application {
 		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
 		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
 		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
-		
+//		
 		if (yellowFound == false || purpleFound == false || blueFound == false){
 			robotsDetected = false;
 		}else{
@@ -105,16 +105,18 @@ public class Application {
 
 		//Set variable in Main class. Prints info on both robots
 		if(Main.DEBUG_ROBOT == 1){
-			System.out.println("Robot A information:");
-			System.out.println("Front X: " + robotA.getFrontX());
-			System.out.println("Front Y: " + robotA.getFrontY());
-			System.out.println("Back X: " + robotA.getBackX());
-			System.out.println("Back Y: " + robotA.getBackY()+"\n");
-			System.out.println("Robot B information:");
-			System.out.println("Front X: " + robotB.getFrontX());
-			System.out.println("Front Y: " + robotB.getFrontY());
-			System.out.println("Back X: " + robotB.getBackX());
-			System.out.println("Back Y: " + robotB.getBackY()+"\n");
+			System.out.format("A FX: %3d, FY: %3d     B FX: %3d, FY: %3d%n",  robotA.getFrontMidX(), robotA.getFrontmidY(),robotB.getFrontMidX(), robotB.getFrontmidY());
+			System.out.format("A BX: %3d, BY: %3d     B BX: %3d, BY: %3d%n%n",  robotA.getBackMidX(), robotA.getBackMidY(), robotB.getBackMidX(), robotB.getBackMidY());
+//			System.out.println("Robot A information:");
+//			System.out.println("Front X: " + robotA.getFrontX());
+//			System.out.println("Front Y: " + robotA.getFrontY());
+//			System.out.println("Back X: " + robotA.getBackX());
+//			System.out.println("Back Y: " + robotA.getBackY()+"\n");
+//			System.out.println("Robot B information:");
+//			System.out.println("Front X: " + robotB.getFrontX());
+//			System.out.println("Front Y: " + robotB.getFrontY());
+//			System.out.println("Back X: " + robotB.getBackX());
+//			System.out.println("Back Y: " + robotB.getBackY()+"\n");
 		}
 
 		findPort();
