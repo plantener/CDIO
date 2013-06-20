@@ -51,7 +51,7 @@ public class SliderDemo extends JPanel implements ActionListener,
 	// Set up animation parameters.
 	private final int H_MIN = 0;
 	private final int H_MAX = 180;
-	private int h_init;
+	public static int h_init;
 
 	// This label uses ImageIcon to show the doggy pictures.
 	JLabel picture;

@@ -18,7 +18,7 @@ public class ValSlider extends JPanel implements ActionListener,ChangeListener{
 
 		private static final int V_MIN = 0;
 		private static final int V_MAX = 255;
-		private static int v_init;
+		public static int v_init;
 
 		public ValSlider(){
 			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));

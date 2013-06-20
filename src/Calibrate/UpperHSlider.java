@@ -16,9 +16,9 @@ import main.Application;
 
 public class UpperHSlider extends JPanel implements ActionListener,ChangeListener{
 
-		private static final int V_MIN = 0;
-		private static final int V_MAX = 255;
-		private static int v_init;
+		private static final int UPPER_H_MIN = 0;
+		private static final int UPPER_H_MAX = 255;
+		public static int upper_h_init;
 
 		public UpperHSlider(){
 			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -27,28 +27,28 @@ public class UpperHSlider extends JPanel implements ActionListener,ChangeListene
 			
 			switch (ComboBox.colorIndex) {
 			case 0:
-				v_init = Application.red_upper_h;
+				upper_h_init = Application.red_upper_h;
 				valueLabel = new JLabel("Upper hue red: " + Application.red_upper_h, JLabel.CENTER);
 				valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				break;
 			case 1:
-				v_init = Application.green_upper_h;
+				upper_h_init = Application.green_upper_h;
 				break;
 			case 2:
-				v_init = Application.lightBlue_upper_h;
+				upper_h_init = Application.lightBlue_upper_h;
 				break;
 			case 3:
-				v_init = Application.blue_upper_h;
+				upper_h_init = Application.blue_upper_h;
 				break;
 			case 4:
-				v_init = Application.purple_upper_h;
+				upper_h_init = Application.purple_upper_h;
 				break;
 			default:
-				v_init = Application.red_upper_h;
+				upper_h_init = Application.red_upper_h;
 				break;
 			}
-			JSlider value = new JSlider(JSlider.HORIZONTAL, V_MIN, V_MAX,
-					v_init);
+			JSlider value = new JSlider(JSlider.HORIZONTAL, UPPER_H_MIN, UPPER_H_MAX,
+					upper_h_init);
 
 			value.addChangeListener(this);
 			

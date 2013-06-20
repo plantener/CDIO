@@ -19,7 +19,7 @@ public class SatSlider extends JPanel implements ActionListener,ChangeListener{
 		
 		private static final int S_MAX = 255;
 		private static final int S_MIN = 0;
-		private static int s_init;
+		public static int s_init;
 
 		public SatSlider(){
 			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
