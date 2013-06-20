@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Calibrate.ComboBox;
 import Calibrate.SliderDemo;
 
 import models.Box;
@@ -31,20 +32,23 @@ public class Main {
 		if(runRobots) {
 			 control = new ControlCenter(app);
 		}
-
 		Scanner sc = new Scanner(System.in);
 		int i = 0;
 		long startTime = System.currentTimeMillis();
+		SliderDemo.main(null);
+		while (i == 0){
+			app.calibrateColor(ComboBox.colorIndex+1);
+		}
 		app.frameProcessing();
 		ports = app.sortedPorts;
 		redBoxes = app.redBoxes;
 		greenBoxes = app.greenBoxes;
+
 //		objectList = app.objectList;//		if(name.equals("Robot A")) {
 //		calibrateLength();
 //	}
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
-		SliderDemo.main(null);
 		for(i=0; i < 100; i++) {		
 			app.frameProcessing();
 			ports = app.sortedPorts;

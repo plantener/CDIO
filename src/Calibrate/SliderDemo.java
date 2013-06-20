@@ -159,7 +159,6 @@ public class SliderDemo extends JPanel implements ActionListener,
 
 		// Add content to the window.
 
-		frame.setSize(150, 400);
 		frame.setLayout(null);
 		upperh.setBounds(1, 51, 400, 100);
 		animator.setBounds(1, 151, 400, 100);
@@ -175,6 +174,7 @@ public class SliderDemo extends JPanel implements ActionListener,
 
 		// Display the window.
 		frame.pack();
+		frame.setSize(410, 500);
 		frame.setVisible(true);
 	}
 

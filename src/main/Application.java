@@ -6,11 +6,14 @@ import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
+import java.awt.Canvas;
 import java.util.ArrayList;
 import java.util.Collections;
 import models.*;
 import utilities.ImageUtils;
 import utilities.Threshold;
+import Calibrate.SliderDemo;
+
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvPoint;
@@ -95,7 +98,7 @@ public class Application {
 //		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
 
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
@@ -212,7 +215,7 @@ public class Application {
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));
 			}
 			contourCount = 0;
-
+			
 		} catch (Exception e) {
 			System.err.println("Error occured thresholding " + colour);
 		}
@@ -291,6 +294,34 @@ public class Application {
 
 			break;
 		}
+	}
+	
+	public void calibrateColor(int color){
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");		 
+		resizedFrame = iu.resizeImage(grabbedFrame);
+		opencv_core.cvReleaseImage(grabbedFrame);
+		
+		switch (color) {
+		case 1:
+			thresholdColour(RED);
+			break;
+		case 2:
+			thresholdColour(GREEN);
+			break;
+		case 3:
+			thresholdColour(YELLOW);
+			break;
+		case 4:
+			thresholdColour(BLUE);
+			break;
+		case 5:
+			thresholdColour(PURPLE);
+			break;
+		default:
+			break;
+		}
+		iu.showImage(resizedFrame);
+
 	}
 
 }

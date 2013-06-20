@@ -55,7 +55,7 @@ public class ImageUtils {
 		opencv_imgproc.cvResize(img, resizedImage);
 
 		// used for debugging purposes
-		// canvasResized.showImage(resizedImage);
+//		 canvasResized.showImage(resizedImage);
 		smoothImage(resizedImage);
 		// imgSmoothed.showImage(resizedImage);
 
@@ -94,22 +94,22 @@ public class ImageUtils {
 			threshold_upper_h = Application.green_upper_h;
 			break;
 		case 3:
-			threshold_lower_h = Application.red_h;
-			threshold_lower_s = Application.red_s;
-			threshold_lower_v = Application.red_v;
-			threshold_upper_h = Application.red_upper_h;
+			threshold_lower_h = Application.lightBlue_h;
+			threshold_lower_s = Application.lightBlue_s;
+			threshold_lower_v = Application.lightBlue_v;
+			threshold_upper_h = Application.lightBlue_upper_h;
 			break;
 		case 4:
-			threshold_lower_h = Application.red_h;
-			threshold_lower_s = Application.red_s;
-			threshold_lower_v = Application.red_v;
-			threshold_upper_h = Application.red_upper_h;
+			threshold_lower_h = Application.blue_h;
+			threshold_lower_s = Application.blue_s;
+			threshold_lower_v = Application.blue_v;
+			threshold_upper_h = Application.blue_upper_h;
 			break;
 		case 5:
-			threshold_lower_h = Application.red_h;
-			threshold_lower_s = Application.red_s;
-			threshold_lower_v = Application.red_v;
-			threshold_upper_h = Application.red_upper_h;
+			threshold_lower_h = Application.purple_h;
+			threshold_lower_s = Application.purple_s;
+			threshold_lower_v = Application.purple_v;
+			threshold_upper_h = Application.purple_upper_h;
 			break;
 		default:
 			break;
@@ -209,6 +209,10 @@ public class ImageUtils {
 		opencv_imgproc.cvSmooth(threshold, threshold,
 				opencv_imgproc.CV_GAUSSIAN, 3);
 
+	}
+	
+	public void showImage(IplImage img){
+		canvasAlgorithm.showImage(img);
 	}
 
 }
