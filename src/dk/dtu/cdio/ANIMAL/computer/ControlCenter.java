@@ -45,7 +45,8 @@ public class ControlCenter implements Runnable {
 					temp.paused = true;
 					System.out.format("Pausing %s%n", temp.info.name);
 				}
-			} else if (System.currentTimeMillis() - navA.last > 8000 || System.currentTimeMillis() - navB.last > 8000) {
+			} else if (System.currentTimeMillis() - navA.last > 12000 || System.currentTimeMillis() - navB.last > 12000) {
+				System.out.println("!!! Restart");
 				navA.close();
 				navB.close();
 				try {

@@ -19,7 +19,7 @@ public class PCCommunicator {
 
 	public PCCommunicator(NXTInfo nxtInfo) {
 		this.nxtInfo = nxtInfo;
-		reader = new Reader();
+//		reader = new Reader();
 	}
 	
 //	public void testLatency(){
@@ -48,8 +48,9 @@ public class PCCommunicator {
 	
 	public void close() {
 		try {
-			dataOut.close();
+//			dataOut.close();
 			dataIn.close();
+			connector.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -62,6 +63,14 @@ public class PCCommunicator {
 			System.out.println(" connecting to " + nxtInfo.name + " " + nxtInfo.deviceAddress);
 			connected = connector.connectTo(nxtInfo.name,
 				nxtInfo.deviceAddress, NXTCommFactory.BLUETOOTH);
+			if(!connected) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		} while (!connected);
 		System.out.println(" connect result " + connected);
 		if (!connected) {
@@ -69,15 +78,15 @@ public class PCCommunicator {
 			System.exit(-1);
 //			return connected;
 		}
-		dataIn = new DataInputStream(connector.getInputStream());
+//		dataIn = new DataInputStream(connector.getInputStream());
 		dataOut = new DataOutputStream(connector.getOutputStream());
 //		if (dataIn == null) {
 //			connected = false;
 //			return connected;
 //		}
-		if (!reader.isRunning) {
-			reader.start();
-		}
+//		if (!reader.isRunning) {
+//			reader.start();
+//		}
 		return connected;
 	}
 	

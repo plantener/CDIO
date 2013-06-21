@@ -52,10 +52,11 @@ public class Navigator implements Runnable {
 	}
 	
 	public void go() {
+		last = System.currentTimeMillis();
 		boolean running = true;
 		Waypoint next = null;
 //		gen.setTravelSpeed(675);
-		gen.setTravelSpeed(625);
+		gen.setTravelSpeed(575);
 		gen.doSteer(0);
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
@@ -113,7 +114,7 @@ public class Navigator implements Runnable {
 
 					gen.doSteer((float) turnRate);
 
-					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
+//					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
 					last = System.currentTimeMillis();
 					robotHasBeenStopped = false;
 //					while(System.currentTimeMillis() - last < 4);
