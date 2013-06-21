@@ -18,18 +18,19 @@ public class ValSlider extends JPanel implements ActionListener,ChangeListener{
 
 		private static final int V_MIN = 0;
 		private static final int V_MAX = 255;
-		public static int v_init;
+		private static int v_init;
+		public static JSlider value;
 
 		public ValSlider(){
 			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 			
 			JLabel valueLabel = null;
+			valueLabel = new JLabel("Value", JLabel.CENTER);
+			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			
 			switch (ComboBox.colorIndex) {
 			case 0:
 				v_init = Application.red_v;
-				valueLabel = new JLabel("Value red: " + Application.red_v , JLabel.CENTER);
-				valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				break;
 			case 1:
 				v_init = Application.green_v;
@@ -47,7 +48,7 @@ public class ValSlider extends JPanel implements ActionListener,ChangeListener{
 				v_init = Application.red_v;
 				break;
 			}
-			JSlider value = new JSlider(JSlider.HORIZONTAL, V_MIN, V_MAX,
+			value = new JSlider(JSlider.HORIZONTAL, V_MIN, V_MAX,
 					v_init);
 
 			value.addChangeListener(this);

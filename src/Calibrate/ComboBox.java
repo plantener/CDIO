@@ -26,36 +26,36 @@ public class ComboBox extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				colorIndex = ((JComboBox)e.getSource()).getSelectedIndex();
 				
-				switch (colorIndex) {
+				switch (colorIndex+1) {
 				case 1:
-					SliderDemo.h_init = Application.red_h;
-					SatSlider.s_init = Application.red_s;
-					ValSlider.v_init = Application.red_v;
-					UpperHSlider.upper_h_init = Application.red_upper_h;
+					SliderDemo.hue.setValue(Application.red_h);
+					SatSlider.saturation.setValue(Application.red_s);
+					ValSlider.value.setValue(Application.red_v);
+					UpperHSlider.upper_h.setValue(Application.red_upper_h);
 					break;
 				case 2:
-					SliderDemo.h_init = Application.green_h;
-					SatSlider.s_init = Application.green_s;
-					ValSlider.v_init = Application.green_v;
-					UpperHSlider.upper_h_init = Application.green_upper_h;
+					SliderDemo.hue.setValue(Application.green_h);
+					SatSlider.saturation.setValue(Application.green_s);
+					ValSlider.value.setValue(Application.green_v);
+					UpperHSlider.upper_h.setValue(Application.green_upper_h);
 					break;
 				case 3:
-					SliderDemo.h_init = Application.lightBlue_h;
-					SatSlider.s_init = Application.lightBlue_s;
-					ValSlider.v_init = Application.lightBlue_v;
-					UpperHSlider.upper_h_init = Application.lightBlue_upper_h;
+					SliderDemo.hue.setValue(Application.lightBlue_h);
+					SatSlider.saturation.setValue(Application.lightBlue_s);
+					ValSlider.value.setValue(Application.lightBlue_v);
+					UpperHSlider.upper_h.setValue(Application.lightBlue_upper_h);
 					break;
 				case 4: 
-					SliderDemo.h_init = Application.blue_h;
-					SatSlider.s_init = Application.blue_s;
-					ValSlider.v_init = Application.blue_v;
-					UpperHSlider.upper_h_init = Application.blue_upper_h;
+					SliderDemo.hue.setValue(Application.blue_h);
+					SatSlider.saturation.setValue(Application.blue_s);
+					ValSlider.value.setValue(Application.blue_v);
+					UpperHSlider.upper_h.setValue(Application.blue_upper_h);
 					break;
 				case 5:
-					SliderDemo.h_init = Application.purple_h;
-					SatSlider.s_init = Application.purple_s;
-					ValSlider.v_init = Application.purple_v;
-					UpperHSlider.upper_h_init = Application.purple_upper_h;
+					SliderDemo.hue.setValue(Application.purple_h);
+					SatSlider.saturation.setValue(Application.purple_s);
+					ValSlider.value.setValue(Application.purple_v);
+					UpperHSlider.upper_h.setValue(Application.purple_upper_h);
 					break;
 				default:
 					break;

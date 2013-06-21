@@ -18,18 +18,19 @@ public class UpperHSlider extends JPanel implements ActionListener,ChangeListene
 
 		private static final int UPPER_H_MIN = 0;
 		private static final int UPPER_H_MAX = 255;
-		public static int upper_h_init;
+		private static int upper_h_init;
+		public static JSlider upper_h;
 
 		public UpperHSlider(){
 			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 			
 			JLabel valueLabel = null;
+			valueLabel = new JLabel("Upper hue", JLabel.CENTER);
+			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			
 			switch (ComboBox.colorIndex) {
 			case 0:
 				upper_h_init = Application.red_upper_h;
-				valueLabel = new JLabel("Upper hue red: " + Application.red_upper_h, JLabel.CENTER);
-				valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				break;
 			case 1:
 				upper_h_init = Application.green_upper_h;
@@ -47,22 +48,22 @@ public class UpperHSlider extends JPanel implements ActionListener,ChangeListene
 				upper_h_init = Application.red_upper_h;
 				break;
 			}
-			JSlider value = new JSlider(JSlider.HORIZONTAL, UPPER_H_MIN, UPPER_H_MAX,
+			upper_h = new JSlider(JSlider.HORIZONTAL, UPPER_H_MIN, UPPER_H_MAX,
 					upper_h_init);
 
-			value.addChangeListener(this);
+			upper_h.addChangeListener(this);
 			
-			value.setMajorTickSpacing(40);
-			value.setMinorTickSpacing(1);
-			value.setPaintTicks(true);
-			value.setPaintLabels(true);
-			value.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+			upper_h.setMajorTickSpacing(40);
+			upper_h.setMinorTickSpacing(1);
+			upper_h.setPaintTicks(true);
+			upper_h.setPaintLabels(true);
+			upper_h.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 			Font font = new Font("Serif", Font.ITALIC, 15);
-			value.setFont(font);
+			upper_h.setFont(font);
 			
 
 			add(valueLabel);
-			add(value);
+			add(upper_h);
 			setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			
 		}

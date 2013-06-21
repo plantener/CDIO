@@ -52,21 +52,19 @@ public class SliderDemo extends JPanel implements ActionListener,
 	private final int H_MIN = 0;
 	private final int H_MAX = 180;
 	public static int h_init;
-
-	// This label uses ImageIcon to show the doggy pictures.
-	JLabel picture;
+	public static JSlider hue;
 
 	public SliderDemo() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 		// Create the label.
 		JLabel hueLabel = null;
+		hueLabel = new JLabel("Hue", JLabel.CENTER);
+		hueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		switch (ComboBox.colorIndex) {
 		case 0:
 			h_init = Application.red_h;
-			hueLabel = new JLabel("Hue red: " + Application.red_h, JLabel.CENTER);
-			hueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			break;
 		case 1:
 			h_init = Application.green_h;
@@ -85,8 +83,7 @@ public class SliderDemo extends JPanel implements ActionListener,
 			break;
 		}
 		// Create the slider.
-		JSlider hue = new JSlider(JSlider.HORIZONTAL, H_MIN, H_MAX, h_init);
-		
+		hue = new JSlider(JSlider.HORIZONTAL, H_MIN, H_MAX, h_init);
 
 		hue.addChangeListener(this);
 
@@ -99,15 +96,6 @@ public class SliderDemo extends JPanel implements ActionListener,
 		hue.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		Font font = new Font("Serif", Font.ITALIC, 15);
 		hue.setFont(font);
-		
-
-		// Create the label that displays the animation.
-		picture = new JLabel();
-		picture.setHorizontalAlignment(JLabel.CENTER);
-		picture.setAlignmentX(Component.CENTER_ALIGNMENT);
-		picture.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLoweredBevelBorder(),
-				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		
 		// Put everything together.
 		add(hueLabel);
