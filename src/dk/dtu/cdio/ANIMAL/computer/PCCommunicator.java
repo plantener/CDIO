@@ -16,6 +16,8 @@ public class PCCommunicator {
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
 	public Reader reader;
+	
+	public boolean reconnect = false;
 
 	public PCCommunicator(NXTInfo nxtInfo) {
 		this.nxtInfo = nxtInfo;
@@ -41,15 +43,16 @@ public class PCCommunicator {
 			dataOut.writeFloat(v0);
 			dataOut.flush();
 		} catch (IOException e) {
-			System.out.println(" send failed ");
+			System.out.format("Send failed of %d , %f%n", code, v0);
+			reconnect = true;
 		}
 		
 	}
 	
 	public void close() {
 		try {
-//			dataOut.close();
-			dataIn.close();
+			dataOut.close();
+//			dataIn.close();
 			connector.close();
 		} catch (IOException e) {
 			e.printStackTrace();

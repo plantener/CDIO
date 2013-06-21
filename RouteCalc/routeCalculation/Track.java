@@ -29,8 +29,8 @@ public class Track {
 		this.ports = ports;
 		this.boxes.addAll(red);
 		this.boxes.addAll(green);
-		System.out
-				.println(red.size() + " " + green.size() + " " + boxes.size());
+//		System.out
+//				.println(red.size() + " " + green.size() + " " + boxes.size());
 		initRoute();
 		initBoxes();
 		for (Route start : r) {
@@ -57,7 +57,7 @@ public class Track {
 		r.clear();
 		complete.clear();
 		int i = 0;
-		System.out.println(ports.size());
+//		System.out.println(ports.size());
 		for (Port port : ports) {
 			if (port != ports.get(ports.size() - 1)) {
 				r.add(new Route(port, ports.get(i + 1)));

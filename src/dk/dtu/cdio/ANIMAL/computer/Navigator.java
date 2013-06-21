@@ -18,7 +18,7 @@ public class Navigator implements Runnable {
 	private static NXTInfo INFO_5A = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5a", "00165308F127");
 	private static NXTInfo INFO_5B = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
 	
-	private PCCommunicator com;
+	public PCCommunicator com;
 	private CommandGenerator gen;
 	private Application app;
 	private WaypointQueue waypoints;
@@ -51,12 +51,13 @@ public class Navigator implements Runnable {
 		waypoints.shiftToNextBreakpoint(robot);
 	}
 	
+	boolean running = true;
+
 	public void go() {
 		last = System.currentTimeMillis();
-		boolean running = true;
 		Waypoint next = null;
 //		gen.setTravelSpeed(675);
-		gen.setTravelSpeed(575);
+		gen.setTravelSpeed(625);
 		gen.doSteer(0);
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  

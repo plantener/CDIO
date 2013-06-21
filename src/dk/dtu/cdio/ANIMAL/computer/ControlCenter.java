@@ -39,38 +39,32 @@ public class ControlCenter implements Runnable {
 		System.out.println("Starting B:");
 		nB.start();
 		while(running) {
-			if(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot)) {
-				if(!navA.paused && !navB.paused) {
-					Navigator temp = theOneBehind();
-					temp.paused = true;
-					System.out.format("Pausing %s%n", temp.info.name);
-				}
-			} else if (System.currentTimeMillis() - navA.last > 12000 || System.currentTimeMillis() - navB.last > 12000) {
+			if (/*System.currentTimeMillis() - navA.last > 12000 || System.currentTimeMillis() - navB.last > 12000 || */ navA.com.reconnect || navB.com.reconnect) {
 				System.out.println("!!! Restart");
+				navA.running = false;
+				navB.running = false;
 				navA.close();
 				navB.close();
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				navA = new Navigator(true, app);
 				navB = new Navigator(false, app);
-				navA.feedBreakpoints(Track.getCompleteList());
-				navB.feedBreakpoints(Track.getCompleteList());
 				nA = new Thread(navA);
 				nB = new Thread(navB);
+				navA.feedBreakpoints(Track.getCompleteList());
+				navB.feedBreakpoints(Track.getCompleteList());
 				nA.start();
 				nB.start();
-				
 			} else if (Track.newRoute) {
+				System.out.println("!!! New track");
 				navA.paused = true;
 				navB.paused = true;
-				navA.newTrack = true;
-				navB.newTrack = true;
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(1500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -80,7 +74,15 @@ public class ControlCenter implements Runnable {
 				Track.newRoute = false;
 				navA.paused = false;
 				navB.paused = false;
+				navA.newTrack = true;
+				navB.newTrack = true;
 				
+			} else if(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot)) {
+				if(!navA.paused && !navB.paused) {
+					Navigator temp = theOneBehind();
+					temp.paused = true;
+					System.out.format("Pausing %s%n", temp.info.name);
+				}
 			} else {
 				if(navA.paused) {
 					navA.paused = false;
@@ -111,7 +113,7 @@ public class ControlCenter implements Runnable {
 		if(angleA > edge && angleB < -edge) {
 			return navB;
 		}
-		if(angleB > edge && angleB < -edge) {
+		if(angleB > edge && angleA < -edge) {
 			return navA;
 		}
 		return (angleA > angleB) ? navA : navB;

@@ -58,7 +58,7 @@ public class Route {
 			for (BreakPoint breakPoint : bP) {
 				Box b;
 				if ((b = DeadSpaceCalculation.collisionDetection(breakPoint)) != null) {
-					System.out.println("found collision");
+//					System.out.println("found collision");
 					if(c.addMid(b, breakPoint) > 9){
 						crash = true;
 						break;
@@ -77,13 +77,13 @@ public class Route {
 		crash = false;
 		breaksPoints = c.getBreakPoints();
 		
-		for (BreakPoint breakPoint : breaksPoints) {
-			System.out.print(breakPoint + " ");
-		}
-		System.out.println();
+//		for (BreakPoint breakPoint : breaksPoints) {
+//			System.out.print(breakPoint + " ");
+//		}
+//		System.out.println();
 ////		breaksPoints.remove(breaksPoints.size()-1);
 		Track.addList(breaksPoints, oldBreaksPoints);
-		System.out.println("Done!");
+//		System.out.println("Done!");
 	}
 
 	public ArrayList<BreakPoint> findRoute() {
