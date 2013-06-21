@@ -106,9 +106,9 @@ public class SliderDemo extends JPanel implements ActionListener,
 
 		// Put everything together.
 		add(hue_value);
+		add(upper_h_value);
 		add(sat_value);
 		add(val_value);
-		add(upper_h_value);
 		add(hueLabel);
 		add(hue);
 
