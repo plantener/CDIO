@@ -27,7 +27,7 @@ public class ValSlider extends JPanel implements ActionListener,ChangeListener{
 			JLabel valueLabel = null;
 			valueLabel = new JLabel("Value", JLabel.CENTER);
 			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			
+
 			switch (ComboBox.colorIndex) {
 			case 0:
 				v_init = Application.red_v;
@@ -52,6 +52,8 @@ public class ValSlider extends JPanel implements ActionListener,ChangeListener{
 					v_init);
 
 			value.addChangeListener(this);
+
+			SliderDemo.val_value.setText("Value: " + value.getValue());
 			
 			value.setMajorTickSpacing(40);
 			value.setMinorTickSpacing(1);
@@ -70,7 +72,10 @@ public class ValSlider extends JPanel implements ActionListener,ChangeListener{
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			JSlider source = (JSlider) e.getSource();
+			
 			if (source.getValueIsAdjusting()) {
+
+				SliderDemo.val_value.setText("Value: " + value.getValue());
 				switch (ComboBox.colorIndex) {
 				case 0:
 					main.Application.red_v = (int)source.getValue();

@@ -27,7 +27,7 @@ public class SatSlider extends JPanel implements ActionListener, ChangeListener 
 		JLabel saturationLabel = null;
 		saturationLabel = new JLabel("Saturation", JLabel.CENTER);
 		saturationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		
 		switch (ComboBox.colorIndex) {
 		case 0:
 			s_init = Application.red_s;
@@ -53,6 +53,8 @@ public class SatSlider extends JPanel implements ActionListener, ChangeListener 
 
 		saturation.addChangeListener(this);
 
+		SliderDemo.sat_value.setText("Saturation: " + saturation.getValue());
+
 		saturation.setMajorTickSpacing(40);
 		saturation.setMinorTickSpacing(1);
 		saturation.setPaintTicks(true);
@@ -70,6 +72,7 @@ public class SatSlider extends JPanel implements ActionListener, ChangeListener 
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
 		if (source.getValueIsAdjusting()) {
+			SliderDemo.sat_value.setText("Saturation: " + saturation.getValue());
 			switch (ComboBox.colorIndex) {
 			case 0:
 				main.Application.red_s = (int) source.getValue();

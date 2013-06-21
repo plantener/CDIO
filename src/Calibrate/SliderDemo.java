@@ -42,6 +42,8 @@ import main.Application;
 
 import org.omg.CORBA.portable.ApplicationException;
 
+import sun.awt.geom.AreaOp.AddOp;
+
 /*
  * SliderDemo.java requires all the files in the images/doggy
  * directory.
@@ -53,6 +55,10 @@ public class SliderDemo extends JPanel implements ActionListener,
 	private final int H_MAX = 180;
 	public static int h_init;
 	public static JSlider hue;
+	public static JTextField hue_value = new JTextField(15);
+	public static JTextField sat_value = new JTextField(15);
+	public static JTextField val_value = new JTextField(15);
+	public static JTextField upper_h_value = new JTextField(15);
 
 	public SliderDemo() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -61,7 +67,7 @@ public class SliderDemo extends JPanel implements ActionListener,
 		JLabel hueLabel = null;
 		hueLabel = new JLabel("Hue", JLabel.CENTER);
 		hueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		// Create the slider.
 		switch (ComboBox.colorIndex) {
 		case 0:
 			h_init = Application.red_h;
@@ -82,10 +88,11 @@ public class SliderDemo extends JPanel implements ActionListener,
 			h_init = Application.red_h;
 			break;
 		}
-		// Create the slider.
 		hue = new JSlider(JSlider.HORIZONTAL, H_MIN, H_MAX, h_init);
 
 		hue.addChangeListener(this);
+		hue_value.setText("Hue: " + hue.getValue());
+
 
 		// Turn on labels at major tick marks.
 
@@ -96,35 +103,43 @@ public class SliderDemo extends JPanel implements ActionListener,
 		hue.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		Font font = new Font("Serif", Font.ITALIC, 15);
 		hue.setFont(font);
-		
+
 		// Put everything together.
+		add(hue_value);
+		add(sat_value);
+		add(val_value);
+		add(upper_h_value);
 		add(hueLabel);
 		add(hue);
+
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 	}
 
 	/** Listen to the slider. */
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
+
 		if (source.getValueIsAdjusting()) {
+
+			hue_value.setText("Hue: " + source.getValue());
 			switch (ComboBox.colorIndex) {
 			case 0:
-				main.Application.red_h = (int)source.getValue();
+				main.Application.red_h = (int) source.getValue();
 				break;
 			case 1:
-				main.Application.green_h = (int)source.getValue();
+				main.Application.green_h = (int) source.getValue();
 				break;
 			case 2:
-				main.Application.lightBlue_h = (int)source.getValue();
+				main.Application.lightBlue_h = (int) source.getValue();
 				break;
 			case 3:
-				main.Application.blue_h = (int)source.getValue();
+				main.Application.blue_h = (int) source.getValue();
 				break;
 			case 4:
-				main.Application.purple_h = (int)source.getValue();
+				main.Application.purple_h = (int) source.getValue();
 				break;
 			default:
-				main.Application.purple_h = (int)source.getValue();
+				main.Application.purple_h = (int) source.getValue();
 				break;
 			}
 		}
@@ -143,26 +158,24 @@ public class SliderDemo extends JPanel implements ActionListener,
 		ValSlider valSlider = new ValSlider();
 		ComboBox comboBox = new ComboBox();
 		UpperHSlider upperh = new UpperHSlider();
-		
 
 		// Add content to the window.
 
 		frame.setLayout(null);
-		upperh.setBounds(1, 51, 400, 100);
-		animator.setBounds(1, 151, 400, 100);
-		satDemo.setBounds(1, 251, 400, 100);
-		valSlider.setBounds(1,351, 400, 100);
+		animator.setBounds(1, 51, 400, 200);
+		upperh.setBounds(1, 251, 400, 100);
+		satDemo.setBounds(1, 351, 400, 100);
+		valSlider.setBounds(1, 451, 400, 100);
 		comboBox.setBounds(1, 1, 100, 50);
-		frame.add(upperh);
 		frame.add(animator);
+		frame.add(upperh);
 		frame.add(satDemo);
 		frame.add(valSlider);
 		frame.add(comboBox);
-		
 
 		// Display the window.
 		frame.pack();
-		frame.setSize(410, 500);
+		frame.setSize(410, 600);
 		frame.setVisible(true);
 	}
 

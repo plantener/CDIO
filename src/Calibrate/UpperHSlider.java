@@ -28,6 +28,8 @@ public class UpperHSlider extends JPanel implements ActionListener,ChangeListene
 			valueLabel = new JLabel("Upper hue", JLabel.CENTER);
 			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			
+
+			
 			switch (ComboBox.colorIndex) {
 			case 0:
 				upper_h_init = Application.red_upper_h;
@@ -53,6 +55,8 @@ public class UpperHSlider extends JPanel implements ActionListener,ChangeListene
 
 			upper_h.addChangeListener(this);
 			
+			SliderDemo.upper_h_value.setText("Upper Hue: " + upper_h.getValue());
+			
 			upper_h.setMajorTickSpacing(40);
 			upper_h.setMinorTickSpacing(1);
 			upper_h.setPaintTicks(true);
@@ -70,7 +74,10 @@ public class UpperHSlider extends JPanel implements ActionListener,ChangeListene
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			JSlider source = (JSlider) e.getSource();
+
 			if (source.getValueIsAdjusting()) {
+
+				SliderDemo.upper_h_value.setText("Upper Hue: " + source.getValue());
 				switch (ComboBox.colorIndex) {
 				case 0:
 					main.Application.red_upper_h = (int)source.getValue();
