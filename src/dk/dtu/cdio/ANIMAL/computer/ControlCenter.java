@@ -38,8 +38,14 @@ public class ControlCenter implements Runnable {
 		}
 		System.out.println("Starting B:");
 		nB.start();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		while(running) {
-			if (/*System.currentTimeMillis() - navA.last > 12000 || System.currentTimeMillis() - navB.last > 12000 || */ navA.com.reconnect || navB.com.reconnect) {
+			if (System.currentTimeMillis() - navA.last > 10000 || System.currentTimeMillis() - navB.last > 10000 ||  navA.com.reconnect || navB.com.reconnect) {
 				System.out.println("!!! Restart");
 				navA.running = false;
 				navB.running = false;

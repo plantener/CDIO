@@ -54,11 +54,11 @@ public class Navigator implements Runnable {
 	boolean running = true;
 
 	public void go() {
-		last = System.currentTimeMillis();
 		Waypoint next = null;
 //		gen.setTravelSpeed(675);
 		gen.setTravelSpeed(650);
 		gen.doSteer(0);
+		last = System.currentTimeMillis();
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
 		int steer;
