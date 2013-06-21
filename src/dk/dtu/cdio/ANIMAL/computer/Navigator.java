@@ -27,6 +27,7 @@ public class Navigator implements Runnable {
 	
 	boolean useRobotA, paused = false, newTrack = false;
 	public String name;
+	public long last = 0;
 	
 	public Navigator(boolean useRobotA, Application app) {
 		this.useRobotA = useRobotA;
@@ -39,6 +40,10 @@ public class Navigator implements Runnable {
 		gen = new CommandGenerator(com);
 		waypoints = new WaypointQueue();
 		com.connect();
+	}
+	
+	public void close() {
+		com.close();
 	}
 	
 	public void feedBreakpoints(ArrayList<BreakPoint> points) {
@@ -54,7 +59,6 @@ public class Navigator implements Runnable {
 		gen.doSteer(0);
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
-		long last = 0;
 		int steer;
 		boolean robotHasBeenStopped = false;
 		oldRate = turnRate = 0;
@@ -104,7 +108,7 @@ public class Navigator implements Runnable {
 				
 				turnRate = Math.min((10.0/9)*angle, 100) * steer;
 				
-				if(((diffRate = Math.abs(oldRate - turnRate)) > TURNRATE_THRESHOLD && diffRate != 200) || robotHasBeenStopped || System.currentTimeMillis() - last > 350) {
+				if(((diffRate = Math.abs(oldRate - turnRate)) > TURNRATE_THRESHOLD && diffRate != 200) || robotHasBeenStopped) {
 					oldRate = turnRate;
 
 					gen.doSteer((float) turnRate);

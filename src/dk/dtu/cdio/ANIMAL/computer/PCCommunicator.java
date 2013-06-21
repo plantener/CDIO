@@ -45,6 +45,15 @@ public class PCCommunicator {
 		}
 		
 	}
+	
+	public void close() {
+		try {
+			dataOut.close();
+			dataIn.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public boolean connect() {
 		boolean connected = false;

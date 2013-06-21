@@ -1,7 +1,6 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
 import main.Application;
-import routeCalculation.Route;
 import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
@@ -10,12 +9,16 @@ public class ControlCenter implements Runnable {
 	
 	private Application app;
 	private Navigator navA, navB;
+	private Thread nA, nB;
 	
 	public ControlCenter(Application app) {
 		this.app = app;
 		navA = new Navigator(true, this.app);
 		navB = new Navigator(false, this.app);
+		nA = new Thread(navA);
+		nB = new Thread(navB);
 	}
+	
 
 	@Override
 	public void run() {
@@ -23,7 +26,7 @@ public class ControlCenter implements Runnable {
 		navA.feedBreakpoints(Track.getCompleteList());
 		navB.feedBreakpoints(Track.getCompleteList());
 		System.out.println("Starting A:");
-		new Thread(navA).start();
+		nA.start();
 		while(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot))
 		{
 			try {
@@ -34,7 +37,7 @@ public class ControlCenter implements Runnable {
 			}
 		}
 		System.out.println("Starting B:");
-		new Thread(navB).start();
+		nB.start();
 		while(running) {
 			if(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot)) {
 				if(!navA.paused && !navB.paused) {
@@ -42,6 +45,24 @@ public class ControlCenter implements Runnable {
 					temp.paused = true;
 					System.out.format("Pausing %s%n", temp.info.name);
 				}
+			} else if (System.currentTimeMillis() - navA.last > 8000 || System.currentTimeMillis() - navB.last > 8000) {
+				navA.close();
+				navB.close();
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				navA = new Navigator(true, app);
+				navB = new Navigator(false, app);
+				navA.feedBreakpoints(Track.getCompleteList());
+				navB.feedBreakpoints(Track.getCompleteList());
+				nA = new Thread(navA);
+				nB = new Thread(navB);
+				nA.start();
+				nB.start();
+				
 			} else if (Track.newRoute) {
 				navA.paused = true;
 				navB.paused = true;
