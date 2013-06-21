@@ -68,7 +68,7 @@ public class ImageUtils {
 	 * @param threshold_upper
 	 * @return thresholdImage
 	 */
-	public IplImage thresholdFrame(IplImage img, Threshold threshold_lower, Threshold threshold_upper){
+	public IplImage thresholdFrame(IplImage img, THold threshold_lower, THold threshold_upper){
 		imgHSV = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 3);
 		imgThreshold = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 1);
 
@@ -146,7 +146,7 @@ public class ImageUtils {
 		opencv_imgproc.cvSmooth(threshold, threshold, opencv_imgproc.CV_GAUSSIAN, 3);
 		
 	}
-	public void calibrateRobot(Threshold lower, Threshold upper, IplImage img){
+	public void calibrateRobot(THold lower, THold upper, IplImage img){
 		double area = 0;
 		IplImage threshold = thresholdFrame(img, lower, upper);
 		CvSeq ptr = findContours(threshold, img);

@@ -8,18 +8,19 @@ import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import models.*;
+
+import models.Box;
+import models.ObjectOnMap;
+import models.Port;
+import models.Robot;
 import utilities.ImageUtils;
+import utilities.THold;
 import utilities.Threshold;
-import com.googlecode.javacv.CanvasFrame;
+
 import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
-import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
-
-import dk.dtu.cdio.ANIMAL.computer.Navigator;
 
 public class Application {
 	private CaptureImage ci;
@@ -43,6 +44,13 @@ public class Application {
 	private boolean purpleFound;
 	private boolean blueFound;
 	private boolean yellowFound;
+	
+	private static final int PORTS_TO_BE_FOUND = 6;
+	
+	public static THold GREEN_UPPER, GREEN_LOWER, RED_UPPER, RED_LOWER, YELLOW_UPPER, YELLOW_LOWER,
+	BLUE_UPPER, BLUE_LOWER, PURPLE_UPPER, PURPLE_LOWER;
+	
+	public int yellowAmount=0, blueAmount=0, purpleAmount=0;
 	
 	public static boolean robotsDetected = false;
 	public static final int SQ_THRESHOLD = 6;
@@ -68,6 +76,90 @@ public class Application {
 		robotList[1] = new Robot();
 		robotA = robotList[0];
 		robotB = robotList[1];
+		
+		initThresholds();
+		
+		int variation = 15;
+		boolean upperDescending = false, lowerDescending = true;
+		frameProcessing();
+//		while(sortedPorts.size() != PORTS_TO_BE_FOUND) {
+//			frameProcessing();
+//		}
+		for(int ui = YELLOW_UPPER.b, li = YELLOW_LOWER.b;
+			yellowAmount != 2;
+			YELLOW_UPPER.b += (upperDescending) ? -1 : 1,
+			YELLOW_LOWER.b += (lowerDescending) ? -1 : 1) {
+			System.out.format("Yellow: upper %d lower %d%n", YELLOW_UPPER.b, YELLOW_LOWER.b);
+			
+			frameProcessing();
+			if(ui + variation == YELLOW_UPPER.b)
+				upperDescending = !upperDescending;
+			if(li - variation == YELLOW_LOWER.b)
+				lowerDescending = !lowerDescending;
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		upperDescending = false; lowerDescending = true;
+		for(int ui = PURPLE_UPPER.b, li = PURPLE_LOWER.b;
+			purpleAmount != 1;
+			PURPLE_UPPER.b += (upperDescending) ? -1 : 1,
+			PURPLE_LOWER.b += (lowerDescending) ? -1 : 1) {
+			System.out.format("Purple: upper %d lower %d%n", PURPLE_UPPER.b, PURPLE_LOWER.b);
+			
+			frameProcessing();
+			if(ui + variation == PURPLE_UPPER.b)
+				upperDescending = !upperDescending;
+			if(li - variation == PURPLE_LOWER.b)
+				lowerDescending = !lowerDescending;
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		upperDescending = false; lowerDescending = true;
+		for(int ui = BLUE_UPPER.b, li = BLUE_LOWER.b;
+			blueAmount != 1;
+			BLUE_UPPER.b += (upperDescending) ? -1 : 1,
+			BLUE_LOWER.b += (lowerDescending) ? -1 : 1) {
+			
+			System.out.format("BLUE: upper %d lower %d%n", BLUE_UPPER.b, BLUE_LOWER.b);
+			
+			frameProcessing();
+			if(ui + variation == BLUE_UPPER.b)
+				upperDescending = !upperDescending;
+			if(li - variation == BLUE_LOWER.b)
+				lowerDescending = !lowerDescending;
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void initThresholds() {
+		GREEN_UPPER = new THold(60 ,255,255);
+		GREEN_LOWER = new THold(38 ,80,70 );
+		
+		YELLOW_LOWER = new THold(75 ,60 ,60 );
+		YELLOW_UPPER = new THold(100,255,255); //teal
+		
+		BLUE_LOWER = new THold (102,55 ,60 );
+		BLUE_UPPER= new THold  (115,255,255);
+		
+		PURPLE_LOWER= new THold(130,70 ,70 );
+		PURPLE_UPPER= new THold(165,255,255);
+		
+		RED_LOWER  = new THold (167,100,75 );
+		RED_UPPER  = new THold (180,255,255);
+		
 	}
 
 	public void frameProcessing() {
@@ -91,11 +183,13 @@ public class Application {
 		blueFound = false;
 		yellowFound = false;
 		
-		thresholdColour(Threshold.RED_LOWER, Threshold.RED_UPPER, RED);
-		thresholdColour(Threshold.GREEN_LOWER, Threshold.GREEN_UPPER, GREEN);
-		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
-		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
-		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);
+		yellowAmount = blueAmount = purpleAmount = 0;
+		
+		thresholdColour(RED_LOWER, RED_UPPER, RED);
+		thresholdColour(GREEN_LOWER, GREEN_UPPER, GREEN);
+		thresholdColour(BLUE_LOWER, BLUE_UPPER, BLUE);
+		thresholdColour(PURPLE_LOWER, PURPLE_UPPER, PURPLE);
+		thresholdColour(YELLOW_LOWER, YELLOW_UPPER, YELLOW);
 //		
 		if (yellowFound == false || purpleFound == false || blueFound == false){
 			robotsDetected = false;
@@ -167,7 +261,7 @@ public class Application {
 			port.setPairId(i);
 		}
 	}
-	public void thresholdColour(Threshold lowerThreshold, Threshold upperThreshold, int colour){
+	public void thresholdColour(THold lowerThreshold, THold upperThreshold, int colour){
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
 
@@ -226,6 +320,7 @@ public class Application {
 
 		case BLUE:
 			blueFound = true;
+			blueAmount++;
 			robotList[0].setRobotId("a");
 			robotList[0].setFrontX(sq.x());
 			robotList[0].setFrontY(sq.y());
@@ -234,6 +329,7 @@ public class Application {
 			break;
 
 		case PURPLE:
+			purpleAmount++;
 			purpleFound = true;
 			robotList[1].setRobotId("b");
 			robotList[1].setFrontX(sq.x());
@@ -243,6 +339,7 @@ public class Application {
 			break;
 
 		case YELLOW:
+			yellowAmount++;
 			contourCount++;
 			
 			if (contourCount == 2){
