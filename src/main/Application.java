@@ -8,6 +8,7 @@ import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 
 import models.Box;
 import models.ObjectOnMap;
@@ -21,6 +22,8 @@ import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
+
+import dk.dtu.cdio.ANIMAL.computer.Utilities;
 
 public class Application {
 	private CaptureImage ci;
@@ -61,7 +64,7 @@ public class Application {
 	public static final int YELLOW = 5;
 
 	public Application() {
-//		ci = new CaptureImage();
+		ci = new CaptureImage();
 		iu = new ImageUtils();
 		initializeObjectList();
 		
@@ -85,6 +88,8 @@ public class Application {
 //		while(sortedPorts.size() != PORTS_TO_BE_FOUND) {
 //			frameProcessing();
 //		}
+		Scanner sc = new Scanner(System.in);
+		sc.nextLine();
 		for(int ui = YELLOW_UPPER.b, li = YELLOW_LOWER.b;
 			yellowAmount != 2;
 			YELLOW_UPPER.b += (upperDescending) ? -1 : 1,
@@ -151,8 +156,8 @@ public class Application {
 		YELLOW_LOWER = new THold(24 ,100 ,100 );
 		YELLOW_UPPER = new THold(32,255,255); //teal
 		
-		BLUE_LOWER = new THold (102,55 ,60 );
-		BLUE_UPPER= new THold  (115,255,255);
+		BLUE_LOWER = new THold (90,55 ,60 );
+		BLUE_UPPER= new THold  (100,255,255);
 		
 		PURPLE_LOWER= new THold(130,70 ,70 );
 		PURPLE_UPPER= new THold(165,255,255);
@@ -164,10 +169,10 @@ public class Application {
 
 	public void frameProcessing() {
 
-//		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
+//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -319,8 +324,9 @@ public class Application {
 			break;
 
 		case BLUE:
+//			if(Utilities.getDistance(robotA.getBackX(), robotA.getBackY(), sq.x(), sq.y()) < 25)
+				blueAmount++;
 			blueFound = true;
-			blueAmount++;
 			robotList[0].setRobotId("a");
 			robotList[0].setFrontX(sq.x());
 			robotList[0].setFrontY(sq.y());
@@ -329,7 +335,8 @@ public class Application {
 			break;
 
 		case PURPLE:
-			purpleAmount++;
+//			if(Utilities.getDistance(robotB.getBackX(), robotB.getBackY(), sq.x(), sq.y()) < 25)
+				purpleAmount++;
 			purpleFound = true;
 			robotList[1].setRobotId("b");
 			robotList[1].setFrontX(sq.x());
