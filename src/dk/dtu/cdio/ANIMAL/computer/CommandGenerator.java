@@ -12,6 +12,10 @@ public class CommandGenerator {
 //		com.sendData(NavCommand.TRAVEL.ordinal(), distance, 0, 0, false);
 //	}
 	
+	public void backup() {
+		com.sendData(NavCommand.BACKUP.ordinal(), 0);
+	}
+	
 	public void doSteer(float turnRate) {
 		com.sendData(NavCommand.STEER.ordinal(), turnRate);
 	}

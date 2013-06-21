@@ -69,6 +69,7 @@ public class ControlCenter implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				navA.gen.backup();
 				navA.feedBreakpoints(Track.getCompleteList());
 				navB.feedBreakpoints(Track.getCompleteList());
 				Track.newRoute = false;

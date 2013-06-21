@@ -19,7 +19,7 @@ public class Navigator implements Runnable {
 	private static NXTInfo INFO_5B = new NXTInfo(NXTCommFactory.BLUETOOTH, "Gruppe5b", "0016530A6DEB");
 	
 	public PCCommunicator com;
-	private CommandGenerator gen;
+	public CommandGenerator gen;
 	private Application app;
 	private WaypointQueue waypoints;
 	public NXTInfo info;
@@ -62,7 +62,7 @@ public class Navigator implements Runnable {
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
 		int steer;
-		boolean robotHasBeenStopped = false;
+		boolean robotHasBeenStopped = false, sentStop = false;
 		oldRate = turnRate = 0;
 
 		while(running) {
@@ -71,7 +71,10 @@ public class Navigator implements Runnable {
 			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
 //				System.out.print("X");
 				while(paused || !Application.robotsDetected  ) {
-					gen.sendStop();
+					if(!sentStop) {
+						gen.sendStop();
+						sentStop = true;
+					}	
 					robotHasBeenStopped = true;
 					try {
 						Thread.sleep(500);
@@ -79,6 +82,8 @@ public class Navigator implements Runnable {
 						e.printStackTrace();
 					}
 				}
+				sentStop = false;
+				
 				if(newTrack) {
 					newTrack = false;
 					continue;
