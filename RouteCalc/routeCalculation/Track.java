@@ -16,6 +16,8 @@ public class Track {
 	private static ArrayList<Route> r = new ArrayList<Route>();
 
 	private static ArrayList<BreakPoint> complete = new ArrayList<BreakPoint>();
+	
+	public static boolean newRoute = false;
 
 	private final int WIDTH_OFFSET = 14;
 	private final int HEIGHT_OFFSET = 8;
@@ -42,6 +44,9 @@ public class Track {
 		for (Route set : r) {
 			complete.addAll(set.getBreakPoints());
 		}
+		complete.add(0, complete.get(complete.size()-1));
+		newRoute = true;
+		
 	}
 
 	public static ArrayList<BreakPoint> getCompleteList() {

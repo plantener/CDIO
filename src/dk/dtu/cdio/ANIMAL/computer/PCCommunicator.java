@@ -19,7 +19,7 @@ public class PCCommunicator {
 
 	public PCCommunicator(NXTInfo nxtInfo) {
 		this.nxtInfo = nxtInfo;
-//		reader = new Reader();
+		reader = new Reader();
 	}
 	
 //	public void testLatency(){
@@ -60,15 +60,15 @@ public class PCCommunicator {
 			System.exit(-1);
 //			return connected;
 		}
-//		dataIn = new DataInputStream(connector.getInputStream());
+		dataIn = new DataInputStream(connector.getInputStream());
 		dataOut = new DataOutputStream(connector.getOutputStream());
 //		if (dataIn == null) {
 //			connected = false;
 //			return connected;
 //		}
-//		if (!reader.isRunning) {
-//			reader.start();
-//		}
+		if (!reader.isRunning) {
+			reader.start();
+		}
 		return connected;
 	}
 	
@@ -83,8 +83,6 @@ public class PCCommunicator {
 	class Reader extends Thread {
 		
 		public boolean isRunning = false;
-		public AtomicBoolean replyReady = new AtomicBoolean(false);
-		public NavCommand reply;
 		
 		public void run() {
 			int incoming;
@@ -92,8 +90,8 @@ public class PCCommunicator {
 			while(isRunning) {
 				try {
 					incoming = dataIn.readInt();
-					reply = NavCommand.values()[incoming];
-					replyReady.set(true);
+//					reply = NavCommand.values()[incoming];
+//					replyReady.set(true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

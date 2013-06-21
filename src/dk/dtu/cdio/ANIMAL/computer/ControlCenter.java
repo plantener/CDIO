@@ -1,6 +1,7 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
 import main.Application;
+import routeCalculation.Route;
 import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
@@ -41,6 +42,23 @@ public class ControlCenter implements Runnable {
 					temp.paused = true;
 					System.out.format("Pausing %s%n", temp.info.name);
 				}
+			} else if (Track.newRoute) {
+				navA.paused = true;
+				navB.paused = true;
+				navA.newTrack = true;
+				navB.newTrack = true;
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				navA.feedBreakpoints(Track.getCompleteList());
+				navB.feedBreakpoints(Track.getCompleteList());
+				Track.newRoute = false;
+				navA.paused = false;
+				navB.paused = false;
+				
 			} else {
 				if(navA.paused) {
 					navA.paused = false;

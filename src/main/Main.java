@@ -37,9 +37,7 @@ public class Main {
 		ports = app.sortedPorts;
 		redBoxes = app.redBoxes;
 		greenBoxes = app.greenBoxes;
-//		objectList = app.objectList;//		if(name.equals("Robot A")) {
-//		calibrateLength();
-//	}
+//		objectList = app.objectList;
 		Track t = new Track(ports, redBoxes, greenBoxes);
 		int frames = 1;
 		for(i=0; i < 25; i++) {			
@@ -67,9 +65,9 @@ public class Main {
 			greenBoxes = app.greenBoxes;
 //			i++;
 //			System.out.println("BILLEDE NUMMER: " + i);
-			if(!runRobots) {
+//			if(!runRobots) {
 				t.updateObjects(ports, redBoxes, greenBoxes);
-			}
+//			}
 		}
 //		System.out.println("FPS: " + fps);
 	}
