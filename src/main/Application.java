@@ -15,11 +15,11 @@ import models.Port;
 import models.Robot;
 import utilities.ImageUtils;
 import utilities.THold;
-import utilities.Threshold;
 
 import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 
 public class Application {
@@ -61,7 +61,7 @@ public class Application {
 	public static final int YELLOW = 5;
 
 	public Application() {
-		ci = new CaptureImage();
+//		ci = new CaptureImage();
 		iu = new ImageUtils();
 		initializeObjectList();
 		
@@ -79,8 +79,8 @@ public class Application {
 		
 		initThresholds();
 		
-		int variation = 15;
-		boolean upperDescending = false, lowerDescending = true;
+		int variation = 20;
+		boolean upperDescending = false, lowerDescending = false;
 		frameProcessing();
 //		while(sortedPorts.size() != PORTS_TO_BE_FOUND) {
 //			frameProcessing();
@@ -89,12 +89,12 @@ public class Application {
 			yellowAmount != 2;
 			YELLOW_UPPER.b += (upperDescending) ? -1 : 1,
 			YELLOW_LOWER.b += (lowerDescending) ? -1 : 1) {
-			System.out.format("Yellow: upper %d lower %d%n", YELLOW_UPPER.b, YELLOW_LOWER.b);
+			System.out.format("Yellow: [upper %d (%d), lower %d (%d)]%n", YELLOW_UPPER.b, ui, YELLOW_LOWER.b, li);
 			
 			frameProcessing();
-			if(ui + variation == YELLOW_UPPER.b)
+			if(Math.abs(ui - YELLOW_UPPER.b) == variation)
 				upperDescending = !upperDescending;
-			if(li - variation == YELLOW_LOWER.b)
+			if(Math.abs(li - YELLOW_LOWER.b) == variation)
 				lowerDescending = !lowerDescending;
 			try {
 				Thread.sleep(25);
@@ -103,7 +103,7 @@ public class Application {
 				e.printStackTrace();
 			}
 		}
-		upperDescending = false; lowerDescending = true;
+		upperDescending = false; lowerDescending = false;
 		for(int ui = PURPLE_UPPER.b, li = PURPLE_LOWER.b;
 			purpleAmount != 1;
 			PURPLE_UPPER.b += (upperDescending) ? -1 : 1,
@@ -111,9 +111,9 @@ public class Application {
 			System.out.format("Purple: upper %d lower %d%n", PURPLE_UPPER.b, PURPLE_LOWER.b);
 			
 			frameProcessing();
-			if(ui + variation == PURPLE_UPPER.b)
+			if(Math.abs(ui - PURPLE_UPPER.b) == variation)
 				upperDescending = !upperDescending;
-			if(li - variation == PURPLE_LOWER.b)
+			if(Math.abs(li - PURPLE_LOWER.b) == variation)
 				lowerDescending = !lowerDescending;
 			try {
 				Thread.sleep(25);
@@ -122,7 +122,7 @@ public class Application {
 				e.printStackTrace();
 			}
 		}
-		upperDescending = false; lowerDescending = true;
+		upperDescending = false; lowerDescending = false;
 		for(int ui = BLUE_UPPER.b, li = BLUE_LOWER.b;
 			blueAmount != 1;
 			BLUE_UPPER.b += (upperDescending) ? -1 : 1,
@@ -131,9 +131,9 @@ public class Application {
 			System.out.format("BLUE: upper %d lower %d%n", BLUE_UPPER.b, BLUE_LOWER.b);
 			
 			frameProcessing();
-			if(ui + variation == BLUE_UPPER.b)
+			if(Math.abs(ui - BLUE_UPPER.b) == variation)
 				upperDescending = !upperDescending;
-			if(li - variation == BLUE_LOWER.b)
+			if(Math.abs(li - BLUE_LOWER.b) == variation)
 				lowerDescending = !lowerDescending;
 			try {
 				Thread.sleep(25);
@@ -148,8 +148,8 @@ public class Application {
 		GREEN_UPPER = new THold(60 ,255,255);
 		GREEN_LOWER = new THold(38 ,80,70 );
 		
-		YELLOW_LOWER = new THold(75 ,60 ,60 );
-		YELLOW_UPPER = new THold(100,255,255); //teal
+		YELLOW_LOWER = new THold(24 ,100 ,100 );
+		YELLOW_UPPER = new THold(32,255,255); //teal
 		
 		BLUE_LOWER = new THold (102,55 ,60 );
 		BLUE_UPPER= new THold  (115,255,255);
@@ -164,10 +164,10 @@ public class Application {
 
 	public void frameProcessing() {
 
-		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
+//		 grabbedFrame = opencv_core.cvCloneImage(ci.grabImage());
 
 		// below call used for testing purposes
-//		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
+		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");
 		 
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
@@ -185,8 +185,8 @@ public class Application {
 		
 		yellowAmount = blueAmount = purpleAmount = 0;
 		
-		thresholdColour(RED_LOWER, RED_UPPER, RED);
-		thresholdColour(GREEN_LOWER, GREEN_UPPER, GREEN);
+//		thresholdColour(RED_LOWER, RED_UPPER, RED);
+//		thresholdColour(GREEN_LOWER, GREEN_UPPER, GREEN);
 		thresholdColour(BLUE_LOWER, BLUE_UPPER, BLUE);
 		thresholdColour(PURPLE_LOWER, PURPLE_UPPER, PURPLE);
 		thresholdColour(YELLOW_LOWER, YELLOW_UPPER, YELLOW);
