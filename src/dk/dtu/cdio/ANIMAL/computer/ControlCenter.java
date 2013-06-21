@@ -46,7 +46,7 @@ public class ControlCenter implements Runnable {
 				navA.close();
 				navB.close();
 				try {
-					Thread.sleep(1500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -64,12 +64,13 @@ public class ControlCenter implements Runnable {
 				navA.paused = true;
 				navB.paused = true;
 				try {
-					Thread.sleep(1500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				navA.gen.backup();
+				navA.gen.backup(500);
+				navB.gen.backup(500);
 				navA.feedBreakpoints(Track.getCompleteList());
 				navB.feedBreakpoints(Track.getCompleteList());
 				Track.newRoute = false;

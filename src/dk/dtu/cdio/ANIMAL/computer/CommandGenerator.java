@@ -12,8 +12,8 @@ public class CommandGenerator {
 //		com.sendData(NavCommand.TRAVEL.ordinal(), distance, 0, 0, false);
 //	}
 	
-	public void backup() {
-		com.sendData(NavCommand.BACKUP.ordinal(), 0);
+	public void backup(int time) {
+		com.sendData(NavCommand.BACKUP.ordinal(), time);
 	}
 	
 	public void doSteer(float turnRate) {
