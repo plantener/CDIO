@@ -65,78 +65,85 @@ public class Navigator implements Runnable {
 		boolean robotHasBeenStopped = false, sentStop = false;
 		oldRate = turnRate = 0;
 
-		while(running) {
-			next = waypoints.getHead();
-//			System.out.format("%n%s : Next destination: %s%n", name, next);
-			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
-//				System.out.print("X");
-				while(paused || !Application.robotsDetected  ) {
-					if(!sentStop) {
-						gen.sendStop();
-						sentStop = true;
-					}	
-					robotHasBeenStopped = true;
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+		while(true) {
+			while(running) {
+				next = waypoints.getHead();
+	//			System.out.format("%n%s : Next destination: %s%n", name, next);
+				while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
+	//				System.out.print("X");
+					while(paused || !Application.robotsDetected  ) {
+						if(!sentStop) {
+							gen.sendStop();
+							sentStop = true;
+						}	
+						robotHasBeenStopped = true;
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
-				}
-				sentStop = false;
-				
-				if(newTrack) {
-					newTrack = false;
-					continue;
-				}
-				
-				robotAngle = Utilities.getRobotAngle(robot);
-				newAngle = Utilities.getAngle(robot, next);
-				angle = Math.abs(robotAngle - newAngle);
-				if(angle > 180) {
-					angle = 360 - angle;
-				}
-		
-				if(robotAngle < 0) {
-					if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
-						steer = -1;
+					sentStop = false;
+					
+					if(newTrack) {
+						newTrack = false;
+						continue;
+					}
+					
+					robotAngle = Utilities.getRobotAngle(robot);
+					newAngle = Utilities.getAngle(robot, next);
+					angle = Math.abs(robotAngle - newAngle);
+					if(angle > 180) {
+						angle = 360 - angle;
+					}
+			
+					if(robotAngle < 0) {
+						if(newAngle < robotAngle  || robotAngle+180 < newAngle) {
+							steer = -1;
+						} else {
+							steer = 1;
+						}
 					} else {
-						steer = 1;
+						if(robotAngle < newAngle || newAngle < robotAngle - 180) {
+							steer = 1;
+						} else {
+							steer = -1;		
+						}
 					}
-				} else {
-					if(robotAngle < newAngle || newAngle < robotAngle - 180) {
-						steer = 1;
-					} else {
-						steer = -1;		
+	
+	//				oldRate = turnRate;
+	//				turnRate = Math.pow(Math.sin(Math.PI * angle / 100.0),2)*100;
+					
+					turnRate = Math.min((10.0/9)*angle, 100) * steer;
+					
+					if(((diffRate = Math.abs(oldRate - turnRate)) > TURNRATE_THRESHOLD && diffRate != 200) || robotHasBeenStopped) {
+						oldRate = turnRate;
+	
+						gen.doSteer((float) turnRate);
+	
+	//					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
+						last = System.currentTimeMillis();
+						robotHasBeenStopped = false;
+	//					while(System.currentTimeMillis() - last < 4);
+	//					try {
+	//	//					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
+	//						Thread.sleep(4);
+	//					} catch (Exception e) {
+	//						// interrupts should occur, so we just catch all
+	//						e.printStackTrace();
+	//					}
 					}
+	
 				}
-
-//				oldRate = turnRate;
-//				turnRate = Math.pow(Math.sin(Math.PI * angle / 100.0),2)*100;
 				
-				turnRate = Math.min((10.0/9)*angle, 100) * steer;
+				waypoints.shift();
 				
-				if(((diffRate = Math.abs(oldRate - turnRate)) > TURNRATE_THRESHOLD && diffRate != 200) || robotHasBeenStopped) {
-					oldRate = turnRate;
-
-					gen.doSteer((float) turnRate);
-
-//					System.out.format("%s - distance: %8.3f, RA: %8.3f, NA: %8.3f, Angle : %8.3f - turnRate: %8.3f, Diff: %3d%n", name, distance, robotAngle, newAngle, angle, turnRate, System.currentTimeMillis() - last);
-					last = System.currentTimeMillis();
-					robotHasBeenStopped = false;
-//					while(System.currentTimeMillis() - last < 4);
-//					try {
-//	//					opencv_core.cvCircle(app.resizedFrame, new opencv_core.CvPoint(next.x, Navigator.Y_RESOLUTION-next.y), 10, useRobotA ? opencv_core.CvScalar.BLACK : opencv_core.CvScalar.RED, 3, 8, 0);
-//						Thread.sleep(4);
-//					} catch (Exception e) {
-//						// interrupts should occur, so we just catch all
-//						e.printStackTrace();
-//					}
-				}
-
 			}
-			
-			waypoints.shift();
-			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

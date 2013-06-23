@@ -3,7 +3,6 @@ package dk.dtu.cdio.ANIMAL.computer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTConnector;
@@ -76,17 +75,8 @@ public class PCCommunicator {
 			}
 		} while (!connected);
 		System.out.println(" connect result " + connected);
-		if (!connected) {
-			System.out.println("Connect fail");
-			System.exit(-1);
-//			return connected;
-		}
 //		dataIn = new DataInputStream(connector.getInputStream());
 		dataOut = new DataOutputStream(connector.getOutputStream());
-//		if (dataIn == null) {
-//			connected = false;
-//			return connected;
-//		}
 //		if (!reader.isRunning) {
 //			reader.start();
 //		}

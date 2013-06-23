@@ -3,6 +3,7 @@ package utilities;
 import java.util.ArrayList;
 
 import main.Application;
+import main.Main;
 import models.BreakPoint;
 import models.ObjectOnMap;
 import models.Port;
@@ -41,6 +42,7 @@ public class ImageUtils {
 		// imgSmoothed= new CanvasFrame("smoothed");
 		canvasConturs = new CanvasFrame("Conturs");
 		canvasConturs.setLocation(550, 450);
+		canvasConturs.setVisible(false);
 	}
 
 	/**
@@ -76,47 +78,11 @@ public class ImageUtils {
 		imgHSV = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8, 3);
 		imgThreshold = opencv_core.cvCreateImage(opencv_core.cvGetSize(img), 8,
 				1);
-		int threshold_lower_h = 0;
-		int threshold_lower_s = 0;
-		int threshold_lower_v = 0;
-		int threshold_upper_h = 0;
+		
+		int[] values = Application.THRESHOLDS[color];
 		int threshold_upper_s = 255;
 		int threshold_upper_v = 255;
-		switch (color) {
-		case 1:
-			threshold_lower_h = Application.red_h;
-			threshold_lower_s = Application.red_s;
-			threshold_lower_v = Application.red_v;
-			threshold_upper_h = Application.red_upper_h;
-			break;
-		case 2:
-			threshold_lower_h = Application.green_h;
-			threshold_lower_s = Application.green_s;
-			threshold_lower_v = Application.green_v;
-			threshold_upper_h = Application.green_upper_h;
-			break;
-		case 3:
-			threshold_lower_h = Application.lightBlue_h;
-			threshold_lower_s = Application.lightBlue_s;
-			threshold_lower_v = Application.lightBlue_v;
-			threshold_upper_h = Application.lightBlue_upper_h;
-			break;
-		case 4:
-			threshold_lower_h = Application.blue_h;
-			threshold_lower_s = Application.blue_s;
-			threshold_lower_v = Application.blue_v;
-			threshold_upper_h = Application.blue_upper_h;
-			break;
-		case 5:
-			threshold_lower_h = Application.purple_h;
-			threshold_lower_s = Application.purple_s;
-			threshold_lower_v = Application.purple_v;
-			threshold_upper_h = Application.purple_upper_h;
-			break;
-		default:
-			break;
-		}
-
+		
 		// Convert RGB image to HSV
 		opencv_imgproc.cvCvtColor(img, imgHSV, opencv_imgproc.CV_BGR2HSV);
 
@@ -124,9 +90,9 @@ public class ImageUtils {
 		// and not RGB
 		opencv_core.cvInRangeS(
 				imgHSV,
-				opencv_core.cvScalar(threshold_lower_h,
-						threshold_lower_s, threshold_lower_v, 0),
-				opencv_core.cvScalar(threshold_upper_h,
+				opencv_core.cvScalar(values[Application.HUE],
+						values[Application.SATURATION], values[Application.VALUE], 0),
+				opencv_core.cvScalar(values[Application.UPPERHUE],
 						threshold_upper_s, threshold_upper_v, 0),
 				imgThreshold);
 
@@ -134,7 +100,9 @@ public class ImageUtils {
 				null /* 3x3 square */, 1/* iterations */);
 		opencv_imgproc.cvDilate(imgThreshold, imgThreshold,
 				null /* 3x3 square */, 1 /* iterations */);
-		canvasConturs.showImage(imgHSV);
+		if(!Main.DRAW_ALL) {
+			canvasConturs.showImage(imgHSV);
+		}
 		opencv_core.cvReleaseImage(imgHSV);
 
 		return imgThreshold;

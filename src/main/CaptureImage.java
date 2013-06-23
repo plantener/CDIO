@@ -1,9 +1,8 @@
 package main;
 
-import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.FrameGrabber.Exception;
+import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
-import com.googlecode.javacv.cpp.opencv_highgui;
 
 
 public class CaptureImage {

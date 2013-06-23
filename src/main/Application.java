@@ -6,23 +6,20 @@ import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
-import java.awt.Canvas;
 import java.util.ArrayList;
 import java.util.Collections;
-import models.*;
-import utilities.ImageUtils;
-import utilities.Threshold;
-import Calibrate.SliderDemo;
 
-import com.googlecode.javacv.CanvasFrame;
+import models.Box;
+import models.ObjectOnMap;
+import models.Port;
+import models.Robot;
+import utilities.ImageUtils;
+
 import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
-
-import dk.dtu.cdio.ANIMAL.computer.Navigator;
 
 public class Application {
 	private CaptureImage ci;
@@ -41,45 +38,32 @@ public class Application {
 	public Robot robotB;
 	private CvSeq contours;
 	private opencv_core.CvRect sq;
-	private boolean calibrateRobot = false;
 	private int contourCount;
 	private boolean purpleFound;
 	private boolean blueFound;
 	private boolean yellowFound;
 	
+	private static long last = 0;
+	private static boolean[] foundColor = new boolean[5];
+	
 	public static boolean robotsDetected = false;
 	public static final int SQ_THRESHOLD = 6;
-	public static final int RED = 1;
-	public static final int GREEN = 2;
-	public static final int BLUE = 4;
-	public static final int PURPLE = 5;
-	public static final int YELLOW = 3;
-	public static int green_h = 39;
-	public static int green_s = 100;
-	public static int green_v = 80;
-	public static int green_upper_h = 75;
-	public static int red_h = 160;
-	public static int red_s = 100;
-	public static int red_v = 100;
-	public static int red_upper_h = 179;
-	public static int lightBlue_h = 23;
-	public static int lightBlue_s = 100;
-	public static int lightBlue_v = 150;
-	public static int lightBlue_upper_h = 33;
-	public static int blue_h = 100;
-	public static int blue_s = 100;
-	public static int blue_v = 100;
-	public static int blue_upper_h = 125;
-	public static int purple_h = 135;
-	public static int purple_s = 120;
-	public static int purple_v = 120;
-	public static int purple_upper_h = 159;
-
+	public static final int RED = 0;
+	public static final int GREEN = 1;
+	public static final int BLUE = 3;
+	public static final int PURPLE = 4;
+	public static final int YELLOW = 2;
+	public static final int HUE = 0;
+	public static final int UPPERHUE = 1;
+	public static final int SATURATION = 2;
+	public static final int VALUE = 3;
+	
+	public static int[][] THRESHOLDS = new int[5][4];
+	
 	public Application() {
 		ci = new CaptureImage();
 		iu = new ImageUtils();
 		initializeObjectList();
-		
 	}
 
 	private void initializeObjectList() {
@@ -91,6 +75,9 @@ public class Application {
 		robotList[1] = new Robot();
 		robotA = robotList[0];
 		robotB = robotList[1];
+		for (int i = 0; i < foundColor.length; i++) {
+			foundColor[i] = false;
+		}
 	}
 
 	public void frameProcessing() {
@@ -191,6 +178,7 @@ public class Application {
 			port.setPairId(i);
 		}
 	}
+	
 	public void thresholdColour(int colour){
 		opencv_core.CvPoint p1 = new opencv_core.CvPoint(0, 0), p2 = new opencv_core.CvPoint(
 				0, 0);
@@ -198,9 +186,25 @@ public class Application {
 		thresholdedFrame = iu.thresholdFrame(resizedFrame, colour);
 		contours = iu.findContours(thresholdedFrame, resizedFrame);
 		try {
-			for (;contours != null; contours = contours.h_next()) {
-			 sq = opencv_imgproc.cvBoundingRect(
-					contours, 0);
+			foundColor[colour] = !contours.isNull();
+			if(!foundColor[colour]) {
+				if(System.currentTimeMillis() - last > 1000) {
+					System.out.print("CANT DETECT: ");
+					for (int i = 0; i < foundColor.length; i++) {
+						if (!foundColor[i]) {
+							System.out.print(colorName(i) + ", ");
+						}
+					}
+					System.out.println();
+					last = System.currentTimeMillis();
+				}
+				return;
+			}
+			
+			for (; contours != null 
+					&& !contours.isNull();
+					contours = contours.h_next()) {
+				sq = opencv_imgproc.cvBoundingRect(contours, 0);
 				if (sq.width() < SQ_THRESHOLD || sq.height() < SQ_THRESHOLD) {
 					continue;
 				}
@@ -220,7 +224,8 @@ public class Application {
 			contourCount = 0;
 			
 		} catch (Exception e) {
-			System.err.println("Error occured thresholding " + colour);
+			System.err.println("Error occured thresholding " + colorName(colour));
+			e.printStackTrace();
 		}
 	}
 	public void colorOperation(int colour){
@@ -304,27 +309,28 @@ public class Application {
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
-		switch (color) {
-		case 1:
-			thresholdColour(RED);
-			break;
-		case 2:
-			thresholdColour(GREEN);
-			break;
-		case 3:
-			thresholdColour(YELLOW);
-			break;
-		case 4:
-			thresholdColour(BLUE);
-			break;
-		case 5:
-			thresholdColour(PURPLE);
-			break;
-		default:
-			break;
-		}
+		thresholdColour(color);
+		
 		iu.showImage(resizedFrame);
 
+	}
+	
+	public static String colorName(int color) {
+
+		switch (color) {
+		case RED:
+			return "RED";
+		case BLUE:
+			return "BLUE";
+		case YELLOW:
+			return "YELLOW";
+		case GREEN:
+			return "GREEN";
+		case PURPLE:
+			return "PURPLE";
+		default:
+			return "Unknown color";
+		}
 	}
 
 }

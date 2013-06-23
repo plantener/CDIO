@@ -1,19 +1,16 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import gui.ControlWindow;
 
-import Calibrate.ComboBox;
-import Calibrate.SliderDemo;
+import java.util.ArrayList;
+
+import javax.swing.UIManager;
 
 import models.Box;
-import models.ObjectOnMap;
 import models.Port;
 import routeCalculation.Track;
-//import sun.awt.windows.ThemeReader;
 import dk.dtu.cdio.ANIMAL.computer.ControlCenter;
-import dk.dtu.cdio.ANIMAL.computer.Navigator;
-import dk.dtu.cdio.ANIMAL.computer.Utilities;
+//import sun.awt.windows.ThemeReader;
 
 public class Main {
 	public static int DEBUG_ROBOT = 0;
@@ -21,63 +18,58 @@ public class Main {
 	private static ArrayList<Port> ports;
 	public static ArrayList<Box> redBoxes;
 	public static ArrayList<Box> greenBoxes;
-	public static boolean READY = false;
+	public static boolean READY = false, DRAW_ALL = false;
 
 	public static void main(String[] args) {
+		UIManager.put("swing.boldMetal", Boolean.FALSE);
 		boolean runRobots = true;
 		if(args.length > 0) {
 			runRobots = false;
 		}
 		Application app = new Application();
+		ControlWindow gui = new ControlWindow();
+		// Schedule a job for the event-dispatching thread:
+		// creating and showing this application's GUI.
+		javax.swing.SwingUtilities.invokeLater(gui);
+		
 		ControlCenter control = null;
 		if(runRobots) {
 			 control = new ControlCenter(app);
 		}
-		Scanner sc = new Scanner(System.in);
-		int i = 0;
-		long startTime = System.currentTimeMillis();
-		SliderDemo.main(null);
-		while (!READY){
-			app.calibrateColor(ComboBox.colorIndex+1);
-		}
-		System.out.println("Ready");
+		
 		app.frameProcessing();
 		ports = app.sortedPorts;
 		redBoxes = app.redBoxes;
 		greenBoxes = app.greenBoxes;
 		
 		Track t = new Track(ports, redBoxes, greenBoxes);
-		int frames = 1;
-		for(i=0; i < 100; i++) {		
-			app.frameProcessing();
-			ports = app.sortedPorts;
-			redBoxes = app.redBoxes;
-			greenBoxes = app.greenBoxes;
-			frames++;
-//			i++;
-//			System.out.println("BILLEDE NUMMER: " + i);
-			t.updateObjects(ports, redBoxes, greenBoxes);
-		}
-		System.out.println("############################");
-		long endTime = System.currentTimeMillis();
-		double fps = (double) frames /((endTime-startTime)/1000);
-		System.out.println("FPS: " + fps);
-		System.out.println("############################");
 		if(runRobots) {
 			new Thread(control).start();
 		}
-		while(true) {
-			app.frameProcessing();
+		while (true){
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
 			greenBoxes = app.greenBoxes;
-//			System.out.println("h:" + Application.red_h + "\n s:" + Application.red_s + "\n v:" + Application.red_v + "\n upper h" + Application.red_upper_h);
-//			i++;
-//			System.out.println("BILLEDE NUMMER: " + i);
-//			if(!runRobots) {
-				t.updateObjects(ports, redBoxes, greenBoxes);
-//			}
+			
+			if(DRAW_ALL)
+				app.frameProcessing();
+			else
+				app.calibrateColor(ControlWindow.SELECTED_COLOR);
+			
+			t.updateObjects(ports, redBoxes, greenBoxes);
 		}
+//		while(true) {
+//			app.frameProcessing();
+//			ports = app.sortedPorts;
+//			redBoxes = app.redBoxes;
+//			greenBoxes = app.greenBoxes;
+////			System.out.println("h:" + Application.red_h + "\n s:" + Application.red_s + "\n v:" + Application.red_v + "\n upper h" + Application.red_upper_h);
+////			i++;
+////			System.out.println("BILLEDE NUMMER: " + i);
+////			if(!runRobots) {
+//				t.updateObjects(ports, redBoxes, greenBoxes);
+////			}
+//		}
 //		System.out.println("FPS: " + fps);
 	}
 	
