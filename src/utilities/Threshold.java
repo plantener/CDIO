@@ -1,26 +1,15 @@
 package utilities;
 
+import main.Application;
+
 public enum Threshold {
-	GREEN_LOWER (38 ,80,70 ), GREEN_UPPER (60 ,255,255), 
-	YELLOW_LOWER(23 ,80 ,80 ), YELLOW_UPPER(32,255,255), //teal
-	BLUE_LOWER  (102,55 ,60 ), BLUE_UPPER  (115,255,255),
-	PURPLE_LOWER(123,60 ,60 ), PURPLE_UPPER(167,255,255),
-	RED_LOWER   (169,100,75 ), RED_UPPER   (180,255,255);
-//	PURPLE_LOWER(150,100,100), PURPLE_UPPER(165,255,255);
-	
-	//Thresholds for testing purposes in lab
-//	GREEN_LOWER(50,100,70), GREEN_UPPER(70,255,255), 
-//	RED_LOWER(165,60,60), RED_UPPER(180,255,255),
-//	YELLOW_LOWER(80,80,80), YELLOW_UPPER(100,255,255), //teal
-//	BLUE_LOWER(102,40,40), BLUE_UPPER(125,255,255),
-//	PURPLE_LOWER(133,60,60), PURPLE_UPPER(165,255,255);
 	
 	//Updated thresholds for lab
-//	GREEN_LOWER(39,100,80), GREEN_UPPER(75,255,255), 
-//	RED_LOWER(160,100,100), RED_UPPER(179,255,255),
-//	YELLOW_LOWER(23,100,150), YELLOW_UPPER(33,255,255),
-//	BLUE_LOWER(100,100,100), BLUE_UPPER(125,255,255),
-//	PURPLE_LOWER(135,120,120), PURPLE_UPPER(159,255,255);
+	GREEN_LOWER(Application.green_h,Application.green_s,Application.green_v), GREEN_UPPER(Application.green_upper_h,255,255), 
+	RED_LOWER(Application.red_h,Application.red_s,Application.red_v), RED_UPPER(Application.red_upper_h,255,255),
+	YELLOW_LOWER(Application.lightBlue_h,Application.lightBlue_s,Application.lightBlue_v), YELLOW_UPPER(Application.lightBlue_upper_h,255,255),
+	BLUE_LOWER(Application.blue_h,Application.blue_s,Application.blue_v), BLUE_UPPER(Application.blue_upper_h,255,255),
+	PURPLE_LOWER(Application.purple_h,Application.purple_s,Application.purple_v), PURPLE_UPPER(Application.purple_upper_h,255,255);
 		
 	//Green should maybe be changed to lower: (45,160,70)
 	
@@ -35,6 +24,7 @@ public enum Threshold {
 	
 	public int getB() {
 		return b;
+		
 	}
 	
 	public int getG() {
