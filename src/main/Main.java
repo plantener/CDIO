@@ -21,6 +21,7 @@ public class Main {
 	private static ArrayList<Port> ports;
 	private static ArrayList<Box> redBoxes;
 	private static ArrayList<Box> greenBoxes;
+	public static boolean READY = false;
 
 	public static void main(String[] args) {
 		boolean runRobots = true;
@@ -36,9 +37,10 @@ public class Main {
 		int i = 0;
 		long startTime = System.currentTimeMillis();
 		SliderDemo.main(null);
-		while (i == 0){
+		while (!READY){
 			app.calibrateColor(ComboBox.colorIndex+1);
 		}
+		System.out.println("Ready");
 		app.frameProcessing();
 		ports = app.sortedPorts;
 		redBoxes = app.redBoxes;
@@ -72,7 +74,7 @@ public class Main {
 			ports = app.sortedPorts;
 			redBoxes = app.redBoxes;
 			greenBoxes = app.greenBoxes;
-			System.out.println("h:" + Application.red_h + "\n s:" + Application.red_s + "\n v:" + Application.red_v + "\n upper h" + Application.red_upper_h);
+//			System.out.println("h:" + Application.red_h + "\n s:" + Application.red_s + "\n v:" + Application.red_v + "\n upper h" + Application.red_upper_h);
 //			i++;
 //			System.out.println("BILLEDE NUMMER: " + i);
 			if(!runRobots) {

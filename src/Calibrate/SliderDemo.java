@@ -33,12 +33,15 @@ package Calibrate;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeListener;
+import java.util.Properties;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.xml.bind.Validator;
 
 import main.Application;
+import main.Main;
 
 import org.omg.CORBA.portable.ApplicationException;
 
@@ -59,6 +62,8 @@ public class SliderDemo extends JPanel implements ActionListener,
 	public static JTextField sat_value = new JTextField(15);
 	public static JTextField val_value = new JTextField(15);
 	public static JTextField upper_h_value = new JTextField(15);
+	
+	private static PropertyManager prop;
 
 	public SliderDemo() {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -151,14 +156,21 @@ public class SliderDemo extends JPanel implements ActionListener,
 	 */
 	public static void createAndShowGUI() {
 		// Create and set up the window.
-		JFrame frame = new JFrame("Über kuul program");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JFrame frame = new JFrame("ï¿½ber kuul program");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		SliderDemo animator = new SliderDemo();
 		SatSlider satDemo = new SatSlider();
 		ValSlider valSlider = new ValSlider();
 		ComboBox comboBox = new ComboBox();
 		UpperHSlider upperh = new UpperHSlider();
-
+		
+		JButton saveButton = new JButton("SAVE");
+		saveButton.addActionListener(animator);
+		saveButton.setActionCommand("saveValues");
+		
+		JButton readyButton = new JButton("READY");
+		readyButton.addActionListener(animator);
+		readyButton.setActionCommand("ready");
 		// Add content to the window.
 
 		frame.setLayout(null);
@@ -167,21 +179,89 @@ public class SliderDemo extends JPanel implements ActionListener,
 		satDemo.setBounds(1, 351, 400, 100);
 		valSlider.setBounds(1, 451, 400, 100);
 		comboBox.setBounds(1, 1, 100, 50);
+		saveButton.setBounds(115, 5, 100, 20);
+		readyButton.setBounds(225,5 ,100,20);
 		frame.add(animator);
 		frame.add(upperh);
 		frame.add(satDemo);
 		frame.add(valSlider);
 		frame.add(comboBox);
+		frame.add(saveButton);
+		frame.add(readyButton);
 
 		// Display the window.
 		frame.pack();
 		frame.setSize(410, 600);
 		frame.setVisible(true);
 	}
-
+	
+	public static void loadValues() {
+		try {
+			Application.blue_h = Integer.parseInt(prop.getProperty("blue_hue"));
+			Application.blue_upper_h = Integer.parseInt(prop.getProperty("blue_upper_hue"));
+			Application.blue_s = Integer.parseInt(prop.getProperty("blue_saturation"));
+			Application.blue_v = Integer.parseInt(prop.getProperty("blue_value"));
+			
+			Application.green_h = Integer.parseInt(prop.getProperty("green_hue"));
+			Application.green_upper_h = Integer.parseInt(prop.getProperty("green_upper_hue"));
+			Application.green_s = Integer.parseInt(prop.getProperty("green_saturation"));
+			Application.green_v = Integer.parseInt(prop.getProperty("green_value"));
+	
+			Application.red_h = Integer.parseInt(prop.getProperty("red_hue"));
+			Application.red_upper_h = Integer.parseInt(prop.getProperty("red_upper_hue"));
+			Application.red_s = Integer.parseInt(prop.getProperty("red_saturation"));
+			Application.red_v = Integer.parseInt(prop.getProperty("red_value"));
+	
+			Application.purple_h = Integer.parseInt(prop.getProperty("purple_hue"));
+			Application.purple_upper_h = Integer.parseInt(prop.getProperty("purple_upper_hue"));
+			Application.purple_s = Integer.parseInt(prop.getProperty("purple_saturation"));
+			Application.purple_v = Integer.parseInt(prop.getProperty("purple_value"));
+	
+			Application.lightBlue_h = Integer.parseInt(prop.getProperty("lightBlue_hue"));
+			Application.lightBlue_upper_h = Integer.parseInt(prop.getProperty("lightBlue_upper_hue"));
+			Application.lightBlue_s = Integer.parseInt(prop.getProperty("lightBlue_saturation"));
+			Application.lightBlue_v = Integer.parseInt(prop.getProperty("lightBlue_value"));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveValues() {
+		
+		prop.setProperty("blue_hue", Application.blue_h);
+		prop.setProperty("blue_upper_hue", Application.blue_upper_h);
+		prop.setProperty("blue_saturation", Application.blue_s);
+		prop.setProperty("blue_value", Application.blue_v);
+		
+		prop.setProperty("green_hue", Application.green_h);
+		prop.setProperty("green_upper_hue", Application.green_upper_h);
+		prop.setProperty("green_saturation", Application.green_s);
+		prop.setProperty("green_value", Application.green_v);
+		
+		prop.setProperty("red_hue", Application.red_h);
+		prop.setProperty("red_upper_hue", Application.red_upper_h);
+		prop.setProperty("red_saturation", Application.red_s);
+		prop.setProperty("red_value", Application.red_v);
+		
+		prop.setProperty("purple_hue", Application.purple_h);
+		prop.setProperty("purple_upper_hue", Application.purple_upper_h);
+		prop.setProperty("purple_saturation", Application.purple_s);
+		prop.setProperty("purple_value", Application.purple_v);
+		
+		prop.setProperty("lightBlue_hue", Application.lightBlue_h);
+		prop.setProperty("lightBlue_upper_hue", Application.lightBlue_upper_h);
+		prop.setProperty("lightBlue_saturation", Application.lightBlue_s);
+		prop.setProperty("lightBlue_value", Application.lightBlue_v);
+		
+		prop.save();
+	}
+	
 	public static void main(String[] args) {
 		/* Turn off metal's use of bold fonts */
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
+		prop = new PropertyManager();
+		loadValues();
+		
 
 		// Schedule a job for the event-dispatching thread:
 		// creating and showing this application's GUI.
@@ -191,10 +271,18 @@ public class SliderDemo extends JPanel implements ActionListener,
 			}
 		});
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		if(arg0.getActionCommand().equals("saveValues")) {
+			saveValues();
+			System.out.println("save pressed");
+		} else if (arg0.getActionCommand().equals("ready")) {
+			Main.READY = true;
+			System.out.println("ready pressed");
+			JButton src = (JButton) arg0.getSource();
+			src.setEnabled(false);
+		}
 
 	}
 }

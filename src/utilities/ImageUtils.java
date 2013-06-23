@@ -36,9 +36,11 @@ public class ImageUtils {
 
 	public ImageUtils() {
 		canvasAlgorithm = new CanvasFrame("algorithm");
+		canvasAlgorithm.setLocation(550, 50);
 		// canvasResized = new CanvasFrame("resized");
 		// imgSmoothed= new CanvasFrame("smoothed");
 		canvasConturs = new CanvasFrame("Conturs");
+		canvasConturs.setLocation(550, 450);
 	}
 
 	/**
