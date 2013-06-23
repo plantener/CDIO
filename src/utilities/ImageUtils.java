@@ -100,9 +100,6 @@ public class ImageUtils {
 				null /* 3x3 square */, 1/* iterations */);
 		opencv_imgproc.cvDilate(imgThreshold, imgThreshold,
 				null /* 3x3 square */, 1 /* iterations */);
-		if(!Main.DRAW_ALL) {
-			canvasConturs.showImage(imgHSV);
-		}
 		opencv_core.cvReleaseImage(imgHSV);
 
 		return imgThreshold;
@@ -160,7 +157,6 @@ public class ImageUtils {
 
 		}
 
-		canvasAlgorithm.showImage(resized);
 		// opencv_core.cvReleaseImage(resized);
 	}
 

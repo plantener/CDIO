@@ -51,10 +51,7 @@ public class Main {
 			redBoxes = app.redBoxes;
 			greenBoxes = app.greenBoxes;
 			
-			if(DRAW_ALL)
-				app.frameProcessing();
-			else
-				app.calibrateColor(ControlWindow.SELECTED_COLOR);
+			app.frameProcessing();
 			
 			t.updateObjects(ports, redBoxes, greenBoxes);
 		}

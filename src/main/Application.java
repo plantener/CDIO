@@ -6,6 +6,8 @@ import static com.googlecode.javacv.cpp.opencv_core.cvDrawContours;
 import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
 import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 
+import gui.ControlWindow;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -91,48 +93,42 @@ public class Application {
 		resizedFrame = iu.resizeImage(grabbedFrame);
 		opencv_core.cvReleaseImage(grabbedFrame);
 		
-//		if(!calibrateRobot){
-//		iu.calibrateRobot(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, resizedFrame);
-//		calibrateRobot = true;
-//		}
 		
-		greenBoxes.clear();
-		redBoxes.clear();
-		purpleFound = false;
-		blueFound = false;
-		yellowFound = false;
+		if(Main.READY || Main.DRAW_ALL) {
+			greenBoxes.clear();
+			redBoxes.clear();
+			purpleFound = false;
+			blueFound = false;
+			yellowFound = false;
+			
+			if (yellowFound == false || purpleFound == false || blueFound == false){
+				robotsDetected = false;
+			}else{
+				robotsDetected = true;
+			}
 		
-		if (yellowFound == false || purpleFound == false || blueFound == false){
-			robotsDetected = false;
-		}else{
-			robotsDetected = true;
+			thresholdColour(RED);
+			thresholdColour(GREEN);
+			thresholdColour(BLUE);
+			thresholdColour(PURPLE);
+			thresholdColour(YELLOW);
+		} else {
+			thresholdColour(ControlWindow.SELECTED_COLOR);
 		}
-		
-		thresholdColour(RED);
-		thresholdColour(GREEN);
-		thresholdColour(BLUE);
-		thresholdColour(PURPLE);
-		thresholdColour(YELLOW);
 
 		//Set variable in Main class. Prints info on both robots
 		if(Main.DEBUG_ROBOT == 1){
 			System.out.format("A FX: %3d, FY: %3d     B FX: %3d, FY: %3d%n",  robotA.getFrontMidX(), robotA.getFrontmidY(),robotB.getFrontMidX(), robotB.getFrontmidY());
 			System.out.format("A BX: %3d, BY: %3d     B BX: %3d, BY: %3d%n%n",  robotA.getBackMidX(), robotA.getBackMidY(), robotB.getBackMidX(), robotB.getBackMidY());
-//			System.out.println("Robot A information:");
-//			System.out.println("Front X: " + robotA.getFrontX());
-//			System.out.println("Front Y: " + robotA.getFrontY());
-//			System.out.println("Back X: " + robotA.getBackX());
-//			System.out.println("Back Y: " + robotA.getBackY()+"\n");
-//			System.out.println("Robot B information:");
-//			System.out.println("Front X: " + robotB.getFrontX());
-//			System.out.println("Front Y: " + robotB.getFrontY());
-//			System.out.println("Back X: " + robotB.getBackX());
-//			System.out.println("Back Y: " + robotB.getBackY()+"\n");
 		}
 
-		findPort();
-		iu.drawText(resizedFrame, sortedPorts);
-		iu.drawLine(resizedFrame);
+		if(Main.DRAW_ALL || Main.READY) {
+			findPort();
+			iu.drawText(resizedFrame, sortedPorts);
+			iu.drawLine(resizedFrame);
+		}
+		
+		iu.showImage(resizedFrame);
 
 		opencv_core.cvReleaseImage(resizedFrame);
 		opencv_core.cvReleaseImage(thresholdedFrame);
@@ -302,17 +298,6 @@ public class Application {
 
 			break;
 		}
-	}
-	
-	public void calibrateColor(int color){
-		grabbedFrame = (IplImage) opencv_highgui.cvLoadImage("Lib6.jpg");		 
-		resizedFrame = iu.resizeImage(grabbedFrame);
-		opencv_core.cvReleaseImage(grabbedFrame);
-		
-		thresholdColour(color);
-		
-		iu.showImage(resizedFrame);
-
 	}
 	
 	public static String colorName(int color) {
