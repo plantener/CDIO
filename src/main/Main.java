@@ -19,8 +19,8 @@ public class Main {
 	public static int DEBUG_ROBOT = 0;
 	
 	private static ArrayList<Port> ports;
-	private static ArrayList<Box> redBoxes;
-	private static ArrayList<Box> greenBoxes;
+	public static ArrayList<Box> redBoxes;
+	public static ArrayList<Box> greenBoxes;
 	public static boolean READY = false;
 
 	public static void main(String[] args) {

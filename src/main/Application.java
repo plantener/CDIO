@@ -212,6 +212,7 @@ public class Application {
 				p2.x(sq.x() + sq.width());
 				p1.y(sq.y());
 				p2.y(sq.y() + sq.height());
+				opencv_core.cvCircle(resizedFrame, new opencv_core.CvPoint(sq.x() + sq.width() / 2, sq.y() + sq.height() / 2), 20, opencv_core.CvScalar.BLACK , 1, 8, 0);
 				cvRectangle(resizedFrame, p1, p2, CV_RGB(0, 0, 0), 2, 8, 0);
 				cvDrawContours(resizedFrame, contours, drawColor,
 						CV_RGB(0, 0, 0), -1, CV_FILLED, 8, cvPoint(0, 0));

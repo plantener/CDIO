@@ -1,6 +1,8 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
 import main.Application;
+import main.Main;
+import models.Box;
 import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
@@ -75,8 +77,21 @@ public class ControlCenter implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				navA.gen.backup(500);
-				navB.gen.backup(500);
+				int minimumDistance = 20;
+				for(Box b : Main.redBoxes) {
+					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < minimumDistance) {
+						navA.gen.backup(500);
+						break;
+					}
+				}
+				
+				for(Box b : Main.redBoxes) {
+					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < minimumDistance) {
+						navB.gen.backup(500);
+						break;
+					}
+				}
+				
 				navA.feedBreakpoints(Track.getCompleteList());
 				navB.feedBreakpoints(Track.getCompleteList());
 				Track.newRoute = false;
