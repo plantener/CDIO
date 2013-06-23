@@ -37,10 +37,11 @@ public class ControlCenter implements Runnable {
 				
 	 		while(running) {
 	 			if(newStart) {
+					newStart = false;
 	 				
 	 				// Start the one in front)
 	 				System.out.format("Starting %s:%n", (theOneBehind() == navA ? navB : navA).name);
-	 				(theOneBehind() == navA ? navB : navA).running = false;
+	 				(theOneBehind() == navA ? navB : navA).running = true;
 	 				
 					try {
 						while(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot))
@@ -55,29 +56,12 @@ public class ControlCenter implements Runnable {
 	 				System.out.format("Starting %s:%n", theOneBehind());
 					theOneBehind().running = true;
 					
-					newStart = false;
 	 			}
 	 			
 				if (System.currentTimeMillis() - navA.last > 10000 || System.currentTimeMillis() - navB.last > 10000 ||  navA.com.reconnect || navB.com.reconnect) {
 					System.out.println("!!! Restart");
-					navA.running = false;
-					navB.running = false;
-					navA.close();
-					navB.close();
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					navA = new Navigator(true, app);
-					navB = new Navigator(false, app);
-					nA = new Thread(navA);
-					nB = new Thread(navB);
-					navA.feedBreakpoints(Track.getCompleteList());
-					navB.feedBreakpoints(Track.getCompleteList());
-					nA.start();
-					nB.start();
+					navA.restart();
+					navB.restart();
 				} else if (Track.newRoute) {
 					System.out.println("!!! New track");
 					navA.paused = true;
@@ -85,7 +69,6 @@ public class ControlCenter implements Runnable {
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					int minimumDistance = 20;

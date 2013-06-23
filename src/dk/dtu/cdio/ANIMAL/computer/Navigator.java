@@ -42,6 +42,14 @@ public class Navigator implements Runnable {
 		com.connect();
 	}
 	
+	public void restart() {
+		running = false;
+		com.close();
+		com = new PCCommunicator(info);
+		gen = new CommandGenerator(com);
+		running = true;
+	}
+	
 	public void close() {
 		com.close();
 	}
@@ -53,12 +61,13 @@ public class Navigator implements Runnable {
 	
 	boolean running = true;
 
-	public void go() {
+	@Override
+	public void run() {
 		Waypoint next = null;
-//		gen.setTravelSpeed(675);
+		last = System.currentTimeMillis();
+		
 		gen.setTravelSpeed(650);
 		gen.doSteer(0);
-		last = System.currentTimeMillis();
 
 		double robotAngle, angle, turnRate, oldRate = 0, distance, oldDistance, newAngle, diffRate;  
 		int steer;
@@ -145,11 +154,6 @@ public class Navigator implements Runnable {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	public void run() {
-		go();
 	}
 	
 

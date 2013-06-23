@@ -74,7 +74,6 @@ public class ControlWindow extends JPanel implements Runnable {
 				Main.READY = ((JCheckBox) e.getSource()).isSelected();
 				System.out.println(Main.READY ? "Starting": "Stopping");
 				ControlCenter.running = ((JCheckBox) e.getSource()).isSelected();
-				
 			}
 		});
 		
