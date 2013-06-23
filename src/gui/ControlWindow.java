@@ -68,7 +68,7 @@ public class ControlWindow extends JPanel implements Runnable {
 			}
 		});
 		
-		JCheckBox runRobots = new JCheckBox("Run?");
+		JCheckBox runRobots = new JCheckBox("Run robots?");
 		runRobots.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Main.READY = ((JCheckBox) e.getSource()).isSelected();
@@ -87,21 +87,14 @@ public class ControlWindow extends JPanel implements Runnable {
 		});
 
 		frame.setLayout(null);
-		slides[0].setBounds(1, 51, 400, 100);
-		slides[1].setBounds(1, 151, 400, 100);
-		slides[2].setBounds(1, 251, 400, 100);
-		slides[3].setBounds(1, 351, 400, 100);
-		comboBox.setBounds(1, 1, 100, 50);
-		saveButton.setBounds(105, 5, 70, 20);
-		runRobots.setBounds(180,5 ,80,20);
-		drawAll.setBounds(270,5,100,20);
+		comboBox.setBounds(5, 5, 95, 25);
+		saveButton.setBounds(320, 400, 70, 20);
+		runRobots.setBounds(280,430 ,100,20);
+		drawAll.setBounds(280,460,100,20);
 		for(int i = 0; i < 4; i++) {
+			slides[i].setBounds(1, 50+i*75, 400, 75);
 			frame.add(slides[i]);
 		}
-		frame.add(slides[0]);
-		frame.add(slides[1]);
-		frame.add(slides[2]);
-		frame.add(slides[3]);
 		frame.add(comboBox);
 		frame.add(saveButton);
 		frame.add(runRobots);
