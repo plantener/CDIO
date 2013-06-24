@@ -49,7 +49,6 @@ public class ControlCenter implements Runnable {
 								Thread.sleep(500);
 						}
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
@@ -60,8 +59,12 @@ public class ControlCenter implements Runnable {
 	 			
 				if (System.currentTimeMillis() - navA.last > 10000 || System.currentTimeMillis() - navB.last > 10000 ||  navA.com.reconnect || navB.com.reconnect) {
 					System.out.println("!!! Restart");
-					navA.restart();
-					navB.restart();
+					navA.running = false;
+					navB.running = false;
+					navA.reconnect();
+					navB.reconnect();
+					navA.running = true;
+					navB.running = true;
 				} else if (Track.newRoute) {
 					System.out.println("!!! New track");
 					navA.paused = true;
@@ -114,7 +117,6 @@ public class ControlCenter implements Runnable {
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -123,7 +125,6 @@ public class ControlCenter implements Runnable {
 	 		try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -23,19 +23,6 @@ public class PCCommunicator {
 //		reader = new Reader();
 	}
 	
-//	public void testLatency(){
-//		long start = System.currentTimeMillis();
-//		sendData(NavCommand.LATENCY_TEST.ordinal(), 0, 0, 0, false);
-//		try {
-//			dataIn.readInt();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		long end = System.currentTimeMillis();
-//		System.out.println(end-start);
-//	}
-	
 	public void sendData(int code, float v0) {
 		try {
 			dataOut.writeInt(code);

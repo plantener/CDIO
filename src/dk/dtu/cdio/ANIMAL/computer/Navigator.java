@@ -42,12 +42,10 @@ public class Navigator implements Runnable {
 		com.connect();
 	}
 	
-	public void restart() {
-		running = false;
+	public void reconnect() {
 		com.close();
 		com = new PCCommunicator(info);
 		gen = new CommandGenerator(com);
-		running = true;
 	}
 	
 	public void close() {
