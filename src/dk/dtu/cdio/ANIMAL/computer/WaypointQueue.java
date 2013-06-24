@@ -42,8 +42,9 @@ public class WaypointQueue {
 	
 	public void shiftToNextBreakpoint(Robot robot) {
 		for(int i = list.size();
+			i > 0 &&
 			Utilities.getAngleRelativeToCenter(getHead()) > Utilities.getAngleRelativeToCenter(robot)
-			&& i > 0;
+			;
 			shift(), i--
 		);
 	}

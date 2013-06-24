@@ -21,7 +21,7 @@ public class Navigator implements Runnable {
 	public PCCommunicator com;
 	public CommandGenerator gen;
 	private Application app;
-	private WaypointQueue waypoints;
+	public WaypointQueue waypoints;
 	public NXTInfo info;
 	public Robot robot;
 	
@@ -56,7 +56,7 @@ public class Navigator implements Runnable {
 	public void go() {
 		Waypoint next = null;
 //		gen.setTravelSpeed(675);
-		gen.setTravelSpeed(650);
+		gen.setTravelSpeed(625);
 		gen.doSteer(0);
 		last = System.currentTimeMillis();
 
@@ -67,7 +67,7 @@ public class Navigator implements Runnable {
 
 		while(running) {
 			next = waypoints.getHead();
-//			System.out.format("%n%s : Next destination: %s%n", name, next);
+			System.out.format("%n%s : Next destination: %s%n", name, next);
 			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
 //				System.out.print("X");
 				while(paused || !Application.robotsDetected  ) {

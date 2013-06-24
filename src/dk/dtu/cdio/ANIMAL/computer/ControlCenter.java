@@ -1,6 +1,8 @@
 package dk.dtu.cdio.ANIMAL.computer;
 
 import main.Application;
+import main.Main;
+import models.Box;
 import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
@@ -51,6 +53,8 @@ public class ControlCenter implements Runnable {
 				navB.running = false;
 				navA.close();
 				navB.close();
+				WaypointQueue qA = navA.waypoints;
+				WaypointQueue qB = navA.waypoints;
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
@@ -59,10 +63,15 @@ public class ControlCenter implements Runnable {
 				}
 				navA = new Navigator(true, app);
 				navB = new Navigator(false, app);
+//				navA.feedBreakpoints(Track.getCompleteList());
+//				navB.feedBreakpoints(Track.getCompleteList());
+				navA.waypoints = qA;
+				navB.waypoints = qB;
 				nA = new Thread(navA);
 				nB = new Thread(navB);
-				navA.feedBreakpoints(Track.getCompleteList());
-				navB.feedBreakpoints(Track.getCompleteList());
+
+//				navA.feedBreakpoints(Track.getCompleteList());
+//				navB.feedBreakpoints(Track.getCompleteList());
 				nA.start();
 				nB.start();
 			} else if (Track.newRoute) {
@@ -75,10 +84,32 @@ public class ControlCenter implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				navA.gen.backup(500);
-				navB.gen.backup(500);
-				navA.feedBreakpoints(Track.getCompleteList());
-				navB.feedBreakpoints(Track.getCompleteList());
+				for(Box b : Main.greenBoxes) {
+					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+						navA.gen.backup(5000);
+						break;
+					}
+				}
+				for(Box b : Main.redBoxes) {
+					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+						navA.gen.backup(500);
+						break;
+					}
+				}
+				for(Box b : Main.greenBoxes) {
+					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+						navA.gen.backup(500);
+						break;
+					}
+				}
+				for(Box b : Main.redBoxes) {
+					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+						navA.gen.backup(500);
+						break;
+					}
+				}
+//				navA.feedBreakpoints(Track.getCompleteList());
+//				navB.feedBreakpoints(Track.getCompleteList());
 				Track.newRoute = false;
 				navA.paused = false;
 				navB.paused = false;

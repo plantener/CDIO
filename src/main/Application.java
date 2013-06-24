@@ -91,8 +91,8 @@ public class Application {
 		blueFound = false;
 		yellowFound = false;
 		
-		thresholdColour(Threshold.RED_LOWER, Threshold.RED_UPPER, RED);
-		thresholdColour(Threshold.GREEN_LOWER, Threshold.GREEN_UPPER, GREEN);
+//		thresholdColour(Threshold.RED_LOWER, Threshold.RED_UPPER, RED);
+//		thresholdColour(Threshold.GREEN_LOWER, Threshold.GREEN_UPPER, GREEN);
 		thresholdColour(Threshold.BLUE_LOWER, Threshold.BLUE_UPPER, BLUE);
 		thresholdColour(Threshold.PURPLE_LOWER, Threshold.PURPLE_UPPER, PURPLE);
 		thresholdColour(Threshold.YELLOW_LOWER, Threshold.YELLOW_UPPER, YELLOW);

@@ -218,7 +218,7 @@ public class CalculateRoute {
 	public void createStartAndEnd(Port start, Port end) {
 		BreakPoint newStart = null, newEnd = null;
 		double theta = Math.PI / 2;
-		float factor = 0.7f;
+		float factor = 0.8f;
 		int x = start.getGreen().getMidX() - start.getMidX();
 		int y = start.getGreen().getMidY() - start.getMidY();
 		newStart = new BreakPoint(

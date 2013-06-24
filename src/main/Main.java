@@ -15,9 +15,9 @@ import dk.dtu.cdio.ANIMAL.computer.Utilities;
 public class Main {
 	public static int DEBUG_ROBOT = 0;
 	
-	private static ArrayList<Port> ports;
-	private static ArrayList<Box> redBoxes;
-	private static ArrayList<Box> greenBoxes;
+	public static ArrayList<Port> ports;
+	public static ArrayList<Box> redBoxes;
+	public static ArrayList<Box> greenBoxes;
 
 	public static void main(String[] args) {
 		boolean runRobots = true;
