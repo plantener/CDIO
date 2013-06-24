@@ -75,46 +75,46 @@ public class ControlCenter implements Runnable {
 				nA.start();
 				nB.start();
 			} else if (Track.newRoute) {
-				System.out.println("!!! New track");
-				navA.paused = true;
-				navB.paused = true;
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				for(Box b : Main.greenBoxes) {
-					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
-						navA.gen.backup(5000);
-						break;
-					}
-				}
-				for(Box b : Main.redBoxes) {
-					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
-						navA.gen.backup(500);
-						break;
-					}
-				}
-				for(Box b : Main.greenBoxes) {
-					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
-						navA.gen.backup(500);
-						break;
-					}
-				}
-				for(Box b : Main.redBoxes) {
-					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
-						navA.gen.backup(500);
-						break;
-					}
-				}
-//				navA.feedBreakpoints(Track.getCompleteList());
-//				navB.feedBreakpoints(Track.getCompleteList());
-				Track.newRoute = false;
-				navA.paused = false;
-				navB.paused = false;
-				navA.newTrack = true;
-				navB.newTrack = true;
+//				System.out.println("!!! New track");
+//				navA.paused = true;
+//				navB.paused = true;
+//				try {
+//					Thread.sleep(200);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				for(Box b : Main.greenBoxes) {
+//					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+//						navA.gen.backup(5000);
+//						break;
+//					}
+//				}
+//				for(Box b : Main.redBoxes) {
+//					if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+//						navA.gen.backup(500);
+//						break;
+//					}
+//				}
+//				for(Box b : Main.greenBoxes) {
+//					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+//						navA.gen.backup(500);
+//						break;
+//					}
+//				}
+//				for(Box b : Main.redBoxes) {
+//					if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < 20) {
+//						navA.gen.backup(500);
+//						break;
+//					}
+//				}
+////				navA.feedBreakpoints(Track.getCompleteList());
+////				navB.feedBreakpoints(Track.getCompleteList());
+//				Track.newRoute = false;
+//				navA.paused = false;
+//				navB.paused = false;
+//				navA.newTrack = true;
+//				navB.newTrack = true;
 				
 			} else if(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot)) {
 				if(!navA.paused && !navB.paused) {
