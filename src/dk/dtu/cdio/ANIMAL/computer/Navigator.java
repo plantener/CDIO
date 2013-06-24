@@ -45,6 +45,7 @@ public class Navigator implements Runnable {
 	public void reconnect() {
 		com.close();
 		com = new PCCommunicator(info);
+		com.connect();
 		gen = new CommandGenerator(com);
 	}
 	

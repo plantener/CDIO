@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
 
 import main.Application;
 
-public class Slider extends JPanel implements ActionListener, ChangeListener {
+public class Slider extends JPanel implements ChangeListener {
 
 	public JSlider slider;
 	
@@ -64,11 +64,4 @@ public class Slider extends JPanel implements ActionListener, ChangeListener {
 			setValue(source.getValue());
 		}
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -36,7 +36,7 @@ public class CalculateRoute {
 		// System.out.println("Crash: " + c.toString() + " " + port);
 		if (pre != null) {
 			if (c.getX() == pre.getX() && c.getY() == pre.getY()) {
-				System.out.println("double: " + c.toString());
+//				System.out.println("double: " + c.toString());
 				Route.setCrash();
 				return 0;
 			}
