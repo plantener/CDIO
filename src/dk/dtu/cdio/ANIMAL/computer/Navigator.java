@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 import main.Application;
+import main.Main;
 import models.BreakPoint;
 import models.Robot;
 
@@ -79,7 +80,7 @@ public class Navigator implements Runnable {
 	//			System.out.format("%n%s : Next destination: %s%n", name, next);
 				while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
 	//				System.out.print("X");
-					while(paused || !Application.robotsDetected  ) {
+					while(paused || !Application.robotsDetected || !Main.READY) {
 						if(!sentStop) {
 							gen.sendStop();
 							sentStop = true;
