@@ -68,9 +68,9 @@ public class Navigator implements Runnable {
 		while(running) {
 			next = waypoints.getHead();
 			System.out.format("%n%s : Next destination: %s%n", name, next);
-			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD) {
+			while((distance = Utilities.getDistance(robot, next)) > DIST_THRESHOLD && running) {
 //				System.out.print("X");
-				while(paused || !Application.robotsDetected  ) {
+				while(paused || !Application.robotsDetected) {
 					if(!sentStop) {
 						gen.sendStop();
 						sentStop = true;
@@ -135,7 +135,8 @@ public class Navigator implements Runnable {
 
 			}
 			
-			waypoints.shift();
+			if(running)
+				waypoints.shift();
 			
 		}
 	}

@@ -54,7 +54,7 @@ public class ControlCenter implements Runnable {
 				navA.close();
 				navB.close();
 				WaypointQueue qA = navA.waypoints;
-				WaypointQueue qB = navA.waypoints;
+				WaypointQueue qB = navB.waypoints;
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
@@ -74,7 +74,7 @@ public class ControlCenter implements Runnable {
 //				navB.feedBreakpoints(Track.getCompleteList());
 				nA.start();
 				nB.start();
-			} else if (Track.newRoute) {
+			/*}  else if (Track.newRoute) {
 //				System.out.println("!!! New track");
 //				navA.paused = true;
 //				navB.paused = true;
@@ -116,6 +116,7 @@ public class ControlCenter implements Runnable {
 //				navA.newTrack = true;
 //				navB.newTrack = true;
 				
+*/
 			} else if(DISTANCE_THRESHOLD > Utilities.getDistance(navA.robot, navB.robot)) {
 				if(!navA.paused && !navB.paused) {
 					Navigator temp = theOneBehind();

@@ -221,21 +221,13 @@ public class CalculateRoute {
 		float factor = 0.8f;
 		int x = start.getGreen().getMidX() - start.getMidX();
 		int y = start.getGreen().getMidY() - start.getMidY();
-		newStart = new BreakPoint(
-				start.getMidX()
-						+ (int) (Math.round(x * Math.cos(theta) - y
-								* Math.sin(theta)) * factor), start.getMidY()
-						+ (int) (Math.round(x * Math.sin(theta) + y
-								* Math.cos(theta)) * factor), port);
+		newStart = new BreakPoint(start.getMidX() + (int) (Math.round( x * Math.cos(theta) - y * Math.sin(theta)) * factor),
+				start.getMidY() + (int) (Math.round(x * Math.sin(theta) + y * Math.cos(theta)) * factor),port);
 		x = end.getGreen().getMidX() - end.getMidX();
 		y = end.getGreen().getMidY() - end.getMidY();
 		theta = -(Math.PI / 2);
-		newEnd = new BreakPoint(
-				end.getMidX()
-						+ (int) (Math.round(x * Math.cos(theta) - y
-								* Math.sin(theta)) * factor), end.getMidY()
-						+ (int) (Math.round(x * Math.sin(theta) + y
-								* Math.cos(theta)) * factor), port);
+		newEnd = new BreakPoint(end.getMidX() + (int) (Math.round(x * Math.cos(theta) - y * Math.sin(theta)) * factor),
+				end.getMidY() + (int) (Math.round(x * Math.sin(theta) + y * Math.cos(theta)) * factor), port);
 
 		breakPoints.clear();
 
