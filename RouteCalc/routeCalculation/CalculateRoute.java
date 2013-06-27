@@ -33,10 +33,8 @@ public class CalculateRoute {
 	}
 
 	public int addMid(Box b, BreakPoint c) {
-		// System.out.println("Crash: " + c.toString() + " " + port);
 		if (pre != null) {
 			if (c.getX() == pre.getX() && c.getY() == pre.getY()) {
-//				System.out.println("double: " + c.toString());
 				Route.setCrash();
 				return 0;
 			}
@@ -121,29 +119,7 @@ public class CalculateRoute {
 					}
 				}
 			}
-		} else if (b.getColor() == Application.GREEN) {
-			if (b.getX() == c.getX()) { // Left
-				breakPoints.add(
-						breakPoints.indexOf(end),
-						new BreakPoint(b.getX() - offset, b.getY()
-								+ b.getHeight(), port));
-			} else if (b.getX() + b.getWidth() == c.getX()) { // Right
-				breakPoints.add(
-						breakPoints.indexOf(end),
-						new BreakPoint(b.getX() + b.getWidth() + offset, b
-								.getY() - offset, port));
-			} else if (b.getY() == c.getY()) { // Top
-				breakPoints.add(breakPoints.indexOf(end),
-						new BreakPoint(b.getX() - offset, b.getY() - offset,
-								port));
-			} else if (b.getY() + b.getHeight() == c.getY()) { // Bottom
-				breakPoints.add(
-						breakPoints.indexOf(end),
-						new BreakPoint(b.getX() + b.getWidth() + offset, b
-								.getY() + b.getHeight() + offset, port));
-			}
 		}
-		// System.out.println("mid" + breakPoints.size());
 		pre = c;
 
 		return breakPoints.size();
@@ -166,14 +142,11 @@ public class CalculateRoute {
 	}
 
 	public ArrayList<BreakPoint> routePositions() {
-		// System.out.println("end" + breakPoints.size() + " " +
-		// breakPoints.get(0));
 		nextStart = breakPoints.get(0);
 		nextEnd = breakPoints.get(1);
 
 		route.clear();
 		for (int i = 0; i < breakPoints.size() - 1; i++) {
-//			System.out.println("WDWd:" + nextStart + " " + nextEnd);
 			setSlope(nextStart, nextEnd);
 
 			int count = 0, check = 0;
@@ -187,7 +160,6 @@ public class CalculateRoute {
 
 			if (check == 1) {
 				while (count != nextEnd.getY()) {
-					// System.out.println(count + " " + nextEnd.getY());
 					route.add(calcPosition(count, check));
 					if (nextEnd.getY() >= nextStart.getY())
 						count++;

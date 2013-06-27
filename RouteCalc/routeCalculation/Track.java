@@ -29,8 +29,6 @@ public class Track {
 		this.ports = ports;
 		this.boxes.addAll(red);
 		this.boxes.addAll(green);
-//		System.out
-//				.println(red.size() + " " + green.size() + " " + boxes.size());
 		initRoute();
 		initBoxes();
 		for (Route start : r) {
@@ -57,7 +55,6 @@ public class Track {
 		r.clear();
 		complete.clear();
 		int i = 0;
-//		System.out.println(ports.size());
 		for (Port port : ports) {
 			if (port != ports.get(ports.size() - 1)) {
 				r.add(new Route(port, ports.get(i + 1)));
@@ -126,7 +123,6 @@ public class Track {
 							- UPDATE_OFFSET && (newObjects.get(i))
 							.getMidY() <= r.get(i).getStart().getMidY()
 							+ UPDATE_OFFSET)) {
-				System.out.println("updates" + i);
 				if (i == 0) {
 					if(size != 0){
 						r.get(i).update(newObjects.get(i),
@@ -135,7 +131,6 @@ public class Track {
 								newObjects.get(i));
 						r.get(size).find();
 						r.get(i).find();
-						System.out.println("updates" + i);
 					}
 				} else {
 					r.get(i - 1).update(newObjects.get(i - 1),
@@ -184,34 +179,5 @@ public class Track {
 		boxes.clear();
 		boxes.addAll(red);
 		boxes.addAll(green);
-	}
-
-	public static ArrayList<BreakPoint> getClosestBreakPoint(BreakPoint b) {
-		double length, shortest = 0;
-		BreakPoint closest = null;
-		for (BreakPoint port : complete) {
-			length = Math.abs(Math.sqrt(Math.exp((b.getX() - port.getX()))
-					+ Math.exp((b.getY() - port.getY()))));
-			if (shortest == 0) {
-				shortest = length;
-				closest = port;
-			} else if (shortest < length) {
-				shortest = length;
-				closest = port;
-			}
-		}
-
-		Route botRoute = new Route(new Port(b.getX(), b.getY(), b.getPort()),
-				new Port(closest.getX(), closest.getY(), closest.getPort()));
-
-		return botRoute.findRoute();
-	}
-
-	public static ArrayList<BreakPoint> getRoute(BreakPoint b1, BreakPoint b2) {
-		Route botRoute = new Route(
-				new Port(b1.getX(), b1.getY(), b1.getPort()), new Port(
-						b2.getX(), b2.getY(), b2.getPort()));
-
-		return botRoute.findRoute();
 	}
 }
