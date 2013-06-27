@@ -3,6 +3,7 @@ package dk.dtu.cdio.ANIMAL.computer;
 import main.Application;
 import main.Main;
 import models.Box;
+import models.Robot;
 import routeCalculation.Track;
 
 public class ControlCenter implements Runnable {
@@ -54,7 +55,6 @@ public class ControlCenter implements Runnable {
 					
 	 				System.out.format("Starting %s:%n", theOneBehind());
 					theOneBehind().running = true;
-					
 	 			}
 	 			
 				if (System.currentTimeMillis() - navA.last > 10000 || System.currentTimeMillis() - navB.last > 10000 ||  navA.com.reconnect || navB.com.reconnect) {
@@ -74,19 +74,13 @@ public class ControlCenter implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					int minimumDistance = 20;
-					for(Box b : Main.redBoxes) {
-						if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < minimumDistance) {
-							navA.gen.backup(500);
-							break;
-						}
+					
+					if(isBoxInRobotProximity(navA.robot)) {
+						navA.gen.backup(500);
 					}
 					
-					for(Box b : Main.redBoxes) {
-						if(Utilities.getDistance(navB.robot.getFrontMidX(), navB.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < minimumDistance) {
-							navB.gen.backup(500);
-							break;
-						}
+					if(isBoxInRobotProximity(navB.robot)) {
+						navB.gen.backup(500);
 					}
 					
 					navA.feedBreakpoints(Track.getCompleteList());
@@ -115,7 +109,8 @@ public class ControlCenter implements Runnable {
 				}
 				
 				try {
-					Thread.sleep(50);
+					// We get about 30 fps, so no need to run this more often
+					Thread.sleep(30);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -123,6 +118,7 @@ public class ControlCenter implements Runnable {
 			}
 	 		
 	 		try {
+	 			// If control loop is not currently running, we throttle
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -143,6 +139,21 @@ public class ControlCenter implements Runnable {
 			return navA;
 		}
 		return (angleA > angleB) ? navA : navB;
+	}
+	
+	private boolean isBoxInRobotProximity(Robot r) {
+		int minimumDistance = 20;
+		for(Box b : Main.redBoxes) {
+			if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < minimumDistance) {
+				return true;
+			}
+		}
+		for(Box b : Main.greenBoxes) {
+			if(Utilities.getDistance(navA.robot.getFrontMidX(), navA.robot.getFrontmidY(), b.getMidX(), b.getMidY()) < minimumDistance) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -10,7 +10,6 @@ import models.Box;
 import models.Port;
 import routeCalculation.Track;
 import dk.dtu.cdio.ANIMAL.computer.ControlCenter;
-//import sun.awt.windows.ThemeReader;
 
 public class Main {
 	public static int DEBUG_ROBOT = 0;
@@ -22,10 +21,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
-		boolean runRobots = true;
-		if(args.length > 0) {
-			runRobots = false;
-		}
+		
+		boolean runRobots = !(args.length > 0);
+		
 		Application app = new Application();
 		ControlWindow gui = new ControlWindow();
 		// Schedule a job for the event-dispatching thread:
@@ -55,19 +53,6 @@ public class Main {
 			
 			t.updateObjects(ports, redBoxes, greenBoxes);
 		}
-//		while(true) {
-//			app.frameProcessing();
-//			ports = app.sortedPorts;
-//			redBoxes = app.redBoxes;
-//			greenBoxes = app.greenBoxes;
-////			System.out.println("h:" + Application.red_h + "\n s:" + Application.red_s + "\n v:" + Application.red_v + "\n upper h" + Application.red_upper_h);
-////			i++;
-////			System.out.println("BILLEDE NUMMER: " + i);
-////			if(!runRobots) {
-//				t.updateObjects(ports, redBoxes, greenBoxes);
-////			}
-//		}
-//		System.out.println("FPS: " + fps);
 	}
 	
 }

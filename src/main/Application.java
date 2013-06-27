@@ -50,11 +50,15 @@ public class Application {
 	
 	public static boolean robotsDetected = false;
 	public static final int SQ_THRESHOLD = 6;
+	
+	// Color definitions
 	public static final int RED = 0;
 	public static final int GREEN = 1;
 	public static final int BLUE = 3;
 	public static final int PURPLE = 4;
 	public static final int YELLOW = 2;
+	
+	// Color attribute definitions
 	public static final int HUE = 0;
 	public static final int UPPERHUE = 1;
 	public static final int SATURATION = 2;

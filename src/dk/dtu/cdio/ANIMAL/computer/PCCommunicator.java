@@ -14,13 +14,11 @@ public class PCCommunicator {
 	private NXTConnector connector;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
-	public Reader reader;
 	
 	public boolean reconnect = false;
 
 	public PCCommunicator(NXTInfo nxtInfo) {
 		this.nxtInfo = nxtInfo;
-//		reader = new Reader();
 	}
 	
 	public void sendData(int code, float v0) {
@@ -38,7 +36,6 @@ public class PCCommunicator {
 	public void close() {
 		try {
 			dataOut.close();
-//			dataIn.close();
 			connector.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -61,11 +58,7 @@ public class PCCommunicator {
 			}
 		} while (!connected);
 		System.out.println(" connect result " + connected);
-//		dataIn = new DataInputStream(connector.getInputStream());
 		dataOut = new DataOutputStream(connector.getOutputStream());
-//		if (!reader.isRunning) {
-//			reader.start();
-//		}
 		return connected;
 	}
 	
@@ -76,24 +69,4 @@ public class PCCommunicator {
 			e.printStackTrace();
 		}
 	}
-	
-	class Reader extends Thread {
-		
-		public boolean isRunning = false;
-		
-		public void run() {
-			int incoming;
-			isRunning = true;
-			while(isRunning) {
-				try {
-					incoming = dataIn.readInt();
-//					reply = NavCommand.values()[incoming];
-//					replyReady.set(true);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 }

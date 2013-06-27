@@ -8,10 +8,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import main.Application;
 import main.Main;
@@ -32,19 +28,15 @@ public class ControlWindow extends JPanel implements Runnable {
 	
 	public ControlWindow() {
 		prop = new PropertyManager();
-		
 	}
 	
 
 	@Override
 	public void run() {
-		
-		
 		frame = new JFrame("AutoNomous IMAgeprocessing Lego");
 		comboBox = new JComboBox<String>();
 
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		ComboBox comboBox = new ComboBox();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		for(int i = 0; i <= 4; i++) {
 			comboBox.addItem(Application.colorName(i));
 		}

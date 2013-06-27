@@ -1,9 +1,10 @@
 package utilities;
 
+import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
+
 import java.util.ArrayList;
 
 import main.Application;
-import main.Main;
 import models.BreakPoint;
 import models.ObjectOnMap;
 import models.Port;
@@ -12,14 +13,13 @@ import routeCalculation.Track;
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_core.CvScalar;
-import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvContour;
+import com.googlecode.javacv.cpp.opencv_core.CvFont;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
-import com.googlecode.javacv.cpp.opencv_core.CvFont;
-import static com.googlecode.javacv.cpp.opencv_core.cvPoint;
+import com.googlecode.javacv.cpp.opencv_imgproc;
 
 import dk.dtu.cdio.ANIMAL.computer.Navigator;
 
